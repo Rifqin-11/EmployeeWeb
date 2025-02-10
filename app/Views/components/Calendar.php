@@ -5,15 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <div class="container bg-white p-4 ml-2 rounded-lg shadow-sm">
+    <div class="bg-white p-4 ml-2 rounded-lg shadow-sm min-w-2xs hidden md:block">
         <div class="flex justify-between items-center mb-4">
-            <a href="?month=<?= $currentMonth - 1 ?>&year=<?= $currentYear ?>" 
-                class="text-blue-500 hover:underline"><</a>
-            <span class="font-bold">
+            <span class="font-bold justify-center items-center">
                 <?= date('F Y', strtotime("$currentYear-$currentMonth-01")) ?>
             </span>
-            <a href="?month=<?= $currentMonth + 1 ?>&year=<?= $currentYear ?>" 
-                class="text-blue-500 hover:underline">></a>
         </div>
 
         <!-- Header Hari -->

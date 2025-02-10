@@ -24,7 +24,7 @@
             </div>
             <div class="ml-4">
                 <p class="font-semibold">
-                    Dear John Doe
+                    <?= $user["name"] ?>
                 </p>
                 <p class="text-sm text-gray-500">
                     You have 2 messages in your chat

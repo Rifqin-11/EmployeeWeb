@@ -17,16 +17,16 @@
     </style>
 </head>
 <body>
-    <div class=" bg-white p-6 rounded-lg shadow w-full">
-        <p class="font-semibold">
-        Total Visitors
-        </p>
-        <p class="pt-3 text-3xl font-bold">
-        234
-        </p>
-        <p class="text-sm text-gray-500">
-        +12.5% from last month
-        </p>
-    </div>
+  <div class="bg-white p-6 rounded-lg shadow w-full">
+      <p class="font-semibold">
+          <?= esc($title) ?>
+      </p>
+      <p class="pt-3 text-3xl font-bold">
+          <?= esc($data) ?>
+      </p>
+      <p class="text-sm text-gray-500">
+          <?= esc($percentage) ?>
+      </p>
+  </div>
 </body>
 </html>

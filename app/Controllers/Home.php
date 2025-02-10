@@ -2,29 +2,61 @@
 
 namespace App\Controllers;
 use App\Models\GuestBooksModel;
+use App\Models\EmployeesModel;
 
 class Home extends BaseController
 {
-    public function index(): string
+    public function index()
     {
-        $guestBookModel = new GuestBooksModel;
-        $data["guest"]= $guestBookModel->findAll();
-        // return $this->respond($data);
+        if (!session()->has('email')) {
+            return redirect()->to('/');
+        }
 
-        $month = $this->request->getGet('month') ?? date('m');
-        $year = $this->request->getGet('year') ?? date('Y');
+        
+        $guestBookModel = new GuestBooksModel();
+        $employeesModel = new EmployeesModel();
+        $email = session()->get('email');
 
-        // Pastikan bulan dan tahun valid
+        $user = $employeesModel->getUserByEmail($email);
+        $data['user'] = $user;
+        
+        $data["totalVisitorsMonthly"] = $guestBookModel->getTotalVisitorsLastMonth($user['id']);
+        $data["totalVisitors"] = $guestBookModel->countAllResults();
+
+        // Calendar
+        $data["guest"] = $guestBookModel->paginate(9);
+        $data["pager"] = $guestBookModel->pager;
+
+        $month = $this->request->getGet("month") ?? date("m");
+        $year = $this->request->getGet("year") ?? date("Y");
+
         $month = max(1, min(12, (int)$month));
         $year = max(1900, (int)$year);
 
-        // Data untuk kalender
-        $data['calendar'] = $this->generateCalendar($year, $month);
-        $data['currentMonth'] = $month;
-        $data['currentYear'] = $year;
+        $data["calendar"] = $this->generateCalendar($year, $month);
+        $data["currentMonth"] = $month;
+        $data["currentYear"] = $year;
 
-        return view('pages/Home', $data);
+    
+        $keyword = $this->request->getGet('search');
+
+        if ($user['is_admin'] == 1) {
+            if (!empty($keyword)) {
+                $data['guests'] = $guestBookModel->searchGuests($keyword);
+            } else {
+                $data['guests'] = $guestBookModel->orderBy('created_at', 'DESC')->findAll();
+            }
+        } else {
+            if (!empty($keyword)) {
+                $data['guests'] = $guestBookModel->searchGuests($keyword);
+            } else {
+                $data['guests'] = $guestBookModel->getGuestsByEmail($email);
+            }
+        }
+
+        return view("pages/Home", $data);
     }
+    
 
     private function generateCalendar($year, $month)
     {
