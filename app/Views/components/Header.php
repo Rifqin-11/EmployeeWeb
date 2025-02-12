@@ -41,7 +41,11 @@
                         <i data-lucide="message-circle"></i>
                     </a>
                     <a href="/" class="text-gray-900 p-2 rounded-full flex gap-3 justify-center items-center">
-                        <i data-lucide="circle-user-round" class="text-black"></i>
+                        <div class="avatar">
+                            <div class="ring-primary ring-offset-base-100 w-10 rounded-full ring ring-offset-2 overflow-hidden">
+                                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" class="w-full h-full object-cover" />
+                            </div>
+                        </div>
                         <div class="justify-center items-center">
                             <p class="font-bold"><?= $user["name"] ?></p>
                             <p><?= $user["position"] ?></p>

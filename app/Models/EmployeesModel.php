@@ -11,11 +11,9 @@ class EmployeesModel extends Model
     protected $allowedFields = ['name', 'password', 'email', 'is_admin', 'photo'];
 
     public function getMeetingWith() {
-        return $this->db->table('employees')
-                        ->select('employees.id, name, position')
-                        ->join('guestbooks', 'employees.id=guestbooks.employee_id')
-                        ->get()
-                        ->getResultArray();
+        return $this->select('employees.id, name, position')
+                    ->join('guestbooks', 'employees.id=guestbooks.employee_id')
+                    ->findAll();
     }
 
     public function getUser($username) {
@@ -28,6 +26,5 @@ class EmployeesModel extends Model
     public function getUserByEmail ($email) {
         return $this->where('email', $email)
                     ->first();
-
     }
 }

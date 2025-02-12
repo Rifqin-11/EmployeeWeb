@@ -27,16 +27,16 @@
 
     <div class="flex flex-grow justify-center items-center">
         <div class="bg-white flex flex-col justify-center items-center w-full max-w-lg px-8 py-20 rounded-xl shadow-lg">
-            <img src="<?= base_url('desnetLogo.png') ?>" alt="desnet logo" class="w-40">
+            <img src="<?= base_url('desnetLogo.png') ?>" alt="desnet logo" class="w-42 mb-3">
             <h2 class="text-black text-3xl font-bold text-center mt-4">Sign-In</h2>
-            <p class="text-gray-400 text-sm text-center pb-6">Good to See You Again! Sign In Below</p>
+            <p class="text-gray-400 text-sm text-center pb-4">Good to See You Again! Sign In Below</p>
             <?php if (session()->getFlashdata('error')) : ?>
                 <div class="text-red-700 rounded relative text-center" role="alert">
                     <?= session()->getFlashdata('error') ?>
                 </div>
             <?php endif; ?>
 
-            <form action="/auth" method="post" class="w-full pt-8">
+            <form action="/auth" method="post" class="w-full pt-5">
                 <input type="text" name="username" class="bg-white border text-black text-sm rounded-lg w-full p-2.5 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Username" required>
 
                 <div class="relative w-full">

@@ -7,6 +7,7 @@
     <title>Desnet GuestBook</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
     <style type="text/tailwindcss">
       @theme {
         --color-primary: #084E8F;
@@ -21,31 +22,30 @@
     </style>
   </head>
   <body>
-      
     <div class="min-h-screen bg-[#F9F9F9] flex max-w-full">
-        <?= $this->include('components/sidebar') ?>
+        <?= $this->include('components/Sidebar') ?>
         
-        <div class="pr-2 flex gap-2 w-full md:ml-72">
+        <div class="pr-2 flex gap-2 w-full md:ml-64">
             <div class="flex flex-col gap-2 w-full">
-                <?= $this->include('components/header') ?>
+                <?= $this->include('components/Header') ?>
                 <div class="justify-between flex flex-row px-5 gap-4">
                     <div class="w-full">
                         <div class="w-full">
-                            <?= $this->include('components/message') ?>
+                            <?= $this->include('components/Message') ?>
                         </div>
                             <div class="w-full mt-7 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <?= view('components/Card', [
                                     'title' => 'Total Visitors', 
                                     'data' => $totalVisitors, 
-                                    'percentage' => '+12.5% from last month'
+                                    'percentage' => ''
                                 ]) ?>
                                 
                                 <?= view('components/Card', [
                                     'title' => 'Monthly Visitors', 
                                     'data' => $totalVisitorsMonthly, 
-                                    'percentage' => '+8.2% from last month'
+                                    'percentage' => $percentageLastMonth.'% from last month'
                                 ]) ?>
-                            </div>
+                        </div>
                     </div>
                     <div class="flex">
                         <?= $this->include('components/Calendar') ?>
@@ -56,11 +56,12 @@
                         <table class="w-full border-collapse rounded-lg">
                             <thead>
                                 <tr class="bg border-b border-gray-200 text-left rounded-2xl">
-                                    <th class="p-3">Date</th>
+                                    <th class="p-3">Visit Date</th>
                                     <th class="p-3">PIC Name</th>
                                     <th class="p-3">Institution</th>
                                     <th class="p-3">Contact</th>
                                     <th class="p-3">Agenda</th>
+                                    <th class="p-3">Employee</th>
                                     <th class="p-3">Status</th>
                                     <th class="p-3">More Info</th>
                                 </tr>
@@ -73,11 +74,13 @@
                                     <td class="p-3"><?= esc($item['institution_name']) ?></td>
                                     <td class="p-3"><?= esc($item['phone_number']) ?></td>
                                     <td class="p-3"><?= esc($item['agenda']) ?></td>
+                                    <td class="p-3">tes</td>
                                     <td class="p-3">
                                         <span class="px-2 py-1 text-sm">
                                             <?= status($item['status']) ?>
                                         </span>
                                     </td>
+                                    
                                     <td class="p-3">
                                         <a href="/infodata/<?= $item["id"]?>" class="text-sm text-primary border-b-1 border-primary">
                                             View Detail

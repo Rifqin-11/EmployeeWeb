@@ -41,18 +41,38 @@ class Home extends BaseController
         $keyword = $this->request->getGet('search');
 
         if ($user['is_admin'] == 1) {
+            $totalVisitorMonthly = $guestBookModel->getTotalVisitorsLastMonth(1);
+            $data["totalVisitors"] = $guestBookModel->getTotalVisitors();
+
             if (!empty($keyword)) {
                 $data['guests'] = $guestBookModel->searchGuests($keyword);
             } else {
                 $data['guests'] = $guestBookModel->orderBy('created_at', 'DESC')->findAll();
             }
         } else {
+            $totalVisitorMonthly = $guestBookModel->getTotalVisitorsLastMonth(1, $user['id']);
+            $data["totalVisitors"] = $guestBookModel->getTotalVisitors($user['id']);
+
             if (!empty($keyword)) {
                 $data['guests'] = $guestBookModel->searchGuests($keyword);
             } else {
                 $data['guests'] = $guestBookModel->getGuestsByEmail($email);
             }
         }
+        
+        $totalVisitor2Monthly = $guestBookModel->getTotalVisitorsLastMonth(2, $user['id']);
+
+        $totalLast2Month = $totalVisitor2Monthly - $totalVisitorMonthly;
+
+        if ($totalLast2Month != 0) {
+            $percentageLastMonth = (($totalLast2Month - $totalVisitorMonthly) / $totalLast2Month) * 100;
+        } else {
+            $percentageLastMonth = 0;
+        }
+
+        
+        $data["totalVisitorsMonthly"] = $totalVisitorMonthly;
+        $data['percentageLastMonth'] = sprintf('%+d', $percentageLastMonth);
 
         return view("pages/Home", $data);
     }
