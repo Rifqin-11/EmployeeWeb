@@ -13,7 +13,7 @@ class GuestBooksModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['institutionName', 'pic_name', 'phone_number', 'employee_id', 'agenda', 'identity_photo', 'status'];
+    protected $allowedFields    = ['institutionName', 'pic_name', 'phone_number', 'employee_id', 'agenda', 'identity_photo', 'status', 'room_id', 'date', 'start_at', 'end_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -26,38 +26,33 @@ class GuestBooksModel extends Model
     protected $deletedField  = '';
 
     public function getGuestsByEmail($email){
-        return $this->db->table('guestbooks')
-                    ->select('guestbooks.id, pic_name, institution_name, phone_number, agenda, created_at, updated_at, status')
+        return $this->select('guestbooks.id, pic_name, institution_name, phone_number, agenda, created_at, updated_at, status')
                     ->join('employees', 'employees.id = guestbooks.employee_id')
                     ->where('employees.email', $email)
                     ->orderBy('guestbooks.created_at', 'DESC')
-                    ->get()
-                    ->getResultArray();
+                    ->findAll();
     }
 
     public function searchGuestsByEmail($email, $search)
     {
-        return $this->db->table('guestbooks')
-            ->select('id, pic_name, institution_name, phone_number, agenda, created_at, updated_at, status')
-            ->join('employees', 'employees.id = guestbooks.employee_id')
-            ->where('employees.email', $email)
-            ->groupStart()
-                ->like('pic_name', $search)
-                ->orLike('institution_name', $search)
-            ->groupEnd()
-            ->orderBy('guestbooks.created_at', 'DESC')
-            ->get()
-            ->getResultArray();
+        return $this->select('id, pic_name, institution_name, phone_number, agenda, created_at, updated_at, status')
+                    ->join('employees', 'employees.id = guestbooks.employee_id')
+                    ->where('employees.email', $email)
+                    ->groupStart()
+                        ->like('pic_name', $search)
+                        ->orLike('institution_name', $search)
+                    ->groupEnd()
+                    ->orderBy('guestbooks.created_at', 'DESC')
+                    ->findAll();
     }
 
         public function searchGuests($keyword)
     {
-        return $this->table('guestbooks')
-            ->select('pic_name, institution_name, phone_number, agenda, created_at, updated_at, status')
-            ->like('pic_name', $keyword)
-            ->orLike('institution_name', $keyword)
-            ->orderBy('created_at', 'DESC')
-            ->findAll();
+        return $this->select('pic_name, institution_name, phone_number, agenda, created_at, updated_at, status')
+                    ->like('pic_name', $keyword)
+                    ->orLike('institution_name', $keyword)
+                    ->orderBy('created_at', 'DESC')
+                    ->findAll();
     }
     
     public function getTotalVisitorsLastMonth($month, $id = '')

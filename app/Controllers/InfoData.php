@@ -4,19 +4,26 @@ namespace App\Controllers;
 use App\Models\GuestBooksModel;
 use App\Models\EmployeesModel;
 use App\Models\RoomModel;
+use App\Models\DocumentationsModel;
+use PDO;
 
 class InfoData extends BaseController
 {
+    protected $guestBookModel;
+
+    public function __construct()
+    {
+        $this->guestBookModel = new GuestBooksModel();
+    }
+    
     public function index($id=null)
     {
         if (!session()->has('email')) {
             return redirect()->to('/');
         }
 
-        $guestBookModel = new GuestBooksModel();
         $employeesModel = new EmployeesModel();
         
-
         $email = session()->get('email');
         $user = $employeesModel->getUserByEmail($email);
         $data['user'] = $user;
@@ -25,7 +32,7 @@ class InfoData extends BaseController
             $roomModel = new RoomModel();
             $data['rooms'] = $roomModel->findAll();
 
-            $data['guest'] = $guestBookModel->find($id);
+            $data['guest'] = $this->guestBookModel->find($id);
             return view("pages/InfoData", $data);
         }
 
@@ -34,19 +41,71 @@ class InfoData extends BaseController
 
         if ($user['is_admin'] == 1) {
             if (!empty($keyword)) {
-                $data['guests'] = $guestBookModel->searchGuests($keyword);
+                $data['guests'] = $this->guestBookModel->searchGuests($keyword);
             } else {
-                $data['guests'] = $guestBookModel->orderBy('created_at', 'DESC')->findAll();
+                $data['guests'] = $this->guestBookModel->orderBy('created_at', 'DESC')->findAll();
             }
         } else {
             if (!empty($keyword)) {
-                $data['guests'] = $guestBookModel->searchGuests($keyword);
+                $data['guests'] = $this->guestBookModel->searchGuests($keyword);
             } else {
-                $data['guests'] = $guestBookModel->getGuestsByEmail($email);
+                $data['guests'] = $this->guestBookModel->getGuestsByEmail($email);
             }
         }
 
         return view("pages/InfoData", $data);
+    }
+
+    public function edit()
+    {
+        $status = $this->request->getVar('status');
+        $guestbook_id = $this->request->getVar('guestbook-id');
+        if ($status == 0){
+            $data = [
+                'id' => $guestbook_id,
+                'room_id' => $this->request->getVar('room'),
+                'date' => $this->request->getVar('date'),
+                'start_at' => $this->request->getVar('start-at'),
+                'end_at' => $this->request->getVar('end-at'),
+                'status' => 1
+            ];
+            
+            $this->guestBookModel->save($data);
+            
+        } else{
+            $documentationsModel = new DocumentationsModel;
+            
+            $uploadPath = WRITEPATH . 'documentations/'.$guestbook_id;
+            
+            if(!is_dir($uploadPath)){
+                mkdir($uploadPath, 0777, true);
+            }
+            
+            $images = $this->request->getFileMultiple('images');
+            foreach ($images as $image){
+                if ($image->isValid()){
+                    $image->move($uploadPath);
+                }
+
+                $data = [
+                    'guestbook_id'  => $guestbook_id,
+                    'image_name'    => $image->getClientName()
+                ];
+                
+                $documentationsModel->insert($data);
+
+                $data = [
+                    'id' => $guestbook_id,
+                    'status' => 3
+                ];
+                
+                $this->guestBookModel->save($data);
+            }
+        }
+
+        return redirect()->to('Home');
+        
+        
     }
 
 }

@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <style type="text/tailwindcss">
-      @theme {
+      /* @theme {
         --color-primary: #084E8F;
         --color-secondary: #f9f9f9;
         --color-button: #2563eb;
@@ -17,18 +17,21 @@
         --color-text-600: #364153;
         --color-yellow-700: #F9A329;
         --color-yellow-200: #fff0dc;
-      }
+      } */
     </style>
   </head>
   <body>
     <div class="min-h-screen bg-[#F9F9F9] flex max-w-full">
         <?= $this->include('components/sidebar') ?>
-        
         <div class="pr-2 flex gap-2 w-full md:ml-72">
             <div class="flex flex-col gap-2 w-full">
                 <?= $this->include('components/header') ?>
                 <div class="flex flex-col gap-2 w-full my-2 px-5">
                     <div class="flex flex-col bg-white p-6 rounded-lg shadow w-full">
+                        <form action="<?= base_url('infoData/edit') ?>" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="_method" value="PUT">    
+                        <input type="hidden" name="guestbook-id" value="<?= $guest['id'] ?>">
+                            <input type="hidden" name="status" id="status" value="<?= $guest['status'] ?>">
                         <div>
                             <div class="mb-4 flex flex-end w-full">
                                 <p class="text-gray-600"><?= $guest["created_at"] ?></p>
@@ -65,16 +68,21 @@
                                 <div class="mb-4">
                                     <h2 class="text-lg font-medium text-gray-700">Appointment:</h2>
                                     <div class="flex flex-row gap-2 items-center justify-center">
-                                        <input type="date" name="appointment" id="appointment" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
-                                        <input type="time" name="appointment" id="appointment" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
+                                        
+                                        <input type="date" name="date" id="date" value="<?= $guest['date'] ?>" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
+                                        <input type="time" name="start-at" id="start-at" value="<?= $guest['start_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
                                         <p>to</p>
-                                        <input type="time" name="appointment" id="appointment" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
+                                        <input type="time" name="end-at" id="end-at" value="<?= $guest['end_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
                                     </div>
-                                </div>   
+                                </div>
+                                <div class="mb-4">
+                                    <input type="file" name="images[]" multiple>
+                                </div>
                             </div>
-                            <Button id="buttonSave" class="mb-4 bg-primary p-2 px-4 rounded rounded-lg justify-center items-center mt-6 w-full">
+                            <button id="buttonSave" type="submit" class="mb-4 bg-primary p-2 px-4 rounded rounded-lg justify-center items-center mt-6 w-full">
                                 <h2 class="text-lg font-medium text-white text-center cursor-pointer">save</h2>
-                            </Button>   
+                            </button>   
+                        </form>
                         </div>
                     </div>
                 </div>
