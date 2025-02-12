@@ -55,6 +55,7 @@
                     </div>
                     <div class="flex flex-col bg-white p-6 rounded-lg shadow w-full">
                         <table class="w-full border-collapse rounded-lg">
+                            <?php $is_admin = session()->get('is_admin') ?>
                             <thead>
                                 <tr class="bg border-b border-gray-200 text-left rounded-2xl">
                                     <th class="p-3">Visit Date</th>
@@ -62,6 +63,9 @@
                                     <th class="p-3">Institution</th>
                                     <th class="p-3">Contact</th>
                                     <th class="p-3">Agenda</th>
+                                    <?php if ($is_admin == 1) : ?>
+                                    <th class="p-3">Employee</th>
+                                    <?php endif ?>
                                     <th class="p-3">Status</th>
                                     <th class="p-3">More Info</th>
                                 </tr>
@@ -74,6 +78,9 @@
                                     <td class="p-3"><?= esc($item['institution_name']) ?></td>
                                     <td class="p-3"><?= esc($item['phone_number']) ?></td>
                                     <td class="p-3"><?= esc($item['agenda']) ?></td>
+                                    <?php if ($is_admin == 1) : ?>
+                                    <td class="p-3"><?= esc($item['name']) ?></td>
+                                    <?php endif ?>
                                     <td class="p-3">
                                         <span class="px-2 py-1 text-sm justify-center items-center">
                                             <?= status($item['status']) ?>

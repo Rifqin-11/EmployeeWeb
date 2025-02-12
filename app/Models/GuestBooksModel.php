@@ -25,17 +25,24 @@ class GuestBooksModel extends Model
     protected $updatedField  = '';
     protected $deletedField  = '';
 
-    public function getGuestsByEmail($email){
-        return $this->select('guestbooks.id, pic_name, institution_name, phone_number, agenda, created_at, updated_at, status')
-                    ->join('employees', 'employees.id = guestbooks.employee_id')
-                    ->where('employees.email', $email)
-                    ->orderBy('guestbooks.created_at', 'DESC')
-                    ->findAll();
+    public function getGuests($email = null, $search = null){
+        $result = $this->select('guestbooks.id, pic_name, institution_name, phone_number, employees.name, agenda, created_at, updated_at, status')
+                        ->join('employees', 'employees.id = guestbooks.employee_id');
+        if($email){
+            $result->where('employees.email', $email);
+        }
+        if ($search){
+            $result->groupStart()
+                    ->like('pic_name', $search)
+                    ->orLike('institution_name', $search)
+                    ->groupEnd();
+        }
+        return $result->orderBy('guestbooks.created_at', 'DESC')->findAll();
     }
 
     public function searchGuestsByEmail($email, $search)
     {
-        return $this->select('id, pic_name, institution_name, phone_number, agenda, created_at, updated_at, status')
+        return $this->select('id, pic_name, institution_name, phone_number, agenda, employees.name , created_at, updated_at, status')
                     ->join('employees', 'employees.id = guestbooks.employee_id')
                     ->where('employees.email', $email)
                     ->groupStart()

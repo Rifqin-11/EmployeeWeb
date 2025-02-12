@@ -12,16 +12,12 @@ class Home extends BaseController
             return redirect()->to('/');
         }
 
-        
         $guestBookModel = new GuestBooksModel();
         $employeesModel = new EmployeesModel();
         $email = session()->get('email');
 
         $user = $employeesModel->getUserByEmail($email);
         $data['user'] = $user;
-        
-        $data["totalVisitorsMonthly"] = $guestBookModel->getTotalVisitorsLastMonth($user['id']);
-        $data["totalVisitors"] = $guestBookModel->countAllResults();
 
         // Calendar
         $data["guest"] = $guestBookModel->paginate(9);
@@ -36,7 +32,6 @@ class Home extends BaseController
         $data["calendar"] = $this->generateCalendar($year, $month);
         $data["currentMonth"] = $month;
         $data["currentYear"] = $year;
-
     
         $keyword = $this->request->getGet('search');
 
@@ -44,20 +39,13 @@ class Home extends BaseController
             $totalVisitorMonthly = $guestBookModel->getTotalVisitorsLastMonth(1);
             $data["totalVisitors"] = $guestBookModel->getTotalVisitors();
 
-            if (!empty($keyword)) {
-                $data['guests'] = $guestBookModel->searchGuests($keyword);
-            } else {
-                $data['guests'] = $guestBookModel->orderBy('created_at', 'DESC')->findAll();
-            }
+            $data['guests'] = $guestBookModel->getGuests(search: $keyword);
+
         } else {
             $totalVisitorMonthly = $guestBookModel->getTotalVisitorsLastMonth(1, $user['id']);
             $data["totalVisitors"] = $guestBookModel->getTotalVisitors($user['id']);
 
-            if (!empty($keyword)) {
-                $data['guests'] = $guestBookModel->searchGuests($keyword);
-            } else {
-                $data['guests'] = $guestBookModel->getGuestsByEmail($email);
-            }
+            $data['guests'] = $guestBookModel->getGuests($email, $keyword);   
         }
         
         $totalVisitor2Monthly = $guestBookModel->getTotalVisitorsLastMonth(2, $user['id']);
@@ -66,13 +54,13 @@ class Home extends BaseController
 
         if ($totalLast2Month != 0) {
             $percentageLastMonth = (($totalLast2Month - $totalVisitorMonthly) / $totalLast2Month) * 100;
+            $percentageLastMonth = sprintf('%+d', $percentageLastMonth) . '% from last month';
         } else {
-            $percentageLastMonth = 0;
+            $percentageLastMonth = "You don't have any visitors at 2 months ago";
         }
 
-        
+        $data['percentageLastMonth'] = $percentageLastMonth;
         $data["totalVisitorsMonthly"] = $totalVisitorMonthly;
-        $data['percentageLastMonth'] = sprintf('%+d', $percentageLastMonth);
 
         return view("pages/Home", $data);
     }

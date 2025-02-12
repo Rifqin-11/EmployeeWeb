@@ -85,9 +85,11 @@
                                     </div>
                                 </div>
                             </div>
+                            <?php if($guest['status'] != 0) :?>
                             <div class="flex flex-center mb-4 border border-gray-400 w-200 h-100 rounded rounded-xl justify-center items-center text-center">
                                 <input type="file" name="images[]" multiple>
                             </div>
+                            <?php endif ?>
                             <button id="buttonSave" type="submit" class="mb-4 bg-primary p-2 px-4 rounded rounded-lg justify-center items-center mt-6 w-full">
                                 <h2 class="text-lg font-medium text-white text-center cursor-pointer">save</h2>
                             </button>
