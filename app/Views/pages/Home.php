@@ -37,13 +37,13 @@
                                 <?= view('components/Card', [
                                     'title' => 'Total Visitors', 
                                     'data' => $totalVisitors, 
-                                    'percentage' => '+12.5% from last month'
+                                    'percentage' => ''
                                 ]) ?>
                                 
                                 <?= view('components/Card', [
                                     'title' => 'Monthly Visitors', 
                                     'data' => $totalVisitorsMonthly, 
-                                    'percentage' => '+8.2% from last month'
+                                    'percentage' => $percentageLastMonth.'% from last month'
                                 ]) ?>
                             </div>
                     </div>
@@ -56,6 +56,7 @@
                         <table class="w-full border-collapse rounded-lg">
                             <thead>
                                 <tr class="bg border-b border-gray-200 text-left rounded-2xl">
+                                    <th class="p-3">No</th>
                                     <th class="p-3">Date</th>
                                     <th class="p-3">PIC Name</th>
                                     <th class="p-3">Institution</th>
@@ -66,9 +67,11 @@
                                 </tr>
                             </thead>
                             <tbody class="text-md">
+                                <?php $i=1 ?>
                                 <?php foreach ($guests as $item): ?>
                                 <tr class="border-b border-gray-200 hover:bg-gray-50" onclick="">
-                                    <td class="p-3"><?= date('d-m-Y, H:i', strtotime($item['created_at'])) ?></td>
+                                    <td><?= $i++ ?></td>
+                                    <td class="p-3"><?= time_parsing($item['created_at']) ?></td>
                                     <td class="p-3"><?= esc($item['pic_name']) ?></td>
                                     <td class="p-3"><?= esc($item['institution_name']) ?></td>
                                     <td class="p-3"><?= esc($item['phone_number']) ?></td>

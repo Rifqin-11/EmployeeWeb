@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+use LDAP\Result;
 
 class GuestBooksModel extends Model
 {
@@ -59,12 +60,20 @@ class GuestBooksModel extends Model
             ->findAll();
     }
     
-    public function getTotalVisitorsLastMonth($id)
+    public function getTotalVisitorsLastMonth($month, $id = '')
     {
-        return $this->where('created_at >=', date('Y-m-d H:i:s', strtotime('-1 month')))
-                    ->orWhere('id', $id)
-                    ->countAllResults();
+        $result = $this->where('created_at >=', date('Y-m-d H:i:s', strtotime('-'.$month.' month')));
+        if ($id){
+            $result->where('employee_id', $id);
+        }
+        return $result->countAllResults();
     }
 
+    public function getTotalVisitors($id = ''){
+        if ($id){
+            return $this->where('employee_id', $id)->countAllResults();
+        }
+        return $this->countAllResults();
+    }
 
 }

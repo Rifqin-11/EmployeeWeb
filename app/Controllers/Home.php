@@ -12,16 +12,12 @@ class Home extends BaseController
             return redirect()->to('/');
         }
 
-        
         $guestBookModel = new GuestBooksModel();
         $employeesModel = new EmployeesModel();
         $email = session()->get('email');
 
         $user = $employeesModel->getUserByEmail($email);
         $data['user'] = $user;
-        
-        $data["totalVisitorsMonthly"] = $guestBookModel->getTotalVisitorsLastMonth($user['id']);
-        $data["totalVisitors"] = $guestBookModel->countAllResults();
 
         // Calendar
         $data["guest"] = $guestBookModel->paginate(9);
@@ -41,19 +37,34 @@ class Home extends BaseController
         $keyword = $this->request->getGet('search');
 
         if ($user['is_admin'] == 1) {
+            $totalVisitorMonthly = $guestBookModel->getTotalVisitorsLastMonth(1);
+            $data["totalVisitors"] = $guestBookModel->getTotalVisitors();
+
+
             if (!empty($keyword)) {
                 $data['guests'] = $guestBookModel->searchGuests($keyword);
             } else {
                 $data['guests'] = $guestBookModel->orderBy('created_at', 'DESC')->findAll();
             }
         } else {
+            $totalVisitorMonthly = $guestBookModel->getTotalVisitorsLastMonth(1, $user['id']);
+            $data["totalVisitors"] = $guestBookModel->getTotalVisitors($user['id']);
+
             if (!empty($keyword)) {
                 $data['guests'] = $guestBookModel->searchGuests($keyword);
             } else {
                 $data['guests'] = $guestBookModel->getGuestsByEmail($email);
             }
         }
-
+        
+        $totalVisitor2Monthly = $guestBookModel->getTotalVisitorsLastMonth(2, $user['id']);
+        
+        $totalLast2Month = $totalVisitor2Monthly - $totalVisitorMonthly;
+        $percentageLastMonth = (($totalLast2Month - $totalVisitorMonthly)/$totalLast2Month)*100;
+        
+        $data["totalVisitorsMonthly"] = $totalVisitorMonthly;
+        $data['percentageLastMonth'] = sprintf('%+d', $percentageLastMonth);
+        
         return view("pages/Home", $data);
     }
     
