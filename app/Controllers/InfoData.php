@@ -72,18 +72,28 @@ class InfoData extends BaseController
             $this->guestBookModel->save($data);
             
         } else{
-            $documentationsModel = new DocumentationsModel;
+            $images = $this->request->getFileMultiple('images');
+
             
+
+            $documentationsModel = new DocumentationsModel;
             $uploadPath = WRITEPATH . 'documentations/'.$guestbook_id;
             
             if(!is_dir($uploadPath)){
                 mkdir($uploadPath, 0777, true);
             }
-            
-            $images = $this->request->getFileMultiple('images');
+
             foreach ($images as $image){
                 if ($image->isValid()){
                     $image->move($uploadPath);
+                } else {
+                    // Menangani status rescheduled
+                    $data = [
+                        'id' => $guestbook_id,
+                        'status' => 2
+                    ];
+                    $this->guestBookModel->save($data);
+                    return redirect()->to('Home');
                 }
 
                 $data = [
@@ -103,7 +113,6 @@ class InfoData extends BaseController
         }
 
         return redirect()->to('Home');
-        
         
     }
 

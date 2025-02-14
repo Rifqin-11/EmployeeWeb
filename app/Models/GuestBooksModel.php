@@ -40,19 +40,6 @@ class GuestBooksModel extends Model
         return $result->orderBy('guestbooks.created_at', 'DESC')->findAll();
     }
 
-    public function searchGuestsByEmail($email, $search)
-    {
-        return $this->select('id, pic_name, institution_name, phone_number, agenda, employees.name , created_at, updated_at, status')
-                    ->join('employees', 'employees.id = guestbooks.employee_id')
-                    ->where('employees.email', $email)
-                    ->groupStart()
-                        ->like('pic_name', $search)
-                        ->orLike('institution_name', $search)
-                    ->groupEnd()
-                    ->orderBy('guestbooks.created_at', 'DESC')
-                    ->findAll();
-    }
-
         public function searchGuests($keyword)
     {
         return $this->select('pic_name, institution_name, phone_number, agenda, created_at, updated_at, status')

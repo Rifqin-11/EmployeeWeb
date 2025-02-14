@@ -9,7 +9,7 @@
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
     <style type="text/tailwindcss">
-      @theme {
+      /* @theme {
         --color-primary: #084E8F;
         --color-secondary: #f9f9f9;
         --color-button: #2563eb;
@@ -18,7 +18,7 @@
         --color-text-600: #364153;
         --color-yellow-700: #F9A329;
         --color-yellow-200: #fff0dc;
-      }
+      } */
     </style>
   </head>
   <body>
@@ -100,29 +100,29 @@
             </div>
     </div>
     <script>
-        document.getElementById("buttonSave").addEventListener("click", function(event) {
-        event.preventDefault();
+    //     document.getElementById("buttonSave").addEventListener("click", function(event) {
+    //     event.preventDefault();
 
-        let alertToast = document.getElementById("alertToast");
-        alertToast.classList.remove("hidden");
+    //     let alertToast = document.getElementById("alertToast");
+    //     alertToast.classList.remove("hidden");
 
-        setTimeout(() => {
-            alertToast.classList.add("hidden");
-            document.querySelector("form").submit();
-        }, 1500);
-    });
-        lucide.createIcons();
+    //     setTimeout(() => {
+    //         alertToast.classList.add("hidden");
+    //         document.querySelector("form").submit();
+    //     }, 1500);
+    // });
+    //     lucide.createIcons();
     </script>
   </body>
 
-<div id="alertToast" class="fixed bottom-8 right-5 hidden">
+<!-- <div id="alertToast" class="fixed bottom-8 right-5 hidden">
     <div class="flex items-center gap-3 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg">
         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
         </svg>
         <span class="font-semibold">Data saved successfully!</span>
     </div>
-</div>
+</div> -->
 
 
 </html>
