@@ -118,4 +118,41 @@ class InfoData extends BaseController
         
     }
 
+    public function uploadProcess()
+    {
+        $guestbook_id = $this->request->getVar('guestbook-id');
+        
+        $documentationsModel = new DocumentationsModel();
+        
+        $uploadPath = WRITEPATH . 'documentations/' . $guestbook_id;
+        
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+        
+        $images = $this->request->getFileMultiple('images');
+        $uploadedFiles = [];
+
+        foreach ($images as $image) {
+            if ($image->isValid() && !$image->hasMoved()) {
+                $imageName = $image->getRandomName();
+                $image->move($uploadPath, $imageName);
+                
+                // Simpan informasi gambar ke database
+                $data = [
+                    'guestbook_id' => $guestbook_id,
+                    'image_name' => $imageName
+                ];
+                $documentationsModel->insert($data);
+
+                $uploadedFiles[] = $imageName;
+            }
+        }
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Files uploaded successfully!',
+            'files' => $uploadedFiles
+        ]);
+    }
 }

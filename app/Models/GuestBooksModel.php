@@ -25,18 +25,26 @@ class GuestBooksModel extends Model
     protected $updatedField  = '';
     protected $deletedField  = '';
 
-    public function getGuests($email = null, $search = null){
-        $result = $this->select('guestbooks.id, pic_name, institution_name, phone_number, employees.name, agenda, created_at, updated_at, status')
-                        ->join('employees', 'employees.id = guestbooks.employee_id');
+    public function getGuests($email = null, $search = null, $statusFilter = []){
+        $result = $this->select('guestbooks.id, pic_name, institution_name, phone_number, employees.name as employee_name, agenda, created_at, updated_at, status')
+               ->join('employees', 'employees.id = guestbooks.employee_id', 'left');
+
         if($email){
             $result->where('employees.email', $email);
         }
+
+        if (!empty($statusFilter)) {
+            $result->whereIn('status', $statusFilter);
+        }
+
         if ($search){
             $result->groupStart()
                     ->like('pic_name', $search)
                     ->orLike('institution_name', $search)
+                    ->orLike('employees.name', $search)
                     ->groupEnd();
         }
+
         return $result->orderBy('guestbooks.created_at', 'DESC')->findAll();
     }
 
@@ -48,6 +56,18 @@ class GuestBooksModel extends Model
                     ->orderBy('created_at', 'DESC')
                     ->findAll();
     }
+
+    public function getPendingVisitorsCount($id = null)
+    {
+        $query = $this->where('status', 0);
+
+        if ($id) {
+            $query->where('employee_id', $id);
+        }
+
+        return $query->countAllResults();
+    }
+
     
     public function getTotalVisitorsLastMonth($month, $id = '')
     {
@@ -64,5 +84,7 @@ class GuestBooksModel extends Model
         }
         return $this->countAllResults();
     }
+
+    
 
 }

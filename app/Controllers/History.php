@@ -19,7 +19,6 @@ class History extends BaseController
         $user = $employeesModel->getUserByEmail($email);
         $data['user'] = $user;
 
-        // Tangkap keyword dari input pencarian
         $keyword = $this->request->getGet('search');
 
         if ($user['is_admin'] == 1) {

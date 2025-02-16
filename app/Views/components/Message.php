@@ -27,13 +27,13 @@
                     <?= $user["name"] ?>
                 </p>
                 <p class="text-sm text-gray-500">
-                    You have guests in pending in your chat
+                    You have <?= $pendingVisitors ?> visitors with pending status.
                 </p>
             </div>
         </div>
-        <button class="px-4 py-2 bg-primary text-white rounded-lg cursor-pointer">
+        <a href="/History" class="px-4 py-2 bg-primary text-white rounded-lg cursor-pointer">
             View Detail
-        </button>
+        </a>
     </div>
 </body>
 </html>

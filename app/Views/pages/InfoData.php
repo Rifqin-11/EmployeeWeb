@@ -30,10 +30,9 @@
                 <div class="flex flex-col gap-2 w-full my-2 px-5">
                     <div class="flex flex-col bg-white p-6 rounded-lg shadow w-full">
                         <form action="<?= base_url('infoData/edit') ?>" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="_method" value="PUT">    
-                        <input type="hidden" name="guestbook-id" value="<?= $guest['id'] ?>">
+                            <input type="hidden" name="_method" value="PUT">    
+                            <input type="hidden" name="guestbook-id" value="<?= $guest['id'] ?>">
                             <input type="hidden" name="status" id="status" value="<?= $guest['status'] ?>">
-                        <div>
                             <div class="mb-7 flex justify-between w-full">
                                 <div class="flex gap-3">
                                     <p class="font-semibold">Visit Date:</p>
@@ -67,9 +66,9 @@
                                 <div class="mb-4">
                                     <h2 class="text-lg font-medium text-gray-700">Room:</h2>
                                     <div>
-                                        <select name="room" id="room" class="w-full white border border-gray-300 p-2 rounded rounded-lg" required>
+                                        <select name="room" id="room" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
                                             <?php foreach ($rooms as $room): ?>
-                                            <option value="<?= $room["id"] ?>" <?= $room["id"] == $guest["room_id"] ? 'selected' : '' ?> ><?= esc($room['name']) ?></option>
+                                            <option <?= $guest['room_id'] == $room['id'] ? 'selected' : ''?> value="<?= $room["id"] ?>"><?= esc($room['name']) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -77,20 +76,29 @@
                                 <div class="mb-4">
                                     <h2 class="text-lg font-medium text-gray-700">Appointment:</h2>
                                     <div class="flex flex-row gap-2 items-center justify-center">
-                                        
-                                        <input type="date" name="date" id="date" required value="<?= $guest['date'] ?>" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
-                                        <input type="time" name="start-at" id="start-at" required value="<?= $guest['start_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
+                                        <input type="date" name="date" id="date" value="<?= $guest['date'] ?>" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
+                                        <input type="time" name="start-at" id="start-at" value="<?= $guest['start_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
                                         <p>to</p>
-                                        <input type="time" name="end-at" id="end-at" required value="<?= $guest['end_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
+                                        <input type="time" name="end-at" id="end-at" value="<?= $guest['end_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
                                     </div>
                                 </div>
                             </div>
-                            <?php if($guest['status'] != 0) :?>
-                            <div class="flex flex-center mb-4 border border-gray-400 w-200 h-100 rounded rounded-xl justify-center items-center text-center">
-                                <input type="file" name="images[]" multiple>
+                            
+                            <div class="flex justify-center items-center <?= $guest['status'] == 0 ? 'hidden' : '' ?>">
+                                <div class="flex flex-col p-6 w-150 text-center">
+                                    <h2 class="text-lg font-semibold mb-3">Upload Gambar</h2>
+                                    
+                                    <label for="fileInput" class="cursor-pointer flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-400 rounded-lg bg-gray-50 hover:bg-gray-100">
+                                        <span class="text-gray-500">Klik untuk mengunggah</span>
+                                        <input type="file" id="fileInput" name="images[]" multiple class="hidden">
+                                    </label>
+
+                                    <div id="preview" class="mt-4 grid grid-cols-3 gap-2"></div>
+                                </div>
                             </div>
-                            <?php endif ?>
-                            <button id="buttonSave" type="submit" class="mb-4 bg-primary p-2 px-4 rounded rounded-lg justify-center items-center mt-6 w-full">
+                            
+
+                            <button id="buttonSave" type="submit" onclick="uploadFiles()" class="mb-4 bg-primary p-2 px-4 rounded rounded-lg justify-center items-center mt-6 w-full">
                                 <h2 class="text-lg font-medium text-white text-center cursor-pointer">save</h2>
                             </button>
                         </form>
@@ -100,17 +108,53 @@
             </div>
     </div>
     <script>
-
         document.getElementById("buttonSave").addEventListener("click", function(event) {
+            // event.preventDefault();
 
-        let alertToast = document.getElementById("alertToast");
-        alertToast.classList.remove("hidden");
+            let alertToast = document.getElementById("alertToast");
+            alertToast.classList.remove("hidden");
 
-        setTimeout(() => {
-            alertToast.classList.add("hidden");
-            document.querySelector("form").submit();
-        }, 1500);
-    });
+            setTimeout(() => {
+                alertToast.classList.add("hidden");
+                document.querySelector("form").submit();
+            }, 1500);
+        });
+
+        const fileInput = document.getElementById('fileInput');
+            const preview = document.getElementById('preview');
+
+            fileInput.addEventListener('change', function(event) {
+                preview.innerHTML = "";
+                Array.from(event.target.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('w-20', 'h-20', 'object-cover', 'rounded-md');
+                        preview.appendChild(img);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            });
+
+            function uploadFiles() {
+                let formData = new FormData();
+                let files = fileInput.files;
+
+                for (let i = 0; i < files.length; i++) {
+                    formData.append("images[]", files[i]);
+                }
+
+                formData.append("guestbook-id", document.querySelector("input[name='guestbook-id']").value);
+
+                fetch("<?= base_url('upload/process') ?>", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .catch(error => console.error("Error:", error));
+            }
+
         lucide.createIcons();
     </script>
   </body>
