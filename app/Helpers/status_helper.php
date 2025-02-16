@@ -18,8 +18,3 @@ if (!function_exists('status')) {
 
     
 }
-
-function time_parsing($time)
-{
-    return Time::parse($time)->humanize();
-}
