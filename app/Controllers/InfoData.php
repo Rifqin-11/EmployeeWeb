@@ -35,7 +35,6 @@ class InfoData extends BaseController
             return view("pages/InfoData", $data);
         }
 
-        // Tangkap keyword dari input pencarian
         $keyword = $this->request->getGet('search');
 
         if ($user['is_admin'] == 1) {
@@ -72,18 +71,26 @@ class InfoData extends BaseController
             $this->guestBookModel->save($data);
             
         } else{
+            $images = $this->request->getFileMultiple('images');
+
             $documentationsModel = new DocumentationsModel;
-            
             $uploadPath = WRITEPATH . 'documentations/'.$guestbook_id;
             
             if(!is_dir($uploadPath)){
                 mkdir($uploadPath, 0777, true);
             }
-            
-            $images = $this->request->getFileMultiple('images');
+
             foreach ($images as $image){
                 if ($image->isValid()){
                     $image->move($uploadPath);
+                } else {
+                    // Menangani status rescheduled
+                    $data = [
+                        'id' => $guestbook_id,
+                        'status' => 2
+                    ];
+                    $this->guestBookModel->save($data);
+                    return redirect()->to('Home');
                 }
 
                 $data = [
@@ -104,7 +111,45 @@ class InfoData extends BaseController
 
         return redirect()->to('Home');
         
-        
     }
+
+    public function uploadProcess()
+    {
+        $guestbook_id = $this->request->getVar('guestbook-id');
+        
+        $documentationsModel = new DocumentationsModel();
+        
+        $uploadPath = WRITEPATH . 'documentations/' . $guestbook_id;
+        
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+        
+        $images = $this->request->getFileMultiple('images');
+        $uploadedFiles = [];
+
+        foreach ($images as $image) {
+            if ($image->isValid() && !$image->hasMoved()) {
+                $imageName = $image->getRandomName();
+                $image->move($uploadPath, $imageName);
+                
+                // Simpan informasi gambar ke database
+                $data = [
+                    'guestbook_id' => $guestbook_id,
+                    'image_name' => $imageName
+                ];
+                $documentationsModel->insert($data);
+
+                $uploadedFiles[] = $imageName;
+            }
+        }
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Files uploaded successfully!',
+            'files' => $uploadedFiles
+        ]);
+    }
+
 
 }

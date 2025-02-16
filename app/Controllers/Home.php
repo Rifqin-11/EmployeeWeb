@@ -12,21 +12,15 @@ class Home extends BaseController
             return redirect()->to('/');
         }
 
-        
         $guestBookModel = new GuestBooksModel();
         $employeesModel = new EmployeesModel();
         $email = session()->get('email');
 
-        $user = $employeesModel->getUserByEmail($email);
-        $data['user'] = $user;
-        
-        $data["totalVisitorsMonthly"] = $guestBookModel->getTotalVisitorsLastMonth($user['id']);
-        $data["totalVisitors"] = $guestBookModel->countAllResults();
-
-        // Calendar
-        $data["guest"] = $guestBookModel->paginate(9);
+        // Pagination
+        $data["guest"] = $guestBookModel->paginate(10);
         $data["pager"] = $guestBookModel->pager;
-
+        
+        // Calendar
         $month = $this->request->getGet("month") ?? date("m");
         $year = $this->request->getGet("year") ?? date("Y");
 
@@ -37,72 +31,65 @@ class Home extends BaseController
         $data["currentMonth"] = $month;
         $data["currentYear"] = $year;
 
-    
+        
+        // Home View
+        $user = $employeesModel->getUserByEmail($email);
+        $data['user'] = $user;
+
         $keyword = $this->request->getGet('search');
 
         if ($user['is_admin'] == 1) {
             $totalVisitorMonthly = $guestBookModel->getTotalVisitorsLastMonth(1);
             $data["totalVisitors"] = $guestBookModel->getTotalVisitors();
 
-            if (!empty($keyword)) {
-                $data['guests'] = $guestBookModel->searchGuests($keyword);
-            } else {
-                $data['guests'] = $guestBookModel->orderBy('created_at', 'DESC')->findAll();
-            }
+            $data['guests'] = $guestBookModel->getGuests(search: $keyword, statusFilter: [0, 1, 2]);
+
         } else {
             $totalVisitorMonthly = $guestBookModel->getTotalVisitorsLastMonth(1, $user['id']);
             $data["totalVisitors"] = $guestBookModel->getTotalVisitors($user['id']);
 
-            if (!empty($keyword)) {
-                $data['guests'] = $guestBookModel->searchGuests($keyword);
-            } else {
-                $data['guests'] = $guestBookModel->getGuestsByEmail($email);
-            }
+            $data['guests'] = $guestBookModel->getGuests($email, $keyword, statusFilter: [0, 1, 2]);   
         }
-        
+
         $totalVisitor2Monthly = $guestBookModel->getTotalVisitorsLastMonth(2, $user['id']);
 
         $totalLast2Month = $totalVisitor2Monthly - $totalVisitorMonthly;
 
         if ($totalLast2Month != 0) {
             $percentageLastMonth = (($totalLast2Month - $totalVisitorMonthly) / $totalLast2Month) * 100;
+            $percentageLastMonth = sprintf('%+d', $percentageLastMonth) . '% from last month';
         } else {
-            $percentageLastMonth = 0;
+            $percentageLastMonth = "You don't have any visitors at 2 months ago";
         }
 
-        
+        $data['percentageLastMonth'] = $percentageLastMonth;
         $data["totalVisitorsMonthly"] = $totalVisitorMonthly;
-        $data['percentageLastMonth'] = sprintf('%+d', $percentageLastMonth);
+        $data['pendingVisitors'] = $guestBookModel->getPendingVisitorsCount($user['id']);
 
         return view("pages/Home", $data);
     }
-    
+
 
     private function generateCalendar($year, $month)
     {
-        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year); // Total hari dalam bulan
-        $firstDayOfWeek = date('w', strtotime("$year-$month-01")); // Hari pertama bulan (0 = Minggu, 6 = Sabtu)
+        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        $firstDayOfWeek = date('w', strtotime("$year-$month-01"));
 
         $calendar = [];
         $week = [];
 
-        // Isi hari kosong sebelum hari pertama bulan
         for ($i = 0; $i < $firstDayOfWeek; $i++) {
             $week[] = null;
         }
 
-        // Isi hari dalam bulan
         for ($day = 1; $day <= $daysInMonth; $day++) {
             $week[] = $day;
-
-            // Jika sudah satu minggu, tambahkan ke kalender
             if (count($week) === 7) {
                 $calendar[] = $week;
                 $week = [];
             }
         }
 
-        // Tambahkan hari kosong setelah akhir bulan
         if (count($week) > 0) {
             while (count($week) < 7) {
                 $week[] = null;

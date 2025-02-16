@@ -18,8 +18,8 @@
 </head>
 <body>
     <div class="fixed top-0 left-0 h-screen w-3xs bg-white p-4 rounded-lg flex flex-col border-r border-gray-200 hidden md:flex">
-        <a href="/Home" class="flex flex-col items-start mt-3 pl-2">
-            <img src="<?= base_url('desnetLogo.png') ?>" alt="Logo" class="h-12" />
+        <a href="/Home" class="flex flex-col items-start mt-6 pl-2">
+            <img src="<?= base_url('desnetLogo.png') ?>" alt="Logo" class="h-14" />
         </a>
         <div class="flex flex-col gap-3 mb-8 mt-16">
             <a href="/Home" class="hover:bg-primary hover:text-white p-2 px-7 flex rounded-2xl">

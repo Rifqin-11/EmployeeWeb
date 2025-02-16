@@ -19,21 +19,13 @@ class History extends BaseController
         $user = $employeesModel->getUserByEmail($email);
         $data['user'] = $user;
 
-        // Tangkap keyword dari input pencarian
         $keyword = $this->request->getGet('search');
 
         if ($user['is_admin'] == 1) {
-            if (!empty($keyword)) {
-                $data['guests'] = $guestBookModel->searchGuests($keyword);
-            } else {
-                $data['guests'] = $guestBookModel->orderBy('created_at', 'DESC')->findAll();
-            }
+            $data['guests'] = $guestBookModel->getGuests(search: $keyword);
+            
         } else {
-            if (!empty($keyword)) {
-                $data['guests'] = $guestBookModel->searchGuests($keyword);
-            } else {
-                $data['guests'] = $guestBookModel->getGuestsByEmail($email);
-            }
+            $data['guests'] = $guestBookModel->getGuests($email, $keyword);
         }
 
         return view("pages/History", $data);

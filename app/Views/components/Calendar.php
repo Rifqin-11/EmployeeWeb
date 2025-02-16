@@ -7,7 +7,7 @@
 <body>
     <div class="bg-white p-4 ml-2 rounded-lg shadow-sm min-w-2xs hidden md:block">
         <div class="flex justify-between items-center mb-4">
-            <span class="font-bold justify-center items-center">
+            <span class="pt-4 font-bold justify-center items-center">
                 <?= date('F Y', strtotime("$currentYear-$currentMonth-01")) ?>
             </span>
         </div>
