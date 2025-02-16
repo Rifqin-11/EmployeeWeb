@@ -36,24 +36,26 @@
                 </div>
             <?php endif; ?>
 
-            <form action="/auth" method="post" class="w-full pt-5">
-                <input type="text" name="username" class="bg-white border text-black text-sm rounded-lg w-full p-2.5 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Username" required>
+            <form action="/auth" method="post" class="w-full pt-5 gap-3">
+                <div class="relative">
+                    <input type="text" name="username" id="floating_outlined" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required/>
+                    <label for="floating_outlined" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Username</label>
+                </div>
+                
+                <div class="relative mt-2">
+                    <input type="password" name="password" id="password" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required oninput="checkInput()" onblur="checkEmpty()"/>
+                    <label for="floating_outlined" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Password</label>
 
-                <div class="relative w-full">
-                    <input id="password" type="password" name="password"
-                        class="bg-white border text-black text-sm rounded-lg w-full p-2.5 pr-16 mb-6 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Password" required oninput="checkInput()" onblur="checkEmpty()">
-
-                        <button id="toggleButton" type="button" onclick="togglePassword()" 
-                            class="absolute top-5 right-8 w-20 h-5 bg-white transform -translate-y-1/2 flex hidden items-center justify-end px-2">
+                    <button id="toggleButton" type="button" onclick="togglePassword()" 
+                            class="absolute top-6 right-3 w-20 h-5 bg-white transform -translate-y-1/2 flex hidden items-center justify-end px-2">
                             <div class="bg-white rounded-lg text-right">
                                 <p id="show" class="font-semibold hover:font-regular hover:text-gray-400">Show</p>
                                 <p id="hide" class="font-semibold hover:font-regular hover:text-gray-400 hidden">Hide</p>
                             </div>
-                        </button>
+                    </button>
                 </div>
 
-                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center">Login</button>
+                <button type="submit" class=" mt-8 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center">Login</button>
             </form>
         </div>
     </div>

@@ -22,15 +22,15 @@
             <img src="<?= base_url('desnetLogo.png') ?>" alt="Logo" class="h-14" />
         </a>
         <div class="flex flex-col gap-3 mb-8 mt-16">
-            <a href="/Home" class="hover:bg-primary hover:text-white p-2 px-7 flex rounded-2xl">
+            <a href="/Home" class="nav-link p-2 px-7 flex rounded-2xl hover:bg-primary hover:text-white" data-page="Home">
                 <i data-lucide="home" class="mr-2 w-6"></i>
                 Dashboard
             </a>
-            <a href="/History" class="hover:bg-primary hover:text-white p-2 px-7 flex rounded-2xl">
-                <i data-lucide="history" class="mr-2 font-thin"></i>
+            <a href="/History" class="nav-link p-2 px-7 flex rounded-2xl hover:bg-primary hover:text-white" data-page="History">
+                <i data-lucide="history" class="mr-2"></i>
                 History
             </a>
-            <a href="/Settings" class="hover:bg-primary hover:text-white p-2 px-7 flex rounded-2xl">
+            <a href="/Settings" class="nav-link p-2 px-7 flex rounded-2xl hover:bg-primary hover:text-white" data-page="Settings">
                 <i data-lucide="settings-2" class="mr-2 w-5"></i>
                 Settings
             </a>
@@ -44,5 +44,19 @@
             </div>
         </footer>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const currentPath = window.location.pathname.split('/')[1]; 
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute("data-page") === currentPath) {
+                    link.classList.add("bg-primary", "text-white");
+                } else {
+                    link.classList.remove("bg-primary", "text-white");
+                }
+            });
+        });
+    </script>
 </body>
 </html>

@@ -21,23 +21,21 @@
         <div class="flex flex-col gap-4 w-full ">
             <section class="flex justify-between items-center gap-5 mb-2 pl-4 py-4 px-2 bg-white border-b border-gray-200">
                 <div class="w-full">
-                    <form method="GET" action="<?= base_url('Home') ?>" class="flex w-full">
+                    <form method="GET" action="<?= base_url('Home') ?>" class="relative">
                         <input
                             type="text"
                             name="search"
                             id="searchInput"
                             placeholder="Search PIC Name or Institution"
-                            class="py-1 rounded-3xl border border-gray-200 px-5 bg-secondary text-black w-full"
+                            class="py-2 rounded-3xl border border-gray-200 px-5 bg-secondary text-black w-full"
                             value="<?= esc($_GET['search'] ?? '') ?>"
                             onkeydown="searchOnEnter(event)"
                         />
                     </form>
                 </div>
                 <div class="flex text-white justify-center gap-6 items-center w-1/3">
-                    <a href="/" class="h-10 bg-primary p-2 rounded-full">
-                        <i data-lucide="bell-ring"></i>
-                    </a>
-                    <a href="/" class="text-gray-900 p-2 rounded-full flex gap-3 justify-center items-center">
+                    <?= $this->include('components/NotificationModal') ?>
+                    <a href="/Settings" class="text-gray-900 p-2 rounded-full flex gap-3 justify-center items-center">
                         <div class="avatar">
                             <div class="ring-primary ring-offset-base-100 w-10 rounded-full ring ring-offset-2 overflow-hidden">
                                 <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" class="w-full h-full object-cover" />

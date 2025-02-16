@@ -8,6 +8,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <style type="text/tailwindcss">
       @theme {
         --color-primary: #084E8F;
@@ -20,6 +21,7 @@
         --color-yellow-200: #fff0dc;
       }
     </style>
+    
   </head>
   <body>
   <div class="min-h-screen bg-[#F9F9F9] flex max-w-full">
@@ -67,6 +69,7 @@
                                     <h2 class="text-lg font-medium text-gray-700">Room:</h2>
                                     <div>
                                         <select name="room" id="room" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
+                                            <option value="" disabled selected>Select Room</option>
                                             <?php foreach ($rooms as $room): ?>
                                             <option value="<?= $room["id"] ?>"><?= esc($room['name']) ?></option>
                                             <?php endforeach; ?>
@@ -76,7 +79,15 @@
                                 <div class="mb-4">
                                     <h2 class="text-lg font-medium text-gray-700">Appointment:</h2>
                                     <div class="flex flex-row gap-2 items-center justify-center">
-                                        <input type="date" name="date" id="date" value="<?= $guest['date'] ?>" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
+                                        <div class="relative max-w-sm w-1/2">
+                                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                                                </svg>
+                                            </div>
+                                            <input name="date" id="date" value="<?= $guest['date'] ?>" datepicker datepicker-buttons datepicker-autoselect-today datepicker-theme="light" type="text" class="bg-white border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Select date">
+                                        </div>
+                                        
                                         <input type="time" name="start-at" id="start-at" value="<?= $guest['start_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
                                         <p>to</p>
                                         <input type="time" name="end-at" id="end-at" value="<?= $guest['end_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
@@ -85,16 +96,18 @@
                             </div>
                             <div class="flex justify-center items-center">
                                 <div class="flex flex-col p-6 w-150 text-center">
-                                    <h2 class="text-lg font-semibold mb-3">Upload Gambar</h2>
+                                    <h2 class="text-lg font-semibold mb-3">Upload documentation images
+                                    </h2>
                                     
                                     <label for="fileInput" class="cursor-pointer flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-400 rounded-lg bg-gray-50 hover:bg-gray-100">
-                                        <span class="text-gray-500">Klik untuk mengunggah</span>
+                                        <span class="text-gray-500">Click to upload</span>
                                         <input type="file" id="fileInput" name="images[]" multiple class="hidden">
                                     </label>
 
                                     <div id="preview" class="mt-4 grid grid-cols-3 gap-2"></div>
                                 </div>
                             </div>
+                            
                             <button id="buttonSave" type="submit" onclick="uploadFiles()" class="mb-4 bg-primary p-2 px-4 rounded rounded-lg justify-center items-center mt-6 w-full">
                                 <h2 class="text-lg font-medium text-white text-center cursor-pointer">save</h2>
                             </button>
@@ -106,7 +119,7 @@
     </div>
     <script>
         document.getElementById("buttonSave").addEventListener("click", function(event) {
-            event.preventDefault();
+            // event.preventDefault();
 
             let alertToast = document.getElementById("alertToast");
             alertToast.classList.remove("hidden");
@@ -153,6 +166,8 @@
             }
 
         lucide.createIcons();
+
+        
     </script>
   </body>
 

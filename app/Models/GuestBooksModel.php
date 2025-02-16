@@ -41,13 +41,14 @@ class GuestBooksModel extends Model
             $result->groupStart()
                     ->like('pic_name', $search)
                     ->orLike('institution_name', $search)
+                    ->orLike('employees.name', $search)
                     ->groupEnd();
         }
 
         return $result->orderBy('guestbooks.created_at', 'DESC')->findAll();
     }
 
-        public function searchGuests($keyword)
+    public function searchGuests($keyword)
     {
         return $this->select('pic_name, institution_name, phone_number, agenda, created_at, updated_at, status')
                     ->like('pic_name', $keyword)
