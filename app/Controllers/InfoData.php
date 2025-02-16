@@ -29,27 +29,16 @@ class InfoData extends BaseController
 
         if ($id) {
             $roomModel = new RoomModel();
-            $data['rooms'] = $roomModel->findAll();
+            $allRooms = $roomModel->findAll();
 
+            $unavaibleRooms = $this->guestBookModel->getAvaibleRooms('2025-02-16', '16:00:00', '18:00:00');
+            $unavaibleRoomIds = array_column($unavaibleRooms, 'id');
+            $availableRooms = array_filter($allRooms, function($room) use ($unavaibleRoomIds) {
+                return !in_array($room['id'], $unavaibleRoomIds);
+            });
+
+            $data['rooms'] = $availableRooms;
             $data['guest'] = $this->guestBookModel->find($id);
-            return view("pages/InfoData", $data);
-        }
-
-        // Tangkap keyword dari input pencarian
-        $keyword = $this->request->getGet('search');
-
-        if ($user['is_admin'] == 1) {
-            if (!empty($keyword)) {
-                $data['guests'] = $this->guestBookModel->searchGuests($keyword);
-            } else {
-                $data['guests'] = $this->guestBookModel->orderBy('created_at', 'DESC')->findAll();
-            }
-        } else {
-            if (!empty($keyword)) {
-                $data['guests'] = $this->guestBookModel->searchGuests($keyword);
-            } else {
-                $data['guests'] = $this->guestBookModel->getGuestsByEmail($email);
-            }
         }
 
         return view("pages/InfoData", $data);
