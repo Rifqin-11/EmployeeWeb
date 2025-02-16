@@ -61,6 +61,7 @@ class Home extends BaseController
 
         $data['percentageLastMonth'] = $percentageLastMonth;
         $data["totalVisitorsMonthly"] = $totalVisitorMonthly;
+        $data['pendingTotal'] = $guestBookModel->where('status', 0)->countAllResults();
 
         return view("pages/Home", $data);
     }

@@ -74,8 +74,6 @@ class InfoData extends BaseController
         } else{
             $images = $this->request->getFileMultiple('images');
 
-            
-
             $documentationsModel = new DocumentationsModel;
             $uploadPath = WRITEPATH . 'documentations/'.$guestbook_id;
             
@@ -90,6 +88,10 @@ class InfoData extends BaseController
                     // Menangani status rescheduled
                     $data = [
                         'id' => $guestbook_id,
+                        'room_id' => $this->request->getVar('room'),
+                        'date' => $this->request->getVar('date'),
+                        'start_at' => $this->request->getVar('start-at'),
+                        'end_at' => $this->request->getVar('end-at'),
                         'status' => 2
                     ];
                     $this->guestBookModel->save($data);

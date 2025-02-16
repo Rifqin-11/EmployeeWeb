@@ -67,9 +67,9 @@
                                 <div class="mb-4">
                                     <h2 class="text-lg font-medium text-gray-700">Room:</h2>
                                     <div>
-                                        <select name="room" id="room" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
+                                        <select name="room" id="room" class="w-full white border border-gray-300 p-2 rounded rounded-lg" required>
                                             <?php foreach ($rooms as $room): ?>
-                                            <option value="<?= $room["id"] ?>"><?= esc($room['name']) ?></option>
+                                            <option value="<?= $room["id"] ?>" <?= $room["id"] == $guest["room_id"] ? 'selected' : '' ?> ><?= esc($room['name']) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -78,10 +78,10 @@
                                     <h2 class="text-lg font-medium text-gray-700">Appointment:</h2>
                                     <div class="flex flex-row gap-2 items-center justify-center">
                                         
-                                        <input type="date" name="date" id="date" value="<?= $guest['date'] ?>" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
-                                        <input type="time" name="start-at" id="start-at" value="<?= $guest['start_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
+                                        <input type="date" name="date" id="date" required value="<?= $guest['date'] ?>" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
+                                        <input type="time" name="start-at" id="start-at" required value="<?= $guest['start_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
                                         <p>to</p>
-                                        <input type="time" name="end-at" id="end-at" value="<?= $guest['end_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
+                                        <input type="time" name="end-at" id="end-at" required value="<?= $guest['end_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
                                     </div>
                                 </div>
                             </div>
@@ -100,29 +100,29 @@
             </div>
     </div>
     <script>
-    //     document.getElementById("buttonSave").addEventListener("click", function(event) {
-    //     event.preventDefault();
 
-    //     let alertToast = document.getElementById("alertToast");
-    //     alertToast.classList.remove("hidden");
+        document.getElementById("buttonSave").addEventListener("click", function(event) {
 
-    //     setTimeout(() => {
-    //         alertToast.classList.add("hidden");
-    //         document.querySelector("form").submit();
-    //     }, 1500);
-    // });
-    //     lucide.createIcons();
+        let alertToast = document.getElementById("alertToast");
+        alertToast.classList.remove("hidden");
+
+        setTimeout(() => {
+            alertToast.classList.add("hidden");
+            document.querySelector("form").submit();
+        }, 1500);
+    });
+        lucide.createIcons();
     </script>
   </body>
 
-<!-- <div id="alertToast" class="fixed bottom-8 right-5 hidden">
+<div id="alertToast" class="fixed bottom-8 right-5 hidden">
     <div class="flex items-center gap-3 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg">
         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
         </svg>
         <span class="font-semibold">Data saved successfully!</span>
     </div>
-</div> -->
+</div>
 
 
 </html>

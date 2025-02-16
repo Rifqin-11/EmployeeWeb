@@ -27,7 +27,7 @@
                     <?= $user["name"] ?>
                 </p>
                 <p class="text-sm text-gray-500">
-                    You have 2 messages in your chat
+                    You have guests in pending in your chat
                 </p>
             </div>
         </div>
