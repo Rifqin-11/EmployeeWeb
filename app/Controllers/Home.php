@@ -8,10 +8,6 @@ class Home extends BaseController
 {
     public function index()
     {
-        if (!session()->has('email')) {
-            return redirect()->to('/');
-        }
-
         $guestBookModel = new GuestBooksModel();
         $employeesModel = new EmployeesModel();
         $email = session()->get('email');

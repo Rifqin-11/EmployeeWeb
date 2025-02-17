@@ -29,7 +29,7 @@
                 <?= $this->include('components/Header') ?>
                 <div class="flex flex-col gap-2 w-full my-2 px-5">
                     <div class="flex flex-col bg-white p-6 rounded-lg shadow w-full">
-                        <form action="<?= base_url('infoData/edit') ?>" method="post" enctype="multipart/form-data">
+                        <form action="<?= base_url('infodata/edit') ?>" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="_method" value="PUT">    
                             <input type="hidden" name="guestbook-id" value="<?= $guest['id'] ?>">
                             <input type="hidden" name="status" id="status" value="<?= $guest['status'] ?>">
@@ -97,8 +97,7 @@
                                 </div>
                             </div>
                             
-
-                            <button id="buttonSave" type="submit" onclick="uploadFiles()" class="mb-4 bg-primary p-2 px-4 rounded rounded-lg justify-center items-center mt-6 w-full">
+                            <button id="buttonSave" type="submit" class="mb-4 bg-primary p-2 px-4 rounded rounded-lg justify-center items-center mt-6 w-full">
                                 <h2 class="text-lg font-medium text-white text-center cursor-pointer">save</h2>
                             </button>
                         </form>
@@ -137,23 +136,23 @@
                 });
             });
 
-            function uploadFiles() {
-                let formData = new FormData();
-                let files = fileInput.files;
+            // function uploadFiles() {
+            //     let formData = new FormData();
+            //     let files = fileInput.files;
 
-                for (let i = 0; i < files.length; i++) {
-                    formData.append("images[]", files[i]);
-                }
+            //     for (let i = 0; i < files.length; i++) {
+            //         formData.append("images[]", files[i]);
+            //     }
 
-                formData.append("guestbook-id", document.querySelector("input[name='guestbook-id']").value);
+            //     formData.append("guestbook-id", document.querySelector("input[name='guestbook-id']").value);
 
-                fetch("<?= base_url('upload/process') ?>", {
-                    method: "POST",
-                    body: formData
-                })
-                .then(response => response.json())
-                .catch(error => console.error("Error:", error));
-            }
+            //     fetch("<?= base_url('upload/process') ?>", {
+            //         method: "POST",
+            //         body: formData
+            //     })
+            //     .then(response => response.json())
+            //     .catch(error => console.error("Error:", error));
+            // }
 
         lucide.createIcons();
     </script>
