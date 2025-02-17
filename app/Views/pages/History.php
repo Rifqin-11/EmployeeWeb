@@ -8,17 +8,18 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.3/flowbite.min.js"></script>
     <style type="text/tailwindcss">
-      /* @theme {
+      @theme {
         --color-primary: #084E8F;
         --color-secondary: #f9f9f9;
         --color-button: #2563eb;
         --color-text-100: #7E7E7E;
         --color-text-200: #414141;
         --color-text-600: #364153;
-        --color-yellow-700:rgb(43, 34, 22);
+        --color-yellow-700: #F9A329;
         --color-yellow-200: #fff0dc;
-      } */
+      }
     </style>
   </head>
   <body>
@@ -32,10 +33,10 @@
                     <div class="flex flex-row w-full gap-4">
                         <div class="flex text-white justify-center gap-4 items-center">
                             <div class="flex flex-row gap-2 rounded-3xl border border-gray-200 px-5 bg-white py-1 cursor-pointer text-text-100 hover:bg-primary hover:text-white" data-sort="created_at">
-                                Date <i data-lucide="arrow-up-down"></i>
+                                Date <i data-lucide="arrow-up-down" class="w-4"></i>
                             </div>
                             <div class="flex flex-row gap-2 rounded-3xl border border-gray-200 px-5 bg-white py-1 cursor-pointer text-text-100 hover:bg-primary hover:text-white" data-sort="pic_name">
-                                Name <i data-lucide="arrow-up-down"></i>
+                                Name <i data-lucide="arrow-up-down" class="w-4"></i>
                             </div>
                             <div class="flex flex-row gap-2 rounded-3xl border border-gray-200 px-5 bg-white py-1 cursor-pointer text-text-100 gap-2 justify-center items-center">
                                 <input type="date" id="startDate" class="w-22 rounded-lg p-1 text-text-200">
@@ -86,7 +87,7 @@
                                         </span>
                                     </td>
                                     <td class="flex p-4 justify-center">
-                                        <a href="/infodata/<?= $item['id'] ?>" class="text-blue-600 hover:text-blue-800 border-b border-blue-600">
+                                        <a href="/infodata/<?= $item['id'] ?>" class="text-blue-600 hover:text-blue-800 border-b border-blue-600 overflow-hidden truncate">
                                             View Detail
                                         </a>
                                     </td>
@@ -95,10 +96,19 @@
                             </tbody>
                         </table>
                         <div class="flex justify-between items-center mt-6">
-                            <p id="pagination-info" class="text-sm text-gray-600"></p>
-                            <div class="flex gap-2">
-                                <button id="prevPage" class="px-4 py-2 bg-gray-200 rounded" disabled>Previous</button>
-                                <button id="nextPage" class="px-4 py-2 bg-gray-200 rounded">Next</button>
+                            <div class="flex gap-2 justify-between w-full">
+                                    <!-- Help text -->
+                                    <span class="text-sm text-gray-700 dark:text-gray-400">
+                                        Showing <p id="pagination-info" class="text-sm text-gray-600"></p></span>
+                                    <!-- Buttons -->
+                                    <div class="inline-flex mt-2 xs:mt-0">
+                                        <button class="flex items-center justify-center px-4 h-10 text-base font-medium text-gray-800 bg-gray-100 rounded-s hover:bg-primary hover:text-white" id="prevPage">
+                                            Prev
+                                        </button>
+                                        <button class="flex items-center justify-center px-4 h-10 text-base font-medium text-gray-800 bg-gray-100 border-0 border-s border-gray-700 rounded-e hover:bg-primary hover:text-white" id="nextPage">
+                                            Next
+                                        </button>
+                                    </div>
                             </div>
                         </div>
                     </div>

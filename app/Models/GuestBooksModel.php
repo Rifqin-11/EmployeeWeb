@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
-use LDAP\Result;
 
 class GuestBooksModel extends Model
 {
