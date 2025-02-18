@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
-use LDAP\Result;
 
 class GuestBooksModel extends Model
 {
@@ -48,15 +47,6 @@ class GuestBooksModel extends Model
         return $result->orderBy('guestbooks.created_at', 'DESC')->findAll();
     }
 
-    public function searchGuests($keyword)
-    {
-        return $this->select('pic_name, institution_name, phone_number, agenda, created_at, updated_at, status')
-                    ->like('pic_name', $keyword)
-                    ->orLike('institution_name', $keyword)
-                    ->orderBy('created_at', 'DESC')
-                    ->findAll();
-    }
-
     public function getPendingVisitorsCount($id = null)
     {
         $query = $this->where('status', 0);
@@ -85,6 +75,25 @@ class GuestBooksModel extends Model
         return $this->countAllResults();
     }
 
-    
+    public function getAvaibleRooms($date, $start_time, $end_time)
+    {
+        return $this->select('pic_name, rooms.id, rooms.name')
+            ->where('date', $date)
+            ->groupStart()
+                ->where('start_at <=', $end_time)
+                ->where('end_at >=', $start_time)
+            ->groupEnd()
+            ->groupBy('room_id')
+            ->join('rooms', 'rooms.id = guestbooks.room_id')
+            ->findAll();
+    }
 
+    public function getIdGuests($email)
+    {
+        $result = $this->select('guestbooks.id')
+                    ->join('employees', 'employees.id = guestbooks.employee_id')
+                    ->where('employees.email', $email)
+                    ->findAll();
+        return array_column($result, 'id');
+    }
 }

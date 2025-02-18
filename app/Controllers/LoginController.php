@@ -18,7 +18,7 @@ class LoginController extends BaseController
 
         $data = [
             'username' => $username,
-            'password' => $this->request->getVar('password')
+            'password' => $password
         ];
 
         $rules = [
@@ -27,12 +27,12 @@ class LoginController extends BaseController
         ];
 
         if (!$this->validateData($data, $rules)) {
-            return redirect()->back()->withInput();
+            return redirect()->back();
         }
 
         $employeeModel = new EmployeesModel;
         $user = $employeeModel->getUser($username);
-        
+
         if ($user){
             if ($password == $user['password']){
                 $sessionData = [
@@ -46,13 +46,12 @@ class LoginController extends BaseController
         }
 
         session()->setFlashdata('error', 'You have entered an invalid username or password');
-        return redirect()->back()->withInput();
+        return redirect()->back();
     }
 
     public function logout()
     {
-        $session = session();
-        $session->destroy();
+        session()->destroy();
         return redirect()->to('/');
     }
 }

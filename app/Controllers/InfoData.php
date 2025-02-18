@@ -17,9 +17,6 @@ class InfoData extends BaseController
     
     public function index($id=null)
     {
-        if (!session()->has('email')) {
-            return redirect()->to('/');
-        }
 
         $employeesModel = new EmployeesModel();
         
@@ -29,26 +26,16 @@ class InfoData extends BaseController
 
         if ($id) {
             $roomModel = new RoomModel();
-            $data['rooms'] = $roomModel->findAll();
+            $allRooms = $roomModel->findAll();
 
+            $unavaibleRooms = $this->guestBookModel->getAvaibleRooms('2025-02-16', '16:00:00', '18:00:00');
+            $unavaibleRoomIds = array_column($unavaibleRooms, 'id');
+            $availableRooms = array_filter($allRooms, function($room) use ($unavaibleRoomIds) {
+                return !in_array($room['id'], $unavaibleRoomIds);
+            });
+
+            $data['rooms'] = $availableRooms;
             $data['guest'] = $this->guestBookModel->find($id);
-            return view("pages/InfoData", $data);
-        }
-
-        $keyword = $this->request->getGet('search');
-
-        if ($user['is_admin'] == 1) {
-            if (!empty($keyword)) {
-                $data['guests'] = $this->guestBookModel->searchGuests($keyword);
-            } else {
-                $data['guests'] = $this->guestBookModel->orderBy('created_at', 'DESC')->findAll();
-            }
-        } else {
-            if (!empty($keyword)) {
-                $data['guests'] = $this->guestBookModel->searchGuests($keyword);
-            } else {
-                $data['guests'] = $this->guestBookModel->getGuestsByEmail($email);
-            }
         }
 
         return view("pages/InfoData", $data);
@@ -87,6 +74,10 @@ class InfoData extends BaseController
                     // Menangani status rescheduled
                     $data = [
                         'id' => $guestbook_id,
+                        'room_id' => $this->request->getVar('room'),
+                        'date' => $this->request->getVar('date'),
+                        'start_at' => $this->request->getVar('start-at'),
+                        'end_at' => $this->request->getVar('end-at'),
                         'status' => 2
                     ];
                     $this->guestBookModel->save($data);
@@ -113,43 +104,41 @@ class InfoData extends BaseController
         
     }
 
-    public function uploadProcess()
-    {
-        $guestbook_id = $this->request->getVar('guestbook-id');
+    // public function uploadProcess()
+    // {
+    //     $guestbook_id = $this->request->getVar('guestbook-id');
         
-        $documentationsModel = new DocumentationsModel();
+    //     $documentationsModel = new DocumentationsModel();
         
-        $uploadPath = WRITEPATH . 'documentations/' . $guestbook_id;
+    //     $uploadPath = WRITEPATH . 'documentations/' . $guestbook_id;
         
-        if (!is_dir($uploadPath)) {
-            mkdir($uploadPath, 0777, true);
-        }
+    //     if (!is_dir($uploadPath)) {
+    //         mkdir($uploadPath, 0777, true);
+    //     }
         
-        $images = $this->request->getFileMultiple('images');
-        $uploadedFiles = [];
+    //     $images = $this->request->getFileMultiple('images');
+    //     $uploadedFiles = [];
 
-        foreach ($images as $image) {
-            if ($image->isValid() && !$image->hasMoved()) {
-                $imageName = $image->getRandomName();
-                $image->move($uploadPath, $imageName);
+    //     foreach ($images as $image) {
+    //         if ($image->isValid() && !$image->hasMoved()) {
+    //             $imageName = $image->getRandomName();
+    //             $image->move($uploadPath, $imageName);
                 
-                // Simpan informasi gambar ke database
-                $data = [
-                    'guestbook_id' => $guestbook_id,
-                    'image_name' => $imageName
-                ];
-                $documentationsModel->insert($data);
+    //             // Simpan informasi gambar ke database
+    //             $data = [
+    //                 'guestbook_id' => $guestbook_id,
+    //                 'image_name' => $imageName
+    //             ];
+    //             $documentationsModel->insert($data);
 
-                $uploadedFiles[] = $imageName;
-            }
-        }
+    //             $uploadedFiles[] = $imageName;
+    //         }
+    //     }
 
-        return $this->response->setJSON([
-            'status' => 'success',
-            'message' => 'Files uploaded successfully!',
-            'files' => $uploadedFiles
-        ]);
-    }
-
-
+    //     return $this->response->setJSON([
+    //         'status' => 'success',
+    //         'message' => 'Files uploaded successfully!',
+    //         'files' => $uploadedFiles
+    //     ]);
+    // }
 }
