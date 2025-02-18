@@ -19,6 +19,7 @@ $routes->get('/Settings', 'Settings::index');
 
 $routes->group('infodata', static function($routes){
     $routes->get('', 'infoData::index');
+    $routes->post('getrooms', 'InfoData::getrooms');
     $routes->put('edit', 'InfoData::edit');
 });
 

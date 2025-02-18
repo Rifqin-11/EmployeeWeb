@@ -26,7 +26,7 @@ class GuestSeeder extends Seeder
                 'agenda'            => $faker->sentence(5),
                 'identity_photo'    => $picName . '.jpg',
                 'room_id'           => $faker->numberBetween(1,15),
-                'status'            => $faker->numberBetween(0,3),
+                'status'            => $faker->numberBetween(0,2),
                 'date'              => $faker->dateTimeBetween('2025-02-16', '2025-02-17')->format('Y-m-d'),
                 'start_at'          => $start_at->toTimeString(),
                 'end_at'            => $end_at->toTimeString(),

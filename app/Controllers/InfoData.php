@@ -102,6 +102,24 @@ class InfoData extends BaseController
         return redirect()->to('Home');   
     }
 
+    public function getRooms()
+    {
+        $date = $this->request->getVar('date');
+        $start_at = $this->request->getVar('start_at');
+        $end_at = $this->request->getVar('end_at');
+        
+        $roomModel = new RoomModel();
+        $allRooms = $roomModel->findAll();
+
+        $unavaibleRooms = $this->guestBookModel->getAvaibleRooms($date, $start_at, $end_at);
+        $unavaibleRoomIds = array_column($unavaibleRooms, 'id');
+        $availableRooms = array_filter($allRooms, function($room) use ($unavaibleRoomIds) {
+            return !in_array($room['id'], $unavaibleRoomIds);
+        });
+
+        return $this->response->setJSON($availableRooms);
+    }
+
     // public function uploadProcess()
     // {
     //     $guestbook_id = $this->request->getVar('guestbook-id');
