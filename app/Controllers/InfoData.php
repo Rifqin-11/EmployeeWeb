@@ -28,14 +28,22 @@ class InfoData extends BaseController
             $roomModel = new RoomModel();
             $allRooms = $roomModel->findAll();
 
-            $unavaibleRooms = $this->guestBookModel->getAvaibleRooms('2025-02-16', '16:00:00', '18:00:00');
+            $guest = $this->guestBookModel->find($id);
+
+            $unavaibleRooms = $this->guestBookModel->getAvaibleRooms($guest['date'], $guest['start_at'], $guest['end_at']);
             $unavaibleRoomIds = array_column($unavaibleRooms, 'id');
             $availableRooms = array_filter($allRooms, function($room) use ($unavaibleRoomIds) {
                 return !in_array($room['id'], $unavaibleRoomIds);
             });
 
+            if ($guest['room_id']){
+                $data['selectedRoom'] = $roomModel->find($guest['room_id']);
+            } else {
+                $data['selectedRoom'] = null;
+            }
+
             $data['rooms'] = $availableRooms;
-            $data['guest'] = $this->guestBookModel->find($id);
+            $data['guest'] = $guest;
         }
 
         return view("pages/InfoData", $data);

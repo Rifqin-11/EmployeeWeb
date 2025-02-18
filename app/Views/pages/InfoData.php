@@ -1,6 +1,5 @@
 <!doctype html>
 <html>
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -71,9 +70,14 @@
                                     <h2 class="text-lg font-medium text-gray-700">Room:</h2>
                                     <div>
                                         <select name="room" id="room" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
-                                            <option value="" disabled selected>Select Room</option>
+                                            
+                                            <?php if ($selectedRoom) : ?>
+                                                <option value="<?= $selectedRoom['id'] ?>" selected><?= $selectedRoom['name'] ?></option>
+                                            <?php else : ?>
+                                                <option value="" disabled selected>Select Room</option>
+                                            <?php endif ?>
                                             <?php foreach ($rooms as $room): ?>
-                                                <option <?= $guest['room_id'] == $room['id'] ? 'selected' : '' ?> value="<?= $room["id"] ?>"><?= esc($room['name']) ?></option>
+                                                <option value="<?= $room["id"] ?>"><?= $room['name'] ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -96,7 +100,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex justify-center items-center">
+                            <div class="flex justify-center items-center <?= $guest['status'] == 0 ? 'hidden' : '' ?>">
                                 <div class="flex flex-col p-6 w-150 text-center">
                                     <h2 class="text-lg font-semibold mb-3">Upload documentation images
                                     </h2>
@@ -165,17 +169,17 @@
             });
         });
 
-        document.getElementById("buttonSave").addEventListener("click", function(event) {
-            // event.preventDefault();
+        // document.getElementById("buttonSave").addEventListener("click", function(event) {
+        //     // event.preventDefault();
 
-            let alertToast = document.getElementById("alertToast");
-            alertToast.classList.remove("hidden");
+        //     let alertToast = document.getElementById("alertToast");
+        //     alertToast.classList.remove("hidden");
 
-            setTimeout(() => {
-                alertToast.classList.add("hidden");
-                document.querySelector("form").submit();
-            }, 1500);
-        });
+        //     setTimeout(() => {
+        //         alertToast.classList.add("hidden");
+        //         document.querySelector("form").submit();
+        //     }, 1500);
+        // });
 
         const fileInput = document.getElementById('fileInput');
         const preview = document.getElementById('preview');
