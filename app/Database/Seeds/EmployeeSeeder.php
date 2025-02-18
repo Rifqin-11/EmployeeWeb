@@ -13,10 +13,12 @@ class EmployeeSeeder extends Seeder
 
         for ($i=0;$i<15;$i++) {
             $name = $faker->name();
+            $email = $faker->email();
+            $hashedPassword = sha1(sha1(md5($email)));
             $data = [
                 'name'      => $name,
-                'password'  => $faker->password(6, 12),
-                'email'     => $faker->email(),
+                'password'  => $hashedPassword,
+                'email'     => $email,
                 'is_admin'  => 0,
                 'photo'     => $name . '.jpg',
                 'position'  => $faker->jobTitle()

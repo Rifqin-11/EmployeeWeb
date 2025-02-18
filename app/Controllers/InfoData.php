@@ -45,6 +45,7 @@ class InfoData extends BaseController
     {
         $status = $this->request->getVar('status');
         $guestbook_id = $this->request->getVar('guestbook-id');
+        
         if ($status == 0){
             $data = [
                 'id' => $guestbook_id,
@@ -59,7 +60,7 @@ class InfoData extends BaseController
             
         } else{
             $images = $this->request->getFileMultiple('images');
-
+            
             $documentationsModel = new DocumentationsModel;
             $uploadPath = WRITEPATH . 'documentations/'.$guestbook_id;
             
@@ -88,7 +89,6 @@ class InfoData extends BaseController
                     'guestbook_id'  => $guestbook_id,
                     'image_name'    => $image->getClientName()
                 ];
-                
                 $documentationsModel->insert($data);
 
                 $data = [
@@ -99,9 +99,7 @@ class InfoData extends BaseController
                 $this->guestBookModel->save($data);
             }
         }
-
-        return redirect()->to('Home');
-        
+        return redirect()->to('Home');   
     }
 
     // public function uploadProcess()

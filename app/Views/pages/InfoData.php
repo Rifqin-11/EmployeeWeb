@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <style type="text/tailwindcss">
-      @theme {
+      /* @theme {
         --color-primary: #084E8F;
         --color-secondary: #f9f9f9;
         --color-button: #2563eb;
@@ -19,7 +19,7 @@
         --color-text-600: #364153;
         --color-yellow-700: #F9A329;
         --color-yellow-200: #fff0dc;
-      }
+      } */
     </style>
     
   </head>
@@ -31,7 +31,7 @@
                 <?= $this->include('components/Header') ?>
                 <div class="flex flex-col gap-2 w-full my-2 px-5">
                     <div class="flex flex-col bg-white p-6 rounded-lg shadow w-full">
-                        <form action="<?= base_url('infoData/edit') ?>" method="post" enctype="multipart/form-data">
+                        <form action="<?= base_url('infodata/edit') ?>" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="_method" value="PUT">    
                             <input type="hidden" name="guestbook-id" value="<?= $guest['id'] ?>">
                             <input type="hidden" name="status" id="status" value="<?= $guest['status'] ?>">
@@ -71,7 +71,7 @@
                                         <select name="room" id="room" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
                                             <option value="" disabled selected>Select Room</option>
                                             <?php foreach ($rooms as $room): ?>
-                                            <option value="<?= $room["id"] ?>"><?= esc($room['name']) ?></option>
+                                                <option <?= $guest['room_id'] == $room['id'] ? 'selected' : ''?> value="<?= $room["id"] ?>"><?= esc($room['name']) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -85,7 +85,7 @@
                                                     <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                                                 </svg>
                                             </div>
-                                            <input name="date" id="date" value="<?= $guest['date'] ?>" datepicker datepicker-buttons datepicker-autoselect-today datepicker-theme="light" type="text" class="bg-white border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Select date">
+                                            <input name="date" id="date" value="<?= $guest['date'] ?>" datepicker datepicker-buttons datepicker-autoselect-today datepicker-theme="light" type="text" autocomplete="off" class="bg-white border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Select date">
                                         </div>
                                         
                                         <input type="time" name="start-at" id="start-at" value="<?= $guest['start_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
@@ -108,7 +108,7 @@
                                 </div>
                             </div>
                             
-                            <button id="buttonSave" type="submit" onclick="uploadFiles()" class="mb-4 bg-primary p-2 px-4 rounded rounded-lg justify-center items-center mt-6 w-full">
+                            <button id="buttonSave" type="submit" class="mb-4 bg-primary p-2 px-4 rounded rounded-lg justify-center items-center mt-6 w-full">
                                 <h2 class="text-lg font-medium text-white text-center cursor-pointer">save</h2>
                             </button>
                         </form>
@@ -119,7 +119,6 @@
     </div>
     <script>
         document.getElementById("buttonSave").addEventListener("click", function(event) {
-            // event.preventDefault();
 
             let alertToast = document.getElementById("alertToast");
             alertToast.classList.remove("hidden");
@@ -147,7 +146,7 @@
                 });
             });
 
-            function uploadFiles() {
+            /* function uploadFiles() {
                 let formData = new FormData();
                 let files = fileInput.files;
 
@@ -157,13 +156,13 @@
 
                 formData.append("guestbook-id", document.querySelector("input[name='guestbook-id']").value);
 
-                fetch("<?= base_url('upload/process') ?>", {
+                fetch("", {
                     method: "POST",
                     body: formData
                 })
                 .then(response => response.json())
                 .catch(error => console.error("Error:", error));
-            }
+            } */
 
         lucide.createIcons();
 

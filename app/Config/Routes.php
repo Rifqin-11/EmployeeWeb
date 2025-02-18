@@ -6,7 +6,6 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-$routes->put('infodata/edit', 'InfoData::edit');
 
 $routes->group('/' , ['filter' => 'haslogin'] ,static function ($routes){
     $routes->get('', 'LoginController::index');
@@ -16,8 +15,12 @@ $routes->get('Home', 'Home::index');
 $routes->get('History', 'History::index');
 
 $routes->get('/logout', 'LoginController::logout');
+$routes->get('/Settings', 'Settings::index');
 
-$routes->get('infodata', 'InfoData::index');
+$routes->group('infodata', static function($routes){
+    $routes->get('', 'InfoData::index');
+    $routes->put('edit', 'InfoData::edit');
+});
 
 $routes->post('upload/process', 'InfoData::uploadProcess');
 
