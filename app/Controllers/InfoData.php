@@ -45,6 +45,7 @@ class InfoData extends BaseController
     {
         $status = $this->request->getVar('status');
         $guestbook_id = $this->request->getVar('guestbook-id');
+        
         if ($status == 0){
             $data = [
                 'id' => $guestbook_id,

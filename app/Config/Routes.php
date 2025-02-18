@@ -6,7 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
- $routes->put('infodata/edit', 'InfoData::edit');
+ $routes->put('infoData/edit', 'InfoData::edit');
 
  $routes->group('/' , ['filter' => 'haslogin'] ,static function ($routes){
      $routes->get('', 'LoginController::index');
