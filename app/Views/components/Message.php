@@ -31,7 +31,7 @@
                 </p>
             </div>
         </div>
-        <a href="/History" class="px-4 py-2 bg-primary text-white rounded-lg cursor-pointer">
+        <a href="/History?status=0" class="px-4 py-2 bg-primary text-white rounded-lg cursor-pointer">
             View Detail
         </a>
     </div>

@@ -18,7 +18,7 @@ $routes->get('/logout', 'LoginController::logout');
 $routes->get('/Settings', 'Settings::index');
 
 $routes->group('infodata', static function($routes){
-    $routes->get('', 'InfoData::index');
+    $routes->get('', 'infoData::index');
     $routes->put('edit', 'InfoData::edit');
 });
 
