@@ -44,7 +44,7 @@ class GuestBooksModel extends Model
                     ->groupEnd();
         }
 
-        return $result->orderBy('guestbooks.created_at', 'DESC')->findAll();
+        return $result->orderBy('guestbooks.created_at', 'DESC');
     }
 
     public function getPendingVisitorsCount($id = null)
@@ -77,7 +77,7 @@ class GuestBooksModel extends Model
 
     public function getAvaibleRooms($date = null, $start_time = null, $end_time = null)
     {
-        return $this->select('pic_name, rooms.id, rooms.name')
+        return $this->select('rooms.id, rooms.name')
             ->where('date', $date)
             ->groupStart()
                 ->where('start_at <=', $end_time)
@@ -96,4 +96,5 @@ class GuestBooksModel extends Model
                     ->findAll();
         return array_column($result, 'id');
     }
+
 }

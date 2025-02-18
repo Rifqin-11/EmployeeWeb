@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Controllers;
+
+use App\Database\Migrations\GuestBook;
 use App\Models\GuestBooksModel;
 use App\Models\EmployeesModel;
 

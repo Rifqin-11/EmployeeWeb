@@ -14,7 +14,10 @@ if (!function_exists('status')) {
             case 3:
                 return '<span class="px-2 py-1 text-sm rounded-lg bg-gray-200 text-blue-700 justify-center">Done</span>';
         }
-    }
+    }   
+}
 
-    
+function time_parsing($time)
+{
+    return Time::parse($time)->humanize();
 }

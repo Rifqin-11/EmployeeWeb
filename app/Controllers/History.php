@@ -18,10 +18,9 @@ class History extends BaseController
         $keyword = $this->request->getGet('search');
 
         if ($user['is_admin'] == 1) {
-            $data['guests'] = $guestBookModel->getGuests(search: $keyword);
-            
+            $data['guests'] = $guestBookModel->getGuests(search: $keyword)->findAll();
         } else {
-            $data['guests'] = $guestBookModel->getGuests($email, $keyword);
+            $data['guests'] = $guestBookModel->getGuests($email, $keyword)->findAll();
         }
 
         return view("pages/History", $data);

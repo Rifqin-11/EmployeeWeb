@@ -23,28 +23,32 @@ class InfoData extends BaseController
         $email = session()->get('email');
         $user = $employeesModel->getUserByEmail($email);
         $data['user'] = $user;
+        
+        $roomModel = new RoomModel();
+        $allRooms = $roomModel->findAll();
 
-        if ($id) {
-            $roomModel = new RoomModel();
-            $allRooms = $roomModel->findAll();
+        $guest = $this->guestBookModel->find($id);
 
-            $guest = $this->guestBookModel->find($id);
+        $unavaibleRooms = $this->guestBookModel->getAvaibleRooms($guest['date'], $guest['start_at'], $guest['end_at']);
+        $unavaibleRoomIds = array_column($unavaibleRooms, 'id');
+        $availableRooms = array_filter($allRooms, function($room) use ($unavaibleRoomIds) {
+            return !in_array($room['id'], $unavaibleRoomIds);
+        });
 
-            $unavaibleRooms = $this->guestBookModel->getAvaibleRooms($guest['date'], $guest['start_at'], $guest['end_at']);
-            $unavaibleRoomIds = array_column($unavaibleRooms, 'id');
-            $availableRooms = array_filter($allRooms, function($room) use ($unavaibleRoomIds) {
-                return !in_array($room['id'], $unavaibleRoomIds);
-            });
-
-            if ($guest['room_id']){
-                $data['selectedRoom'] = $roomModel->find($guest['room_id']);
-            } else {
-                $data['selectedRoom'] = null;
-            }
-
-            $data['rooms'] = $availableRooms;
-            $data['guest'] = $guest;
+        if ($guest['room_id']){
+            $data['selectedRoom'] = $roomModel->find($guest['room_id']);
+        } else {
+            $data['selectedRoom'] = null;
         }
+
+        $data['rooms'] = $availableRooms;
+        $data['guest'] = $guest;
+
+        // if ($user['is_admin'] == 1) {
+        //     $data['guests'] = $this->guestBookModel->getGuests(statusFilter: 0)->paginate(3);
+        // } else {
+        //     $data['guests'] = $this->guestBookModel->getGuests($email, statusFilter: 0)->paginate(3);
+        // }
 
         return view("pages/InfoData", $data);
     }

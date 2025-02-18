@@ -136,7 +136,6 @@
 
         appointments.forEach(appointment => {
             appointment.addEventListener('change', function() {
-                allFilled = true;
                 appointments.forEach(input => {
                     if (!input.value) {
                         allFilled = false;

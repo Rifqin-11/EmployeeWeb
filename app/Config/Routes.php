@@ -12,6 +12,7 @@ $routes->group('/' , ['filter' => 'haslogin'] ,static function ($routes){
     $routes->post('auth', 'LoginController::auth');
 });
 $routes->get('Home', 'Home::index');
+$routes->get('Home/notification', 'Home::notificationmodal');
 $routes->get('History', 'History::index');
 
 $routes->get('/logout', 'LoginController::logout');
