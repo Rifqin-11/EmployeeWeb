@@ -110,23 +110,28 @@
                                     <div class="grid grid-cols-3 gap-2 mb-4">
                                         <?php foreach($documentations as $doc): ?>
                                             <div class="relative group">
-                                                <img src="<?= base_url('writable/documentations/'.$guest['id'].'/'.$doc['image_name']) ?>" 
-                                                    class="w-full h-32 object-cover rounded-lg">
+                                            <img src="<?= base_url('documentations/' . $guest['id'] . '/' . $doc['image_name']) ?>" alt="Dokumentasi">
                                                 <div class="absolute inset-0 bg-black bg-opacity-50 hidden group-hover:flex items-center justify-center rounded-lg">
-                                                    <a href="<?= base_url('writable/documentations/'.$guest['id'].'/'.$doc['image_name']) ?>" 
+                                                    <a href="<?= base_url('documentations/'.$guest['id'].'/'.$doc['image_name']) ?>" 
                                                     target="_blank"
                                                     class="text-white p-1 hover:text-blue-300">
                                                         <i data-lucide="eye"></i>
                                                     </a>
-                                                    <a href="#" 
-                                                    onclick="deleteImage(<?= $doc['id'] ?>)" 
-                                                    class="text-white p-1 hover:text-red-300">
-                                                        <i data-lucide="trash-2"></i>
-                                                    </a>
+                                                    <button 
+    data-modal-target="deleteModal" 
+    data-modal-toggle="deleteModal" 
+    data-title="documentation image"
+    data-delete-url="<?= base_url('infodata/deleteImage/' . $doc['id']) ?>"
+    class="text-white p-1 hover:text-red-300">
+    <i data-lucide="trash-2"></i>
+</button>
                                                 </div>
                                             </div>
                                         <?php endforeach; ?>
                                     </div>
+
+                                    <!-- Modal Delete -->
+                                    <?= $this->include('components/DeleteModal') ?>
 
                                     <!-- Upload section -->
                                     <label for="fileInput" class="cursor-pointer flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-400 rounded-lg bg-gray-50 hover:bg-gray-100">
@@ -148,6 +153,49 @@
         </div>
     <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Handle delete modal
+        const deleteButtons = document.querySelectorAll('[data-modal-target="deleteModal"][data-delete-url]');
+        
+        deleteButtons.forEach(function(button) {
+            button.addEventListener('click', function(e) { // Tambahkan parameter event
+                e.preventDefault(); // BLOCKER UTAMA: Cegah event default
+                e.stopPropagation();
+                
+                const deleteUrl = button.getAttribute('data-delete-url');
+                const dataTitle = button.getAttribute('data-title');
+                
+                const confirmLink = document.getElementById('confirmDeleteLink');
+                confirmLink.setAttribute('href', deleteUrl);
+
+                const modalTitle = document.getElementById('deleteModalTitle');
+                modalTitle.textContent = 'Are you sure you want to delete this ' + dataTitle + '?';
+            });
+        });
+
+        // Handle konfirmasi hapus
+        document.getElementById('confirmDeleteLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            const deleteUrl = this.getAttribute('href');
+            
+            fetch(deleteUrl, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '<?= csrf_hash() ?>',
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Failed to delete');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('Error occurred while deleting');
+            });
+        });
+
         const appointments = document.querySelectorAll(".appointments-input input");
         const roomSelect = document.getElementById("room");
 
@@ -193,15 +241,8 @@
         });
 
         fetchRooms();
+    });
 
-        function deleteImage(id) {
-        if(confirm('Are you sure to delete this image?')) {
-            fetch(`<?= base_url('infodata/deleteImage/') ?>${id}`, {
-                method: 'DELETE',
-            }).then(() => window.location.reload());
-        }
-    }
-        });
     lucide.createIcons();
     </script>
 

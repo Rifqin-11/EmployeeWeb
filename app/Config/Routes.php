@@ -42,12 +42,8 @@ $routes->group('infodata', static function($routes){
     $routes->put('edit', 'InfoData::edit');
 });
 
-$routes->get('documentations/(:segment)/(:segment)', function($folder, $file) {
-    $path = WRITEPATH . 'documentations/' . $folder . '/' . $file;
-    if(file_exists($path)) {
-        return $this->response->download($path, null);
-    }
-    throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
-});
+$routes->get('documentations/(:num)/(:any)', 'InfoData::viewImage/$1/$2');
+$routes->delete('infodata/deleteImage/(:num)', 'InfoData::deleteImage/$1');
+
 
 // $routes->post('upload/process', 'InfoData::uploadProcess');

@@ -73,7 +73,7 @@ class InfoData extends BaseController
             $images = $this->request->getFileMultiple('images');
             
             $documentationsModel = new DocumentationsModel;
-            $uploadPath = WRITEPATH . 'documentations/'.$guestbook_id;
+            $uploadPath = FCPATH . 'documentations/' . $guestbook_id;
             
             if(!is_dir($uploadPath)){
                 mkdir($uploadPath, 0777, true);
@@ -136,19 +136,39 @@ class InfoData extends BaseController
         return $this->response->setJSON($availableRooms);
     }
 
+    public function viewImage($guestbook_id, $image_name)
+    {
+        $path = FCPATH . 'documentations/' . $guestbook_id . '/' . $image_name;
+
+        if (!file_exists($path)) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        return $this->response->setHeader('Content-Type', mime_content_type($path))->setBody(file_get_contents($path));
+    }
+
+
     public function deleteImage($id)
     {
         $documentationsModel = new DocumentationsModel();
         $image = $documentationsModel->find($id);
-        
-        if($image) {
-            $path = WRITEPATH . 'documentations/'.$image['guestbook_id'].'/'.$image['image_name'];
-            if(file_exists($path)) {
-                unlink($path);
+
+        if ($image) {
+            $filePath = FCPATH . 'documentations/' . $image['guestbook_id'] . '/' . $image['image_name'];
+
+            // Hapus file gambar dari sistem
+            if (file_exists($filePath)) {
+                unlink($filePath);
             }
+
+            // Hapus data dari database
             $documentationsModel->delete($id);
+
+            return $this->response->setJSON(['success' => true]);
         }
-        
-        return redirect()->back();
+
+        return $this->response->setJSON(['success' => false, 'message' => 'Image not found']);
     }
+
+
 }
