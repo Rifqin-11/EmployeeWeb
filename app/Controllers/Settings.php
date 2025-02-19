@@ -62,47 +62,61 @@ class Settings extends BaseController
         if (!session()->has('email')) {
             return redirect()->to('/');
         }
-    
+
         $employeesModel = new EmployeesModel();
-    
+
         $id = $this->request->getPost('id');
         $name = $this->request->getPost('name');
         $position = $this->request->getPost('position');
         $email = $this->request->getPost('email');
         $phone = $this->request->getPost('phone');
-    
+
         $updateData = [
             'name' => $name,
             'position' => $position,
             'email' => $email,
             'phone' => $phone
         ];
-    
+
         $currentPassword = $this->request->getPost('current_password');
         $newPassword = $this->request->getPost('new_password');
-    
+
         if (!empty($currentPassword) && !empty($newPassword)) {
             $user = $employeesModel->find($id);
-    
+
+            // Pastikan user ditemukan dan password lama cocok
+            if (!$user) {
+                return redirect()->back()->with('error', 'User not found.');
+            }
+
+            // Periksa apakah password di database sudah di-hash sebelumnya
+            if (!isset($user['password']) || empty($user['password'])) {
+                return redirect()->back()->with('error', 'Current password is not set in the database.');
+            }
+
             if (password_verify($currentPassword, $user['password'])) {
                 $updateData['password'] = password_hash($newPassword, PASSWORD_DEFAULT);
             } else {
                 return redirect()->back()->with('error', 'Current password is incorrect.');
             }
         }
-    
-        $employeesModel->update($id, $updateData);
-    
+
+        // Update data di database
+        if (!$employeesModel->update($id, $updateData)) {
+            return redirect()->back()->with('error', 'Failed to update profile.');
+        }
+
+        // Perbarui sesi jika email berubah
+        if (session()->get('email') !== $email) {
+            session()->set('email', $email);
+        }
         session()->set([
-            'email' => $email,
             'name' => $name,
             'position' => $position
         ]);
-    
+
         return redirect()->to('/Settings')->with('success', 'Profile updated successfully.');
     }
-    
-
 
     /**
      * Menampilkan daftar ruangan dan mengelolanya

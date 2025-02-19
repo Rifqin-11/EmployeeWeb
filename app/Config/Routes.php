@@ -37,7 +37,7 @@ $routes->get('/settings/employees/delete/(:num)', 'Settings::deleteEmployee/$1')
 
 
 $routes->group('infodata', static function($routes){
-    $routes->get('', 'infoData::index');
+    $routes->get('(:num)', 'InfoData::index/$1', ['filter' => 'guestaccess']);
     $routes->post('getrooms', 'InfoData::getrooms');
     $routes->put('edit', 'InfoData::edit');
 });

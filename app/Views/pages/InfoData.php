@@ -32,7 +32,7 @@
                 <?= $this->include('components/Header') ?>
                 <div class="flex flex-col gap-2 w-full my-2 px-5">
                     <div class="flex flex-col bg-white p-6 rounded-lg shadow w-full">
-                        <form action="<?= base_url('infodata/edit') ?>" method="post" enctype="multipart/form-data">
+                        <form action="<?= base_url('infoData/edit') ?>" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="_method" value="PUT">
                             <input type="hidden" name="guestbook-id" value="<?= $guest['id'] ?>">
                             <input type="hidden" name="status" id="status" value="<?= $guest['status'] ?>">

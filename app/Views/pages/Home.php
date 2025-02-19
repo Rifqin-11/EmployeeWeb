@@ -134,16 +134,14 @@
               <?php endforeach; ?>
             </tbody>
           </table>
-          <div class="flex justify-between items-center mt-6">
-            <span id="pagination-info" class="text-sm text-gray-600"></span>
-            <div class="inline-flex mt-2 xs:mt-0">
-              <button class="flex items-center justify-center px-4 h-10 text-base font-medium text-gray-800 bg-gray-100 rounded-s hover:bg-primary hover:text-white" id="prevPage">
-                Prev
-              </button>
-              <button class="flex items-center justify-center px-4 h-10 text-base font-medium text-gray-800 bg-gray-100 border-0 border-s border-gray-700 rounded-e hover:bg-primary hover:text-white" id="nextPage">
-                Next
-              </button>
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-sm text-gray-400">Show <?= $totalVisitors?> guest</p>
             </div>
+            <nav aria-label="Page navigation example" class="mt-4 flex justify-end">
+              <ul id="paginationLinks" class="flex items-center -space-x-px h-8 text-sm">
+              </ul>
+            </nav>
           </div>
         </div>
       </div>
@@ -158,6 +156,146 @@
       let currentPage   = 1;
       const rowsPerPage = 10;
 
+      // Pagination
+      function updatePaginationLinks(totalPages) {
+        const paginationLinksContainer = document.getElementById("paginationLinks");
+        paginationLinksContainer.innerHTML = "";
+
+        // Pagination Prev Button
+        const liPrev = document.createElement("li");
+        const aPrev = document.createElement("a");
+        aPrev.href = "#";
+        aPrev.innerHTML = `<span class="sr-only">Previous</span>
+          <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" 
+               xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+            <path stroke="currentColor" stroke-linecap="round" 
+                  stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+          </svg>`;
+        aPrev.className = "flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700";
+        if (currentPage === 1) {
+          aPrev.classList.add("opacity-50", "cursor-not-allowed");
+        } else {
+          aPrev.addEventListener("click", function (e) {
+            e.preventDefault();
+            currentPage--;
+            renderTable();
+          });
+        }
+        liPrev.appendChild(aPrev);
+        paginationLinksContainer.appendChild(liPrev);
+
+        // Max Page Number
+        let startPage, endPage;
+        if (totalPages <= 3) {
+          startPage = 1;
+          endPage = totalPages;
+        } else {
+          startPage = currentPage - 1;
+          endPage = currentPage + 1;
+          if (startPage < 1) {
+            startPage = 1;
+            endPage = 3;
+          }
+          if (endPage > totalPages) {
+            endPage = totalPages;
+            startPage = totalPages - 2;
+          }
+        }
+
+        //
+        if (startPage > 1) {
+          const liFirst = document.createElement("li");
+          const aFirst = document.createElement("a");
+          aFirst.href = "#";
+          aFirst.textContent = "1";
+          aFirst.className = "flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700";
+          aFirst.addEventListener("click", function (e) {
+            e.preventDefault();
+            currentPage = 1;
+            renderTable();
+          });
+          liFirst.appendChild(aFirst);
+          paginationLinksContainer.appendChild(liFirst);
+
+          if (startPage > 2) {
+            const liEllipsis = document.createElement("li");
+            const spanEllipsis = document.createElement("span");
+            spanEllipsis.textContent = "...";
+            spanEllipsis.className = "flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300";
+            liEllipsis.appendChild(spanEllipsis);
+            paginationLinksContainer.appendChild(liEllipsis);
+          }
+        }
+
+        // Page Number
+        for (let i = startPage; i <= endPage; i++) {
+          const li = document.createElement("li");
+          const a = document.createElement("a");
+          a.href = "#";
+          a.textContent = i;
+          if (i === currentPage) {
+            a.setAttribute("aria-current", "page");
+            a.className = "z-10 flex items-center justify-center px-3 h-8 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700";
+          } else {
+            a.className = "flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700";
+            a.addEventListener("click", function (e) {
+              e.preventDefault();
+              currentPage = i;
+              renderTable();
+            });
+          }
+          li.appendChild(a);
+          paginationLinksContainer.appendChild(li);
+        }
+
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1) {
+            const liEllipsis = document.createElement("li");
+            const spanEllipsis = document.createElement("span");
+            spanEllipsis.textContent = "...";
+            spanEllipsis.className = "flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300";
+            liEllipsis.appendChild(spanEllipsis);
+            paginationLinksContainer.appendChild(liEllipsis);
+          }
+          const liLast = document.createElement("li");
+          const aLast = document.createElement("a");
+          aLast.href = "#";
+          aLast.textContent = totalPages;
+          aLast.className = "flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700";
+          aLast.addEventListener("click", function (e) {
+            e.preventDefault();
+            currentPage = totalPages;
+            renderTable();
+          });
+          liLast.appendChild(aLast);
+          paginationLinksContainer.appendChild(liLast);
+        }
+
+        // Pagination Next Button
+        const liNext = document.createElement("li");
+        const aNext = document.createElement("a");
+        aNext.href = "#";
+        aNext.innerHTML = `<span class="sr-only">Next</span>
+          <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" 
+               xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+            <path stroke="currentColor" stroke-linecap="round" 
+                  stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+          </svg>`;
+        aNext.className = "flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700";
+        if (currentPage === totalPages) {
+          aNext.classList.add("opacity-50", "cursor-not-allowed");
+        } else {
+          aNext.addEventListener("click", function (e) {
+            e.preventDefault();
+            currentPage++;
+            renderTable();
+          });
+        }
+        liNext.appendChild(aNext);
+        paginationLinksContainer.appendChild(liNext);
+      }
+
+      // render Table
       function renderTable() {
         tableBody.innerHTML = "";
         const totalPages = Math.ceil(currentRows.length / rowsPerPage) || 1;
@@ -165,11 +303,10 @@
         const start = (currentPage - 1) * rowsPerPage;
         const pageRows = currentRows.slice(start, start + rowsPerPage);
         pageRows.forEach(row => tableBody.appendChild(row));
-        document.getElementById("pagination-info").textContent = `Page ${currentPage} of ${totalPages}`;
-        document.getElementById("prevPage").disabled = currentPage === 1;
-        document.getElementById("nextPage").disabled = currentPage === totalPages;
+        updatePaginationLinks(totalPages);
       }
 
+      // Filtering by date
       function applyFilters() {
         const statusFilter   = document.getElementById("statusFilter").value;
         const startDateValue = document.getElementById("startDate").value;
@@ -204,6 +341,7 @@
         renderTable();
       }
 
+      // Sorting
       document.querySelectorAll("[data-sort]").forEach(header => {
         header.addEventListener("click", function () {
           const sortKey = this.getAttribute("data-sort");
@@ -242,23 +380,10 @@
         });
       });
 
+      // Filtering
       document.getElementById("statusFilter").addEventListener("change", applyFilters);
       document.getElementById("startDate").addEventListener("change", applyFilters);
       document.getElementById("endDate").addEventListener("change", applyFilters);
-
-      document.getElementById("prevPage").addEventListener("click", function () {
-        if (currentPage > 1) {
-          currentPage--;
-          renderTable();
-        }
-      });
-      document.getElementById("nextPage").addEventListener("click", function () {
-        const totalPages = Math.ceil(currentRows.length / rowsPerPage) || 1;
-        if (currentPage < totalPages) {
-          currentPage++;
-          renderTable();
-        }
-      });
 
       renderTable();
       lucide.createIcons();
