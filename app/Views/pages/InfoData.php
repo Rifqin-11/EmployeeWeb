@@ -77,7 +77,7 @@
                                         <?php endif; ?>
 
                                         <?php foreach ($rooms as $room): ?>
-                                            <option value="<?= $room["id"] ?>" <?= ($room["id"] == $selectedRoom['id']) ? 'selected' : '' ?>>
+                                            <option value="<?= $room["id"] ?>" <?= ($selectedRoom && $room["id"] == $selectedRoom['id']) ? 'selected' : '' ?>>
                                                 <?= $room['name'] ?>
                                             </option>
                                         <?php endforeach; ?>
