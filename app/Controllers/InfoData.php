@@ -156,12 +156,10 @@ class InfoData extends BaseController
         if ($image) {
             $filePath = FCPATH . 'documentations/' . $image['guestbook_id'] . '/' . $image['image_name'];
 
-            // Hapus file gambar dari sistem
             if (file_exists($filePath)) {
                 unlink($filePath);
             }
 
-            // Hapus data dari database
             $documentationsModel->delete($id);
 
             return $this->response->setJSON(['success' => true]);

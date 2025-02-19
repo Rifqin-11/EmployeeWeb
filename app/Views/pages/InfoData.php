@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <style type="text/tailwindcss">
-        /* @theme {
+        @theme {
         --color-primary: #084E8F;
         --color-secondary: #f9f9f9;
         --color-button: #2563eb;
@@ -19,7 +19,7 @@
         --color-text-600: #364153;
         --color-yellow-700: #F9A329;
         --color-yellow-200: #fff0dc;
-      } */
+      }
     </style>
 
 </head>
@@ -47,6 +47,8 @@
                                     </span>
                                 </div>
                             </div>
+
+                            <!-- data -->
                             <div class="mb-4">
                                 <h2 class="text-lg font-medium text-gray-700">PIC Name:</h2>
                                 <p class="text-gray-600"><?= $guest["pic_name"] ?></p>
@@ -65,6 +67,8 @@
                                 <h2 class="text-lg font-medium text-gray-700">Agenda:</h2>
                                 <p class="text-gray-600"><?= $guest["agenda"] ?></p>
                             </div>
+
+                            <!-- Room and appointment -->
                             <div class="flex grid grid-cols-2 gap-4">
                                 <div class="mb-4">
                                     <h2 class="text-lg font-medium text-gray-700">Room:</h2>
@@ -102,11 +106,13 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Upload Pictures -->
                             <div class="flex justify-center items-center <?= $guest['status'] == 0 ? 'hidden' : '' ?>">
                                 <div class="flex flex-col p-6 w-150 text-center">
                                     <h2 class="text-lg font-semibold mb-3">Upload documentation images</h2>
 
-                                    <!-- Tampilkan gambar yang sudah ada -->
+                                    <!-- Documentation View -->
                                     <div class="grid grid-cols-3 gap-2 mb-4">
                                         <?php foreach($documentations as $doc): ?>
                                             <div class="relative group">
@@ -118,13 +124,13 @@
                                                         <i data-lucide="eye"></i>
                                                     </a>
                                                     <button 
-    data-modal-target="deleteModal" 
-    data-modal-toggle="deleteModal" 
-    data-title="documentation image"
-    data-delete-url="<?= base_url('infodata/deleteImage/' . $doc['id']) ?>"
-    class="text-white p-1 hover:text-red-300">
-    <i data-lucide="trash-2"></i>
-</button>
+                                                        data-modal-target="deleteModal" 
+                                                        data-modal-toggle="deleteModal" 
+                                                        data-title="documentation image"
+                                                        data-delete-url="<?= base_url('infodata/deleteImage/' . $doc['id']) ?>"
+                                                        class="text-white p-1 hover:text-red-300">
+                                                        <i data-lucide="trash-2"></i>
+                                                    </button>
                                                 </div>
                                             </div>
                                         <?php endforeach; ?>
@@ -153,12 +159,11 @@
         </div>
     <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Handle delete modal
         const deleteButtons = document.querySelectorAll('[data-modal-target="deleteModal"][data-delete-url]');
         
         deleteButtons.forEach(function(button) {
-            button.addEventListener('click', function(e) { // Tambahkan parameter event
-                e.preventDefault(); // BLOCKER UTAMA: Cegah event default
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
                 e.stopPropagation();
                 
                 const deleteUrl = button.getAttribute('data-delete-url');
@@ -172,7 +177,6 @@
             });
         });
 
-        // Handle konfirmasi hapus
         document.getElementById('confirmDeleteLink').addEventListener('click', function(e) {
             e.preventDefault();
             const deleteUrl = this.getAttribute('href');
@@ -195,6 +199,65 @@
                 alert('Error occurred while deleting');
             });
         });
+
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('preview');
+        let currentFiles = [];
+
+        fileInput.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            currentFiles = currentFiles.concat(files);
+            updatePreviews();
+            updateFileInput();
+        });
+
+        function updatePreviews() {
+            previewContainer.innerHTML = '';
+            currentFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const div = document.createElement('div');
+                    div.className = 'relative group';
+
+                    const imgWrapper = document.createElement('div');
+                    imgWrapper.className = 'relative';
+
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.className = 'w-full h-32 object-cover rounded-lg';
+
+                    const overlay = document.createElement('div');
+                    overlay.className = 'absolute inset-0 bg-black bg-opacity-50 hidden group-hover:flex items-center justify-center rounded-lg';
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'text-white p-1 hover:text-red-300';
+                    deleteBtn.onclick = () => {
+                        currentFiles.splice(index, 1);
+                        updatePreviews();
+                        updateFileInput();
+                    };
+
+                    const deleteIcon = document.createElement('i');
+                    deleteIcon.setAttribute('data-lucide', 'trash-2');
+                    deleteBtn.appendChild(deleteIcon);
+
+                    overlay.appendChild(deleteBtn);
+                    imgWrapper.appendChild(img);
+                    imgWrapper.appendChild(overlay);
+                    div.appendChild(imgWrapper);
+                    previewContainer.appendChild(div);
+
+                    lucide.createIcons();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function updateFileInput() {
+            const dataTransfer = new DataTransfer();
+            currentFiles.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+        }
 
         const appointments = document.querySelectorAll(".appointments-input input");
         const roomSelect = document.getElementById("room");

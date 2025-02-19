@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="<?=base_url()?>/desnetLogo.png" />
-    <title>Desnet GuestBook</title>
+    <title>Settings</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
@@ -42,7 +42,6 @@
                           <?php if (!empty($user['photo'])) : ?>
                             <img src="<?= base_url($user['photo']) ?>" class="w-full h-full object-cover" />
                           <?php else : ?>
-                            <!-- Sesuaikan dengan struktur default yang diinginkan -->
                             <div class="flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full">
                               <svg class="absolute w-15 h-15 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
