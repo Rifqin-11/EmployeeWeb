@@ -17,7 +17,7 @@
     </style>
 </head>
 <body>
-  <div class="bg-white p-6 rounded-lg shadow w-full">
+  <div class="bg-white p-6 rounded-lg shadow">
       <p class="font-semibold">
           <?= esc($title) ?>
       </p>

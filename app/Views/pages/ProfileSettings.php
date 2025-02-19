@@ -28,7 +28,7 @@
         <div class="flex flex-col gap-2 w-full">
           <?= $this->include('components/Header') ?>
           <div class="flex flex-col gap-2 w-full my-2 px-5">
-            <div class="flex flex-col bg-white rounded-lg shadow w-full h-screen">
+            <div class="flex flex-col bg-white rounded-lg shadow w-full h-full">
               <?= $this->include('components/SettingsHeader'); ?>
 
               <!-- Settings Content -->
@@ -76,9 +76,6 @@
                         </div>
                       </div>
                     </div>
-                    <button data-modal-target="crud-modal" data-modal-toggle="crud-modal" class="ml-auto self-center px-4 py-1 rounded-xl border border-gray-200 cursor-pointer text-gray-700 hover:bg-gray-100" type="button">
-                      Edit
-                    </button>
                   </div>
 
                   <div class="px-8 flex flex-col gap-2 rounded-lg border border-gray-200">
@@ -89,21 +86,14 @@
                           <p>Current Password</p>
                           <p class="p-2">********</p>
                         </div>
-                        <div>
-                          <p>New Password</p>
-                          <input type="text" placeholder="Input new password here" class="bg-gray-200 p-2 rounded-lg">
-                        </div>
                       </div>
-                      <button data-modal-target="crud-modal" data-modal-toggle="crud-modal" class="ml-auto self-center px-4 py-1 rounded-xl border border-gray-200 cursor-pointer text-gray-700 hover:bg-gray-100" type="button">
-                        Edit
-                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Modal yang telah disesuaikan -->
+            <!-- Modal -->
             <div id="crud-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
               <div class="relative p-4 w-full max-w-lg max-h-full">
                 <!-- Modal content -->
@@ -165,7 +155,6 @@
                 </div>
               </div>
             </div>
-            <!-- End Modal -->
           </div>
         </div>
       </div>

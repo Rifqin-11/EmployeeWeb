@@ -28,14 +28,22 @@ class InfoData extends BaseController
             $roomModel = new RoomModel();
             $allRooms = $roomModel->findAll();
 
-            $unavaibleRooms = $this->guestBookModel->getAvaibleRooms('2025-02-16', '16:00:00', '18:00:00');
+            $guest = $this->guestBookModel->find($id);
+
+            $unavaibleRooms = $this->guestBookModel->getAvaibleRooms($guest['date'], $guest['start_at'], $guest['end_at']);
             $unavaibleRoomIds = array_column($unavaibleRooms, 'id');
             $availableRooms = array_filter($allRooms, function($room) use ($unavaibleRoomIds) {
                 return !in_array($room['id'], $unavaibleRoomIds);
             });
 
+            if ($guest['room_id']){
+                $data['selectedRoom'] = $roomModel->find($guest['room_id']);
+            } else {
+                $data['selectedRoom'] = null;
+            }
+
             $data['rooms'] = $availableRooms;
-            $data['guest'] = $this->guestBookModel->find($id);
+            $data['guest'] = $guest;
         }
 
         return view("pages/InfoData", $data);
@@ -45,6 +53,7 @@ class InfoData extends BaseController
     {
         $status = $this->request->getVar('status');
         $guestbook_id = $this->request->getVar('guestbook-id');
+        
         if ($status == 0){
             $data = [
                 'id' => $guestbook_id,
@@ -59,7 +68,7 @@ class InfoData extends BaseController
             
         } else{
             $images = $this->request->getFileMultiple('images');
-
+            
             $documentationsModel = new DocumentationsModel;
             $uploadPath = WRITEPATH . 'documentations/'.$guestbook_id;
             
@@ -88,7 +97,6 @@ class InfoData extends BaseController
                     'guestbook_id'  => $guestbook_id,
                     'image_name'    => $image->getClientName()
                 ];
-                
                 $documentationsModel->insert($data);
 
                 $data = [
@@ -99,9 +107,25 @@ class InfoData extends BaseController
                 $this->guestBookModel->save($data);
             }
         }
+        return redirect()->to('Home');   
+    }
 
-        return redirect()->to('Home');
+    public function getRooms()
+    {
+        $date = $this->request->getVar('date');
+        $start_at = $this->request->getVar('start_at');
+        $end_at = $this->request->getVar('end_at');
         
+        $roomModel = new RoomModel();
+        $allRooms = $roomModel->findAll();
+
+        $unavaibleRooms = $this->guestBookModel->getAvaibleRooms($date, $start_at, $end_at);
+        $unavaibleRoomIds = array_column($unavaibleRooms, 'id');
+        $availableRooms = array_filter($allRooms, function($room) use ($unavaibleRoomIds) {
+            return !in_array($room['id'], $unavaibleRoomIds);
+        });
+
+        return $this->response->setJSON($availableRooms);
     }
 
     // public function uploadProcess()

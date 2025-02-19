@@ -75,7 +75,7 @@ class GuestBooksModel extends Model
         return $this->countAllResults();
     }
 
-    public function getAvaibleRooms($date, $start_time, $end_time)
+    public function getAvaibleRooms($date = null, $start_time = null, $end_time = null)
     {
         return $this->select('pic_name, rooms.id, rooms.name')
             ->where('date', $date)

@@ -22,9 +22,11 @@ class History extends BaseController
         $keyword = $this->request->getGet('search');
 
         if ($user['is_admin'] == 1) {
+            $data["totalVisitors"] = $guestBookModel->getTotalVisitors();
             $data['guests'] = $guestBookModel->getGuests(search: $keyword);
             
         } else {
+            $data["totalVisitors"] = $guestBookModel->getTotalVisitors($user['id']);
             $data['guests'] = $guestBookModel->getGuests($email, $keyword);
         }
 

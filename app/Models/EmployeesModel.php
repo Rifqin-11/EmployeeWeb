@@ -8,7 +8,7 @@ class EmployeesModel extends Model
 {
     protected $table            = 'employees';
     protected $primaryKey       = 'id';
-    protected $allowedFields = ['name', 'password', 'email', 'is_admin', 'photo'];
+    protected $allowedFields = ['name', 'password', 'email', 'position', 'is_admin', 'photo'];
 
     public function getMeetingWith() {
         return $this->select('employees.id, name, position')
