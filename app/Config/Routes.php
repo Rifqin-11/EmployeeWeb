@@ -23,6 +23,8 @@ $routes->get('/Settings', 'Settings::index');
 $routes->get('/RoomSettings', 'Settings::RoomSettings');
 $routes->get('/EmployeeSettings', 'Settings::EmployeeSettings');
 
+$routes->post('/Settings/updateProfile', 'Settings::updateProfile');
+
 $routes->get('/settings/rooms', 'Settings::RoomSettings');
 $routes->post('/settings/rooms/add', 'Settings::addRoom');
 $routes->post('/settings/rooms/edit', 'Settings::editRoom');

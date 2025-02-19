@@ -57,6 +57,53 @@ class Settings extends BaseController
         return $this->renderView("pages/ProfileSettings");
     }
 
+    public function updateProfile()
+    {
+        if (!session()->has('email')) {
+            return redirect()->to('/');
+        }
+    
+        $employeesModel = new EmployeesModel();
+    
+        $id = $this->request->getPost('id');
+        $name = $this->request->getPost('name');
+        $position = $this->request->getPost('position');
+        $email = $this->request->getPost('email');
+        $phone = $this->request->getPost('phone');
+    
+        $updateData = [
+            'name' => $name,
+            'position' => $position,
+            'email' => $email,
+            'phone' => $phone
+        ];
+    
+        $currentPassword = $this->request->getPost('current_password');
+        $newPassword = $this->request->getPost('new_password');
+    
+        if (!empty($currentPassword) && !empty($newPassword)) {
+            $user = $employeesModel->find($id);
+    
+            if (password_verify($currentPassword, $user['password'])) {
+                $updateData['password'] = password_hash($newPassword, PASSWORD_DEFAULT);
+            } else {
+                return redirect()->back()->with('error', 'Current password is incorrect.');
+            }
+        }
+    
+        $employeesModel->update($id, $updateData);
+    
+        session()->set([
+            'email' => $email,
+            'name' => $name,
+            'position' => $position
+        ]);
+    
+        return redirect()->to('/Settings')->with('success', 'Profile updated successfully.');
+    }
+    
+
+
     /**
      * Menampilkan daftar ruangan dan mengelolanya
      */
@@ -190,20 +237,42 @@ class Settings extends BaseController
         }
     
         $employeesModel = new EmployeesModel();
+        $employeeId = $this->request->getPost('employee_id');
         $employeeName = $this->request->getPost('employee_name');
         $employeeEmail = $this->request->getPost('employee_email');
         $employeePosition = $this->request->getPost('employee_position');
-
-        $employeeId = $this->request->getPost('employee_id');
-
-        if (empty($employeeId) || empty($employeeName)) {
-            return redirect()->back()->with('error', 'Room ID and name are required.');
+    
+        if (empty($employeeId) || empty($employeeName) || empty($employeeEmail)) {
+            return redirect()->back()->with('error', 'ID, nama, dan email tidak boleh kosong.');
         }
     
-        $employeesModel->update($employeeId, ['name' => $employeeName, 'email' => $employeeEmail, 'position' => $employeePosition]);
+        $employee = $employeesModel->find($employeeId);
+        if (!$employee) {
+            return redirect()->back()->with('error', 'Karyawan tidak ditemukan.');
+        }
     
-        return redirect()->to('/settings/employees')->with('success', 'Room updated successfully.');
+        $db = \Config\Database::connect();
+        $db->transStart();
+    
+        $employeesModel->update($employeeId, [
+            'name' => $employeeName,
+            'email' => $employeeEmail,
+            'position' => $employeePosition
+        ]);
+    
+        $db->transComplete();
+    
+        if ($db->transStatus() === false) {
+            return redirect()->back()->with('error', 'Gagal memperbarui data.');
+        }
+    
+        if (session()->get('email') === $employee['email']) {
+            session()->set('email', $employeeEmail);
+        }
+    
+        return redirect()->to('/settings/employees')->with('success', 'Karyawan berhasil diperbarui.');
     }
+    
     
     
     public function deleteEmployee($id)
