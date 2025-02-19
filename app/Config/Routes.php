@@ -19,19 +19,9 @@ $routes->get('/logout', 'LoginController::logout');
 $routes->get('/Settings', 'Settings::index');
 
 $routes->group('infodata', static function($routes){
-    $routes->get('', 'infoData::index');
+    $routes->get('(:num)', 'InfoData::index/$1', ['filter' => 'guestaccess']);
     $routes->post('getrooms', 'InfoData::getrooms');
     $routes->put('edit', 'InfoData::edit');
 });
 
-$routes->post('upload/process', 'InfoData::uploadProcess');
-
-if (session()->get('is_admin') == 0){
-    $guestBookModel = new App\Models\GuestBooksModel();
-    $guests_id = $guestBookModel->getIdGuests(session()->get('email'));
-    foreach ($guests_id as $guest_id) {
-        $routes->get('infodata/' . $guest_id, 'InfoData::index/'. $guest_id);
-    }
-}  else {
-    $routes->get('infodata/(:num)', 'InfoData::index/$1');
-}
+// $routes->post('upload/process', 'InfoData::uploadProcess');
