@@ -119,19 +119,19 @@
                       </div>
                       <div>
                         <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Name</label>
-                        <input type="text" name="name" id="name" value="<?= $user['name'] ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" placeholder="Enter your name" required>
+                        <input type="text" name="name" id="name" value="<?= $user['name'] ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" placeholder="Enter your name">
                       </div>
                       <div>
                         <label for="position" class="block mb-2 text-sm font-medium text-gray-900">Position</label>
-                        <input type="text" name="position" id="position" value="<?= $user['position'] ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" placeholder="Enter your position" required>
+                        <input type="text" name="position" id="position" value="<?= $user['position'] ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" placeholder="Enter your position">
                       </div>
                       <div>
                         <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Email</label>
-                        <input type="email" name="email" id="email" value="<?= $user['email'] ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" placeholder="Enter your email" required>
+                        <input type="email" name="email" id="email" value="<?= $user['email'] ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" placeholder="Enter your email">
                       </div>
                       <div>
                         <label for="phone" class="block mb-2 text-sm font-medium text-gray-900">Phone Number</label>
-                        <input type="text" name="phone" id="phone" value="08123456789" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" placeholder="Enter your phone number" required>
+                        <input type="text" name="phone" id="phone" value="08123456789" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" placeholder="Enter your phone number">
                       </div>
                     </div>
                     <!-- Password Information -->
@@ -141,11 +141,11 @@
                       </div>
                       <div>
                         <label for="current_password" class="block mb-2 text-sm font-medium text-gray-900">Current Password</label>
-                        <input type="password" name="current_password" id="current_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" placeholder="Enter current password" required>
+                        <input type="password" name="current_password" id="current_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" placeholder="Enter current password">
                       </div>
                       <div>
                         <label for="new_password" class="block mb-2 text-sm font-medium text-gray-900">New Password</label>
-                        <input type="password" name="new_password" id="new_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" placeholder="Enter new password" required>
+                        <input type="password" name="new_password" id="new_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" placeholder="Enter new password">
                       </div>
                     </div>
                     <button type="submit" class="text-primary inline-flex items-center bg-white border border-primary hover:bg-primary hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
