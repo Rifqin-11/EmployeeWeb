@@ -6,19 +6,18 @@ use App\Models\EmployeesModel;
 
 class Home extends BaseController
 {
+    protected $guestBookModel;
+    protected $employeesModel;
+
+    public function __construct()
+    {
+        $this->guestBookModel = new GuestBooksModel();
+        $this->employeesModel = new EmployeesModel();
+    }
+
     public function index()
     {
-        if (!session()->has('email')) {
-            return redirect()->to('/');
-        }
-
-        $guestBookModel = new GuestBooksModel();
-        $employeesModel = new EmployeesModel();
         $email = session()->get('email');
-
-        // Pagination
-        $data["guest"] = $guestBookModel->paginate(10);
-        $data["pager"] = $guestBookModel->pager;
         
         // Calendar
         $month = $this->request->getGet("month") ?? date("m");
@@ -33,25 +32,28 @@ class Home extends BaseController
 
         
         // Home View
-        $user = $employeesModel->getUserByEmail($email);
+        $user = $this->employeesModel->getUserByEmail($email);
         $data['user'] = $user;
 
         $keyword = $this->request->getGet('search');
 
         if ($user['is_admin'] == 1) {
-            $totalVisitorMonthly = $guestBookModel->getTotalVisitorsLastMonth(1);
-            $data["totalVisitors"] = $guestBookModel->getTotalVisitors();
+            $totalVisitorMonthly = $this->guestBookModel->getTotalVisitorsLastMonth(1);
+            $data["totalVisitors"] = $this->guestBookModel->getTotalVisitors();
 
-            $data['guests'] = $guestBookModel->getGuests(search: $keyword, statusFilter: [0, 1, 2]);
+            $data['pendingVisitors'] = 'We have total ' . $this->guestBookModel->getPendingVisitorsCount();
 
+            $data['guests'] = $this->guestBookModel->getGuests(search: $keyword, statusFilter: [0, 1, 2])->findAll();
+            
         } else {
-            $totalVisitorMonthly = $guestBookModel->getTotalVisitorsLastMonth(1, $user['id']);
-            $data["totalVisitors"] = $guestBookModel->getTotalVisitors($user['id']);
+            $totalVisitorMonthly = $this->guestBookModel->getTotalVisitorsLastMonth(1, $user['id']);
+            $data['pendingVisitors'] = 'You have ' . $this->guestBookModel->getPendingVisitorsCount($user['id']);
+            $data["totalVisitors"] = $this->guestBookModel->getTotalVisitors($user['id']);
 
-            $data['guests'] = $guestBookModel->getGuests($email, $keyword, statusFilter: [0, 1, 2]);   
+            $data['guests'] = $this->guestBookModel->getGuests($email, $keyword, statusFilter: [0, 1, 2])->findAll();   
         }
 
-        $totalVisitor2Monthly = $guestBookModel->getTotalVisitorsLastMonth(2, $user['id']);
+        $totalVisitor2Monthly = $this->guestBookModel->getTotalVisitorsLastMonth(2, $user['id']);
 
         $totalLast2Month = $totalVisitor2Monthly - $totalVisitorMonthly;
 
@@ -64,11 +66,28 @@ class Home extends BaseController
 
         $data['percentageLastMonth'] = $percentageLastMonth;
         $data["totalVisitorsMonthly"] = $totalVisitorMonthly;
-        $data['pendingVisitors'] = $guestBookModel->getPendingVisitorsCount($user['id']);
 
         return view("pages/Home", $data);
     }
 
+    public function notificationModal()
+    {
+        $email = session()->get('email');
+        $user = $this->employeesModel->getUserByEmail($email);
+
+        if ($user['is_admin'] == 1) {
+            $guests = $this->guestBookModel->getGuests(statusFilter:[0])->paginate(3);
+        } else {
+            $guests = $this->guestBookModel->getGuests($email, statusFilter:[0])->paginate(3);
+        }
+        
+        for($i = 0; $i < count($guests); $i++){
+            $guests[$i]['created_at'] = time_parsing($guests[$i]['created_at']);
+        }
+
+        $data['guests'] = $guests;
+        return $this->response->setJSON($data);
+    }
 
     private function generateCalendar($year, $month)
     {

@@ -70,6 +70,7 @@
                                     <h2 class="text-lg font-medium text-gray-700">Room:</h2>
                                     <div>
                                         <select name="room" id="room" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
+                                            
                                             <?php if ($selectedRoom) : ?>
                                                 <option value="<?= $selectedRoom['id'] ?>" selected><?= $selectedRoom['name'] ?></option>
                                             <?php else : ?>
@@ -135,7 +136,6 @@
 
         appointments.forEach(appointment => {
             appointment.addEventListener('change', function() {
-                allFilled = true;
                 appointments.forEach(input => {
                     if (!input.value) {
                         allFilled = false;

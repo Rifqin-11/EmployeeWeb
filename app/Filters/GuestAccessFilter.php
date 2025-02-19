@@ -5,8 +5,11 @@ namespace App\Filters;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
+use Config\App;
+use App\Models\GuestBooksModel;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
-class HasLoginFilter implements FilterInterface
+class GuestAccessFilter implements FilterInterface
 {
     /**
      * Do whatever processing this filter needs to do.
@@ -25,9 +28,16 @@ class HasLoginFilter implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        // if (session()->has('email')) {
-        //     return redirect()->back();
-        // }
+        if (session()->get('is_admin') == 0){
+            $requestedId = $request->getUri()->getSegments()[1];
+            
+            $guestBookModel = new GuestBooksModel();
+            $allowedIds = $guestBookModel->getIdGuests(session()->get('email'));
+
+            if(!in_array($requestedId, $allowedIds)){
+                throw PageNotFoundException::forPageNotFound();
+            }
+        }
     }
 
     /**

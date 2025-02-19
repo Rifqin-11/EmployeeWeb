@@ -27,7 +27,7 @@
                     <?= $user["name"] ?>
                 </p>
                 <p class="text-sm text-gray-500">
-                    You have <?= $pendingVisitors ?> visitors with pending status.
+                    <?= $pendingVisitors ?> visitors with pending status.
                 </p>
             </div>
         </div>

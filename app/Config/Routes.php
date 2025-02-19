@@ -6,16 +6,15 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-<<<<<<< HEAD
-=======
  $routes->put('infoData/edit', 'InfoData::edit');
->>>>>>> 6baa25ca50e0d850cf3508876a02a3209db3d063
 
 $routes->group('/' , ['filter' => 'haslogin'] ,static function ($routes){
     $routes->get('', 'LoginController::index');
     $routes->post('auth', 'LoginController::auth');
 });
+
 $routes->get('Home', 'Home::index');
+$routes->get('Home/notification', 'Home::notificationmodal');
 $routes->get('History', 'History::index');
 
 $routes->get('/logout', 'LoginController::logout');
@@ -41,14 +40,4 @@ $routes->group('infodata', static function($routes){
     $routes->put('edit', 'InfoData::edit');
 });
 
-$routes->post('upload/process', 'InfoData::uploadProcess');
-
-if (session()->get('is_admin') == 0){
-    $guestBookModel = new App\Models\GuestBooksModel();
-    $guests_id = $guestBookModel->getIdGuests(session()->get('email'));
-    foreach ($guests_id as $guest_id) {
-        $routes->get('infodata/' . $guest_id, 'InfoData::index/'. $guest_id);
-    }
-}  else {
-    $routes->get('infodata/(:num)', 'InfoData::index/$1');
-}
+// $routes->post('upload/process', 'InfoData::uploadProcess');
