@@ -27,12 +27,12 @@ class History extends BaseController
         if ($user['is_admin'] == 1) {
             $data["totalVisitors"] = $this->guestBookModel->getTotalVisitors();
 
-            $data['guests'] = $this->guestBookModel->getGuests(search: $keyword, statusFilter: [0, 1, 2])->findAll();
+            $data['guests'] = $this->guestBookModel->getGuests(search: $keyword)->findAll();
             
         } else {
             $data["totalVisitors"] = $this->guestBookModel->getTotalVisitors($user['id']);
 
-            $data['guests'] = $this->guestBookModel->getGuests($email, $keyword, statusFilter: [0, 1, 2])->findAll();   
+            $data['guests'] = $this->guestBookModel->getGuests($email, $keyword)->findAll();   
         }
 
         return view("pages/History", $data);

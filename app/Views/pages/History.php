@@ -63,6 +63,7 @@
                     <option value="0">Pending</option>
                     <option value="1">Scheduled</option>
                     <option value="2">Rescheduled</option>
+                    <option value="3">Done</option>
                   </select>
                 </div>
               </div>
