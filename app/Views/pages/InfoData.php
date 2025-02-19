@@ -113,7 +113,7 @@
                                     <h2 class="text-lg font-semibold mb-3">Upload documentation images</h2>
 
                                     <!-- Documentation View -->
-                                    <div class="grid grid-cols-3 gap-2 mb-4">
+                                    <div class="grid grid-cols-5 gap-2 mb-4">
                                         <?php foreach($documentations as $doc): ?>
                                             <div class="relative group">
                                             <img src="<?= base_url('documentations/' . $guest['id'] . '/' . $doc['image_name']) ?>" alt="Dokumentasi">
