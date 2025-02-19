@@ -50,7 +50,6 @@ class Settings extends BaseController
     }
 
     /**
-     * Tampilkan halaman settings utama
      */
     public function index()
     {
@@ -70,26 +69,67 @@ class Settings extends BaseController
         $position = $this->request->getPost('position');
         $email = $this->request->getPost('email');
         $phone = $this->request->getPost('phone');
+        $photo = $this->request->getPost('photo');
+
+        $user = $employeesModel->find($id);
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
 
         $updateData = [
             'name' => $name,
             'position' => $position,
             'email' => $email,
-            'phone' => $phone
+            'phone' => $phone,
+            'photo' => $photo
         ];
+
+        if ($this->request->getPost('remove_photo')) {
+            if ($user['photo']) {
+                $photoPath = FCPATH . $user['photo'];
+                if (file_exists($photoPath)) {
+                    unlink($photoPath);
+                }
+            }
+            $updateData['photo'] = null;
+        }
+
+        $photo = $this->request->getFile('profile_photo');
+        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+            $uploadPath = FCPATH . 'uploads/profile_photos/';
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+            $newName = $photo->getRandomName();
+            $photo->move($uploadPath, $newName);
+            $updateData['photo'] = 'uploads/profile_photos/' . $newName;
+
+            if ($user['photo']) {
+                $oldPhotoPath = FCPATH . $user['photo'];
+                if (file_exists($oldPhotoPath)) {
+                    unlink($oldPhotoPath);
+                }
+            }
+        }
 
         $currentPassword = $this->request->getPost('current_password');
         $newPassword = $this->request->getPost('new_password');
+        if (!empty($currentPassword)) {
+            if (password_verify($currentPassword, $user['password'])) {
+                $updateData['password'] = password_hash($newPassword, PASSWORD_DEFAULT);
+            } else {
+                return redirect()->back()->with('error', 'Password lama salah.');
+            }
+        }
 
         if (!empty($currentPassword) && !empty($newPassword)) {
             $user = $employeesModel->find($id);
 
-            // Pastikan user ditemukan dan password lama cocok
             if (!$user) {
                 return redirect()->back()->with('error', 'User not found.');
             }
 
-            // Periksa apakah password di database sudah di-hash sebelumnya
             if (!isset($user['password']) || empty($user['password'])) {
                 return redirect()->back()->with('error', 'Current password is not set in the database.');
             }
@@ -101,25 +141,24 @@ class Settings extends BaseController
             }
         }
 
-        // Update data di database
         if (!$employeesModel->update($id, $updateData)) {
             return redirect()->back()->with('error', 'Failed to update profile.');
         }
 
-        // Perbarui sesi jika email berubah
         if (session()->get('email') !== $email) {
             session()->set('email', $email);
         }
         session()->set([
             'name' => $name,
-            'position' => $position
+            'position' => $position,
+            'photo' => $updateData['photo']
         ]);
 
         return redirect()->to('/Settings')->with('success', 'Profile updated successfully.');
     }
 
     /**
-     * Menampilkan daftar ruangan dan mengelolanya
+     * 
      */
     public function RoomSettings()
     {

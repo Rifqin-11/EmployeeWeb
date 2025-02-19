@@ -1,7 +1,7 @@
 <!-- components/DeleteModal.php -->
 <div id="deleteModal" tabindex="-1" class="hidden fixed inset-0 z-50 overflow-y-auto">
   <div class="relative p-4 w-full max-w-md max-h-full">
-    <div class="relative bg-white rounded-lg shadow">
+    <div class="relative bg-white py-5 rounded-lg shadow">
       <!-- Tombol Close Modal -->
       <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm w-8 h-8" data-modal-hide="deleteModal">
         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
