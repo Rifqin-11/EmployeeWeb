@@ -18,10 +18,6 @@ class Home extends BaseController
     public function index()
     {
         $email = session()->get('email');
-
-        // Pagination
-        // $data["guest"] = $this->guestBookModel->paginate(10);
-        // $data["pager"] = $this->guestBookModel->pager;
         
         // Calendar
         $month = $this->request->getGet("month") ?? date("m");
@@ -45,10 +41,13 @@ class Home extends BaseController
             $totalVisitorMonthly = $this->guestBookModel->getTotalVisitorsLastMonth(1);
             $data["totalVisitors"] = $this->guestBookModel->getTotalVisitors();
 
-            $data['guests'] = $this->guestBookModel->getGuests(search: $keyword, statusFilter: [0, 1, 2])->findAll();
+            $data['pendingVisitors'] = 'We have total ' . $this->guestBookModel->getPendingVisitorsCount();
 
+            $data['guests'] = $this->guestBookModel->getGuests(search: $keyword, statusFilter: [0, 1, 2])->findAll();
+            
         } else {
             $totalVisitorMonthly = $this->guestBookModel->getTotalVisitorsLastMonth(1, $user['id']);
+            $data['pendingVisitors'] = 'You have ' . $this->guestBookModel->getPendingVisitorsCount($user['id']);
             $data["totalVisitors"] = $this->guestBookModel->getTotalVisitors($user['id']);
 
             $data['guests'] = $this->guestBookModel->getGuests($email, $keyword, statusFilter: [0, 1, 2])->findAll();   
@@ -67,7 +66,6 @@ class Home extends BaseController
 
         $data['percentageLastMonth'] = $percentageLastMonth;
         $data["totalVisitorsMonthly"] = $totalVisitorMonthly;
-        $data['pendingVisitors'] = $this->guestBookModel->getPendingVisitorsCount($user['id']);
 
         return view("pages/Home", $data);
     }

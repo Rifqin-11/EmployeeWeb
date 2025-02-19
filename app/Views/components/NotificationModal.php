@@ -13,7 +13,6 @@
         Notifications
       </div>
       <div class="divide-y divide-gray-100 notification-container">
-
       </div>
       <a href="/History" class="block py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-50 hover:bg-gray-100">
         <div class="inline-flex items-center ">

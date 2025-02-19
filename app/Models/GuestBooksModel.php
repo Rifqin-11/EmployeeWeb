@@ -54,7 +54,6 @@ class GuestBooksModel extends Model
         if ($id) {
             $query->where('employee_id', $id);
         }
-
         return $query->countAllResults();
     }
 
