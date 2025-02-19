@@ -25,14 +25,14 @@
 </head>
 
 <body>
-    <div class="min-h-screen bg-[#F9F9F9] flex max-w-full">
+<div class="min-h-screen bg-[#F9F9F9] flex max-w-full">
         <?= $this->include('components/Sidebar') ?>
         <div class="pr-2 flex gap-2 w-full md:ml-64">
             <div class="flex flex-col gap-2 w-full">
                 <?= $this->include('components/Header') ?>
                 <div class="flex flex-col gap-2 w-full my-2 px-5">
                     <div class="flex flex-col bg-white p-6 rounded-lg shadow w-full">
-                        <form action="<?= base_url('infoData/edit') ?>" method="post" enctype="multipart/form-data">
+                        <form action="<?= base_url('infodata/edit') ?>" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="_method" value="PUT">
                             <input type="hidden" name="guestbook-id" value="<?= $guest['id'] ?>">
                             <input type="hidden" name="status" id="status" value="<?= $guest['status'] ?>">
@@ -70,7 +70,6 @@
                                     <h2 class="text-lg font-medium text-gray-700">Room:</h2>
                                     <div>
                                         <select name="room" id="room" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
-                                            
                                             <?php if ($selectedRoom) : ?>
                                                 <option value="<?= $selectedRoom['id'] ?>" selected><?= $selectedRoom['name'] ?></option>
                                             <?php else : ?>
@@ -122,101 +121,55 @@
                 </div>
             </div>
         </div>
-    </div>
     <script>
-        const appointments = document.querySelectorAll('.appointments-input input');
-        const roomSelect = document.getElementById('room');
-        let allFilled = true;
+    document.addEventListener("DOMContentLoaded", function () {
+        const appointments = document.querySelectorAll(".appointments-input input");
+        const roomSelect = document.getElementById("room");
 
-        appointments.forEach(input => {
-            if (!input.value) {
+        function fetchRooms() {
+            let date = document.getElementById("date").value;
+            let startAt = document.getElementById("start-at").value;
+            let endAt = document.getElementById("end-at").value;
+
+            if (!date || !startAt || !endAt) {
                 roomSelect.innerHTML = '<option value="" disabled selected>Please insert appointments first</option>';
-            }
-        });
-
-        appointments.forEach(appointment => {
-            appointment.addEventListener('change', function() {
-                appointments.forEach(input => {
-                    if (!input.value) {
-                        allFilled = false;
-                        roomSelect.innerHTML = '<option value="" disabled selected>Please insert appointments first</option>';
-                    }
-                });
-                if (allFilled) {
-                    fetch('<?= base_url('infodata/getrooms') ?>', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        body: JSON.stringify({
-                            date: appointments[0].value,
-                            start_at: appointments[1].value,
-                            end_at: appointments[2].value
-                        })   
-                    })
-                    .then(response => response.json())
-                    .then(rooms => {
-                        console.log(rooms);
-                        let rows = '<option value="" disabled selected>Select rooms...</option>';
-                        for (const key in rooms){
-                            rows = rows + `<option value="${rooms[key].id}">${rooms[key].name}</option>`;
-                        }
-                        roomSelect.innerHTML = rows;
-                    })
-                }
-            });
-        });
-
-        // document.getElementById("buttonSave").addEventListener("click", function(event) {
-        //     // event.preventDefault();
-
-        //     let alertToast = document.getElementById("alertToast");
-        //     alertToast.classList.remove("hidden");
-
-        //     setTimeout(() => {
-        //         alertToast.classList.add("hidden");
-        //         document.querySelector("form").submit();
-        //     }, 1500);
-        // });
-
-        const fileInput = document.getElementById('fileInput');
-        const preview = document.getElementById('preview');
-
-        fileInput.addEventListener('change', function(event) {
-            preview.innerHTML = "";
-            Array.from(event.target.files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.classList.add('w-20', 'h-20', 'object-cover', 'rounded-md');
-                    preview.appendChild(img);
-                }
-                reader.readAsDataURL(file);
-            });
-        });
-
-        function uploadFiles() {
-            let formData = new FormData();
-            let files = fileInput.files;
-
-            for (let i = 0; i < files.length; i++) {
-                formData.append("images[]", files[i]);
+                return;
             }
 
-            formData.append("guestbook-id", document.querySelector("input[name='guestbook-id']").value);
-
-            fetch("<?= base_url('upload/process') ?>", {
-                    method: "POST",
-                    body: formData
+            fetch("<?= base_url('infodata/getrooms') ?>", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: JSON.stringify({
+                    date: date,
+                    start_at: startAt,
+                    end_at: endAt
                 })
-                .then(response => response.json())
-                .catch(error => console.error("Error:", error));
+            })
+            .then(response => response.json())
+            .then(rooms => {
+                let options = '<option value="" disabled selected>Select rooms...</option>';
+                rooms.forEach(room => {
+                    options += `<option value="${room.id}">${room.name}</option>`;
+                });
+                roomSelect.innerHTML = options;
+            })
+            .catch(error => console.error("Error fetching rooms:", error));
         }
 
-        lucide.createIcons();
-    </script>
+        // Jalankan fetchRooms saat salah satu input berubah
+        appointments.forEach(input => {
+            input.addEventListener("change", fetchRooms);
+        });
+
+        // Panggil sekali saat halaman dimuat
+        fetchRooms();
+    });
+lucide.createIcons();
+</script>
+
 </body>
 
 <div id="alertToast" class="fixed bottom-8 right-5 hidden">

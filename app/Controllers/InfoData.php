@@ -112,21 +112,30 @@ class InfoData extends BaseController
 
     public function getRooms()
     {
-        $date = $this->request->getVar('date');
-        $start_at = $this->request->getVar('start_at');
-        $end_at = $this->request->getVar('end_at');
-        
+        $date = $this->request->getJSON(true)['date'] ?? null;
+        $start_time = $this->request->getJSON(true)['start_at'] ?? null;
+        $end_time = $this->request->getJSON(true)['end_at'] ?? null;
+    
+        if (empty($date) || empty($start_time) || empty($end_time)) {
+            return $this->response->setJSON(['error' => 'Please provide date, start time, and end time']);
+        }
+    
         $roomModel = new RoomModel();
         $allRooms = $roomModel->findAll();
-
-        $unavaibleRooms = $this->guestBookModel->getAvaibleRooms($date, $start_at, $end_at);
-        $unavaibleRoomIds = array_column($unavaibleRooms, 'id');
-        $availableRooms = array_filter($allRooms, function($room) use ($unavaibleRoomIds) {
-            return !in_array($room['id'], $unavaibleRoomIds);
-        });
-
+    
+        $unavailableRooms = $this->guestBookModel->getAvaibleRooms($date, $start_time, $end_time);
+        $unavailableRoomIds = array_column($unavailableRooms, 'room_id');
+    
+        $availableRooms = array_values(array_filter($allRooms, function ($room) use ($unavailableRoomIds) {
+            return !in_array($room['id'], $unavailableRoomIds);
+        }));
+    
         return $this->response->setJSON($availableRooms);
     }
+    
+    
+    
+    
 
     // public function uploadProcess()
     // {

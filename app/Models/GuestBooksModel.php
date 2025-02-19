@@ -76,17 +76,25 @@ class GuestBooksModel extends Model
 
     public function getAvaibleRooms($date = null, $start_time = null, $end_time = null)
     {
-        return $this->select('rooms.id, rooms.name')
+        if (empty($date) || empty($start_time) || empty($end_time)) {
+            return [];
+        }
+    
+        $bookedRooms = $this->select('room_id')
             ->where('date', $date)
             ->groupStart()
-                ->where('start_at <=', $end_time)
-                ->where('end_at >=', $start_time)
+                ->where('start_at <', $end_time)
+                ->where('end_at >', $start_time)
             ->groupEnd()
             ->groupBy('room_id')
-            ->join('rooms', 'rooms.id = guestbooks.room_id')
             ->findAll();
-    }
 
+        $bookedRoomIds = array_column($bookedRooms, 'room_id');
+    
+        return $bookedRoomIds;
+    }
+    
+    
     public function getIdGuests($email)
     {
         $result = $this->select('guestbooks.id')
