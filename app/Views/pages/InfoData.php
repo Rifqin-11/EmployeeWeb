@@ -69,16 +69,19 @@
                                 <div class="mb-4">
                                     <h2 class="text-lg font-medium text-gray-700">Room:</h2>
                                     <div>
-                                        <select name="room" id="room" class="w-full white border border-gray-300 p-2 rounded rounded-lg">
-                                            <?php if ($selectedRoom) : ?>
-                                                <option value="<?= $selectedRoom['id'] ?>" selected><?= $selectedRoom['name'] ?></option>
-                                            <?php else : ?>
-                                                <option value="" disabled selected>Select Room</option>
-                                            <?php endif ?>
-                                            <?php foreach ($rooms as $room): ?>
-                                                <option value="<?= $room["id"] ?>"><?= $room['name'] ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
+                                    <select name="room" id="room" class="w-full white border border-gray-300 p-2 rounded-lg">
+                                        <?php if ($selectedRoom): ?>
+                                            <option value="<?= $selectedRoom['id'] ?>" selected><?= $selectedRoom['name'] ?></option>
+                                        <?php else: ?>
+                                            <option value="" disabled selected>Select Room</option>
+                                        <?php endif; ?>
+
+                                        <?php foreach ($rooms as $room): ?>
+                                            <option value="<?= $room["id"] ?>" <?= ($room["id"] == $selectedRoom['id']) ? 'selected' : '' ?>>
+                                                <?= $room['name'] ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                     </div>
                                 </div>
                                 <div class="mb-4 appointments-input">
@@ -130,6 +133,7 @@
             let date = document.getElementById("date").value;
             let startAt = document.getElementById("start-at").value;
             let endAt = document.getElementById("end-at").value;
+            let selectedRoomId = roomSelect.dataset.selected;
 
             if (!date || !startAt || !endAt) {
                 roomSelect.innerHTML = '<option value="" disabled selected>Please insert appointments first</option>';
@@ -150,25 +154,26 @@
             })
             .then(response => response.json())
             .then(rooms => {
-                let options = '<option value="" disabled selected>Select rooms...</option>';
+                let options = '<option value="" disabled>Select rooms...</option>';
                 rooms.forEach(room => {
-                    options += `<option value="${room.id}">${room.name}</option>`;
+                    let isSelected = (room.id == selectedRoomId) ? "selected" : "";
+                    options += `<option value="${room.id}" ${isSelected}>${room.name}</option>`;
                 });
                 roomSelect.innerHTML = options;
             })
             .catch(error => console.error("Error fetching rooms:", error));
         }
 
-        // Jalankan fetchRooms saat salah satu input berubah
+        roomSelect.dataset.selected = "<?= $selectedRoom['id'] ?? '' ?>";
+
         appointments.forEach(input => {
             input.addEventListener("change", fetchRooms);
         });
 
-        // Panggil sekali saat halaman dimuat
         fetchRooms();
     });
-lucide.createIcons();
-</script>
+    lucide.createIcons();
+    </script>
 
 </body>
 
