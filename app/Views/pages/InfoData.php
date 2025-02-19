@@ -104,9 +104,31 @@
                             </div>
                             <div class="flex justify-center items-center <?= $guest['status'] == 0 ? 'hidden' : '' ?>">
                                 <div class="flex flex-col p-6 w-150 text-center">
-                                    <h2 class="text-lg font-semibold mb-3">Upload documentation images
-                                    </h2>
+                                    <h2 class="text-lg font-semibold mb-3">Upload documentation images</h2>
 
+                                    <!-- Tampilkan gambar yang sudah ada -->
+                                    <div class="grid grid-cols-3 gap-2 mb-4">
+                                        <?php foreach($documentations as $doc): ?>
+                                            <div class="relative group">
+                                                <img src="<?= base_url('writable/documentations/'.$guest['id'].'/'.$doc['image_name']) ?>" 
+                                                    class="w-full h-32 object-cover rounded-lg">
+                                                <div class="absolute inset-0 bg-black bg-opacity-50 hidden group-hover:flex items-center justify-center rounded-lg">
+                                                    <a href="<?= base_url('writable/documentations/'.$guest['id'].'/'.$doc['image_name']) ?>" 
+                                                    target="_blank"
+                                                    class="text-white p-1 hover:text-blue-300">
+                                                        <i data-lucide="eye"></i>
+                                                    </a>
+                                                    <a href="#" 
+                                                    onclick="deleteImage(<?= $doc['id'] ?>)" 
+                                                    class="text-white p-1 hover:text-red-300">
+                                                        <i data-lucide="trash-2"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+
+                                    <!-- Upload section -->
                                     <label for="fileInput" class="cursor-pointer flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-400 rounded-lg bg-gray-50 hover:bg-gray-100">
                                         <span class="text-gray-500">Click to upload</span>
                                         <input type="file" id="fileInput" name="images[]" multiple class="hidden">
@@ -171,7 +193,15 @@
         });
 
         fetchRooms();
-    });
+
+        function deleteImage(id) {
+        if(confirm('Are you sure to delete this image?')) {
+            fetch(`<?= base_url('infodata/deleteImage/') ?>${id}`, {
+                method: 'DELETE',
+            }).then(() => window.location.reload());
+        }
+    }
+        });
     lucide.createIcons();
     </script>
 

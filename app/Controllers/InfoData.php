@@ -44,6 +44,9 @@ class InfoData extends BaseController
 
             $data['rooms'] = $availableRooms;
             $data['guest'] = $guest;
+
+            $documentationsModel = new DocumentationsModel();
+            $data['documentations'] = $documentationsModel->where('guestbook_id', $id)->findAll();
         }
 
         return view("pages/InfoData", $data);
@@ -107,7 +110,7 @@ class InfoData extends BaseController
                 $this->guestBookModel->save($data);
             }
         }
-        return redirect()->to('Home');   
+        return redirect()->to(base_url('infodata/'.$guestbook_id));   
     }
 
     public function getRooms()
@@ -131,5 +134,21 @@ class InfoData extends BaseController
         }));
     
         return $this->response->setJSON($availableRooms);
+    }
+
+    public function deleteImage($id)
+    {
+        $documentationsModel = new DocumentationsModel();
+        $image = $documentationsModel->find($id);
+        
+        if($image) {
+            $path = WRITEPATH . 'documentations/'.$image['guestbook_id'].'/'.$image['image_name'];
+            if(file_exists($path)) {
+                unlink($path);
+            }
+            $documentationsModel->delete($id);
+        }
+        
+        return redirect()->back();
     }
 }
