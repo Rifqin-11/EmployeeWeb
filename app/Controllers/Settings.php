@@ -14,9 +14,6 @@ class Settings extends BaseController
      */
     private function prepareData()
     {
-        if (!session()->has('email')) {
-            return redirect()->to('/');
-        }
 
         $guestBookModel = new GuestBooksModel();
         $employeesModel = new EmployeesModel();
@@ -58,9 +55,6 @@ class Settings extends BaseController
 
     public function updateProfile()
     {
-        if (!session()->has('email')) {
-            return redirect()->to('/');
-        }
 
         $employeesModel = new EmployeesModel();
 

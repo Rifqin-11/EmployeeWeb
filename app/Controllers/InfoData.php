@@ -17,7 +17,6 @@ class InfoData extends BaseController
     
     public function index($id=null)
     {
-
         $employeesModel = new EmployeesModel();
         $roomModel = new RoomModel();
         
