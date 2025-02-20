@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <style type="text/tailwindcss">
-      /* @theme {
+      @theme {
         --color-primary: #084E8F;
         --color-secondary: #f9f9f9;
         --color-button: #2563eb;
@@ -19,7 +19,7 @@
         --color-text-600: #364153;
         --color-yellow-700: #F9A329;
         --color-yellow-200: #fff0dc;
-      } */
+      }
     </style>
   </head>
   <body>
@@ -40,7 +40,7 @@
                       <div class="avatar">
                         <div class="ring-primary ring-offset-base-100 w-20 h-20 rounded-full ring ring-offset-2 overflow-hidden">
                           <?php if (!empty($user['photo'])) : ?>
-                            <img src="<?= base_url($user['photo']) ?>" class="w-full h-full object-cover" />
+                            <img src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
                           <?php else : ?>
                             <div class="flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full">
                               <svg class="absolute w-15 h-15 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -129,15 +129,7 @@
                     <div class="flex flex-row gap-7 mb-8">
                       <div class="avatar">
                         <div class="ring-primary ring-offset-base-100 w-15 h-15 rounded-full ring ring-offset-2 overflow-hidden">
-                          <?php if (!empty($user['photo'])) : ?>
-                            <img id="profileImage" src="<?= base_url($user['photo']) ?>" class="w-full h-full object-cover" />
-                          <?php else : ?>
-                            <div class="flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full">
-                              <svg class="absolute w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                              </svg>
-                            </div>
-                          <?php endif; ?>
+                          <img id="profileImage" src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
                         </div>
                       </div>
                       <input type="file" id="imageUpload" name="profile_photo" class="hidden" accept="image/*">
@@ -213,13 +205,7 @@
     <script>
       function removePhoto() {
         const container = document.querySelector('#profileImage').parentElement;
-        container.innerHTML = `
-          <div class="flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full">
-            <svg class="absolute w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-            </svg>
-          </div>
-        `;
+        container.innerHTML = '<img id="profileImage" src="<?= base_url('uploads/profile_photos/') ?>default.png" class="w-full h-full object-cover" />';
       }
 
       let removeInput = document.createElement('input');

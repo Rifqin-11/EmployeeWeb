@@ -73,26 +73,24 @@ class Settings extends BaseController
         ];
 
         if ($this->request->getPost('remove_photo')) {
-            if ($user['photo']) {
+            if ($user['photo'] !== 'default.png') {
                 $photoPath = FCPATH . $user['photo'];
                 if (file_exists($photoPath)) {
                     unlink($photoPath);
                 }
             }
-            $updateData['photo'] = null;
+            $updateData['photo'] = 'default.png';
         }
 
         $photo = $this->request->getFile('profile_photo');
         if ($photo && $photo->isValid() && !$photo->hasMoved()) {
             $uploadPath = FCPATH . 'uploads/profile_photos/';
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
-            }
+            
             $newName = $photo->getRandomName();
             $photo->move($uploadPath, $newName);
-            $updateData['photo'] = 'uploads/profile_photos/' . $newName;
+            $updateData['photo'] = $newName;
 
-            if ($user['photo']) {
+            if ($user['photo'] !== 'default.png') {
                 $oldPhotoPath = FCPATH . $user['photo'];
                 if (file_exists($oldPhotoPath)) {
                     unlink($oldPhotoPath);
@@ -199,20 +197,15 @@ class Settings extends BaseController
 
     public function addEmployee()
     {
-        $employeeName = $this->request->getPost('employee_name');
-        $employeeEmail = $this->request->getPost('employee_email');
-        $employeePosition = $this->request->getPost('employee_position');
         $employeePassword = $this->request->getPost('employee_password');
-    
-        if (empty($employeeName)) {
-            return redirect()->back()->with('error', 'Room name is required.');
-        }
+        $employeePassword = sha1(sha1(md5($employeePassword)));
     
         $this->employeesModel->insert([
-            'name' => $employeeName,
-            'email' => $employeeEmail,
-            'position' => $employeePosition,
-            'password' => $employeePassword
+            'name'     => $this->request->getPost('employee_name'),
+            'email'    => $this->request->getPost('employee_email'),
+            'position' => $this->request->getPost('employee_position'),
+            'password' => $employeePassword,
+            'photo'    => 'default.png'
         ]);
     
         return redirect()->to('/settings/employees')->with('success', 'Employee added successfully.');
