@@ -9,24 +9,30 @@ use CodeIgniter\Controller;
 
 class Settings extends BaseController
 {
-    /**
-     * Memeriksa sesi pengguna dan menyiapkan data
-     */
+    //  Memeriksa sesi pengguna dan menyiapkan data
+    protected $guestBookModel;
+    protected $employeesModel;
+    protected $roomModel;
+
+    public function __construct()
+    {
+        $this->guestBookModel = new GuestBooksModel();
+        $this->employeesModel = new EmployeesModel();
+        $this->roomModel = new RoomModel();
+    }
+    
     private function prepareData()
     {
-
-        $guestBookModel = new GuestBooksModel();
-        $employeesModel = new EmployeesModel();
         $email = session()->get('email');
-        $user  = $employeesModel->getUserByEmail($email);
+        $user  = $this->employeesModel->getUserByEmail($email);
 
         $data['user'] = $user;
         $keyword = $this->request->getGet('search');
 
         if ($user['is_admin'] == 1) {
-            $data['guests'] = $guestBookModel->getGuests(search: $keyword);
+            $data['guests'] = $this->guestBookModel->getGuests(search: $keyword);
         } else {
-            $data['guests'] = $guestBookModel->getGuests($email, $keyword);
+            $data['guests'] = $this->guestBookModel->getGuests($email, $keyword);
         }
 
         return $data;
@@ -46,8 +52,6 @@ class Settings extends BaseController
         return view($viewName, $data);
     }
 
-    /**
-     */
     public function index()
     {
         return $this->renderView("pages/ProfileSettings");
@@ -55,28 +59,17 @@ class Settings extends BaseController
 
     public function updateProfile()
     {
-
-        $employeesModel = new EmployeesModel();
-
         $id = $this->request->getPost('id');
-        $name = $this->request->getPost('name');
-        $position = $this->request->getPost('position');
         $email = $this->request->getPost('email');
-        $phone = $this->request->getPost('phone');
-        $photo = $this->request->getPost('photo');
 
-        $user = $employeesModel->find($id);
-
-        if (!$user) {
-            return redirect()->back()->with('error', 'User not found.');
-        }
+        $user = $this->employeesModel->find($id);
 
         $updateData = [
-            'name' => $name,
-            'position' => $position,
-            'email' => $email,
-            'phone' => $phone,
-            'photo' => $photo
+            'name'      => $this->request->getPost('name'),
+            'position'  => $this->request->getPost('position'),
+            'email'     => $email,
+            'phone'     => $this->request->getPost('phone'),
+            'photo'     => $this->request->getPost('photo')
         ];
 
         if ($this->request->getPost('remove_photo')) {
@@ -107,80 +100,45 @@ class Settings extends BaseController
             }
         }
 
+        // Changing Password
         $currentPassword = $this->request->getPost('current_password');
         $newPassword = $this->request->getPost('new_password');
-        if (!empty($currentPassword)) {
-            if (password_verify($currentPassword, $user['password'])) {
-                $updateData['password'] = password_hash($newPassword, PASSWORD_DEFAULT);
-            } else {
-                return redirect()->back()->with('error', 'Password lama salah.');
-            }
-        }
+        $currentPassword = sha1(sha1(md5($currentPassword))); // Hashing
 
-        if (!empty($currentPassword) && !empty($newPassword)) {
-            $user = $employeesModel->find($id);
-
-            if (!$user) {
-                return redirect()->back()->with('error', 'User not found.');
-            }
-
-            if (!isset($user['password']) || empty($user['password'])) {
-                return redirect()->back()->with('error', 'Current password is not set in the database.');
-            }
-
-            if (password_verify($currentPassword, $user['password'])) {
-                $updateData['password'] = password_hash($newPassword, PASSWORD_DEFAULT);
+        if (!empty($currentPassword && !empty($newPassword))) {
+            if ($currentPassword == $user['password']) {
+                $newPassword = sha1(sha1(md5($newPassword))); // Hashing
+                $updateData['password'] = $newPassword;
             } else {
                 return redirect()->back()->with('error', 'Current password is incorrect.');
             }
         }
 
-        if (!$employeesModel->update($id, $updateData)) {
+        if (!$this->employeesModel->update($id, $updateData)) {
             return redirect()->back()->with('error', 'Failed to update profile.');
         }
 
         if (session()->get('email') !== $email) {
             session()->set('email', $email);
         }
-        session()->set([
-            'name' => $name,
-            'position' => $position,
-            'photo' => $updateData['photo']
-        ]);
 
         return redirect()->to('/Settings')->with('success', 'Profile updated successfully.');
     }
 
-    /**
-     * 
-     */
     public function RoomSettings()
     {
-        if (!session()->has('email')) {
-            return redirect()->to('/');
-        }
-
-        $employeesModel = new EmployeesModel();
-        $roomModel = new RoomModel();
         $email = session()->get('email');
-        $user  = $employeesModel->getUserByEmail($email);
+        $user  = $this->employeesModel->getUserByEmail($email);
 
         $data['user'] = $user;
-        $data['rooms'] = $roomModel->findAll();
+        $data['rooms'] = $this->roomModel->findAll();
 
         return view("pages/RoomSettings", $data);
     }
 
-    /**
-     * Menambah ruangan baru
-     */
+    // Menambah ruangan baru
     public function addRoom()
     {
-        if (!session()->has('email')) {
-            return redirect()->to('/');
-        }
-    
-        $roomModel = new RoomModel();
         $roomName = $this->request->getPost('room_name');
         $roomDescription = $this->request->getPost('room_description');
     
@@ -188,7 +146,7 @@ class Settings extends BaseController
             return redirect()->back()->with('error', 'Room name is required.');
         }
     
-        $roomModel->insert([
+        $this->roomModel->insert([
             'name' => $roomName,
             'description' => $roomDescription
         ]);
@@ -198,11 +156,6 @@ class Settings extends BaseController
     
     public function editRoom()
     {
-        if (!session()->has('email')) {
-            return redirect()->to('/');
-        }
-    
-        $roomModel = new RoomModel();
         $roomId = $this->request->getPost('room_id'); // Ambil ID dari POST
         $roomName = $this->request->getPost('room_name');
         $roomDescription = $this->request->getPost('room_description');
@@ -211,7 +164,10 @@ class Settings extends BaseController
             return redirect()->back()->with('error', 'Room ID and name are required.');
         }
     
-        $roomModel->update($roomId, ['name' => $roomName, 'description' => $roomDescription]);
+        $this->roomModel->update($roomId, [
+            'name' => $roomName, 
+            'description' => $roomDescription]
+        );
     
         return redirect()->to('/RoomSettings')->with('success', 'Room updated successfully.');
     }
@@ -219,45 +175,30 @@ class Settings extends BaseController
     
     public function deleteRoom($id)
     {
-        if (!session()->has('email')) {
-            return redirect()->to('/');
-        }
-    
-        $roomModel = new RoomModel();
-        $room = $roomModel->find($id);
+        $room = $this->roomModel->find($id);
     
         if (!$room) {
             return redirect()->back()->with('error', 'Room not found.');
         }
     
-        $roomModel->delete($id);
+        $this->roomModel->delete($id);
     
         return redirect()->to('/RoomSettings')->with('success', 'Room deleted successfully.');
     }
 
     public function EmployeeSettings()
     {
-        if (!session()->has('email')) {
-            return redirect()->to('/');
-        }
-
-        $employeesModel = new EmployeesModel();
         $email = session()->get('email');
-        $user  = $employeesModel->getUserByEmail($email);
+        $user  = $this->employeesModel->getUserByEmail($email);
 
         $data['user'] = $user;
-        $data['employees'] = $employeesModel->findAll();
+        $data['employees'] = $this->employeesModel->findAll();
 
         return view("pages/EmployeeSettings", $data);
     }
 
     public function addEmployee()
     {
-        if (!session()->has('email')) {
-            return redirect()->to('/');
-        }
-    
-        $employeesModel = new EmployeesModel();
         $employeeName = $this->request->getPost('employee_name');
         $employeeEmail = $this->request->getPost('employee_email');
         $employeePosition = $this->request->getPost('employee_position');
@@ -267,7 +208,7 @@ class Settings extends BaseController
             return redirect()->back()->with('error', 'Room name is required.');
         }
     
-        $employeesModel->insert([
+        $this->employeesModel->insert([
             'name' => $employeeName,
             'email' => $employeeEmail,
             'position' => $employeePosition,
@@ -279,11 +220,6 @@ class Settings extends BaseController
     
     public function editEmployee()
     {
-        if (!session()->has('email')) {
-            return redirect()->to('/');
-        }
-    
-        $employeesModel = new EmployeesModel();
         $employeeId = $this->request->getPost('employee_id');
         $employeeName = $this->request->getPost('employee_name');
         $employeeEmail = $this->request->getPost('employee_email');
@@ -293,7 +229,7 @@ class Settings extends BaseController
             return redirect()->back()->with('error', 'ID, nama, dan email tidak boleh kosong.');
         }
     
-        $employee = $employeesModel->find($employeeId);
+        $employee = $this->employeesModel->find($employeeId);
         if (!$employee) {
             return redirect()->back()->with('error', 'Karyawan tidak ditemukan.');
         }
@@ -301,7 +237,7 @@ class Settings extends BaseController
         $db = \Config\Database::connect();
         $db->transStart();
     
-        $employeesModel->update($employeeId, [
+        $this->employeesModel->update($employeeId, [
             'name' => $employeeName,
             'email' => $employeeEmail,
             'position' => $employeePosition
@@ -320,22 +256,15 @@ class Settings extends BaseController
         return redirect()->to('/settings/employees')->with('success', 'Karyawan berhasil diperbarui.');
     }
     
-    
-    
     public function deleteEmployee($id)
-    {
-        if (!session()->has('email')) {
-            return redirect()->to('/');
-        }
-    
-        $employeesModel = new EmployeesModel();
-        $employee = $employeesModel->find($id);
+    {    
+        $employee = $this->employeesModel->find($id);
     
         if (!$employee) {
             return redirect()->back()->with('error', 'Room not found.');
         }
     
-        $employeesModel->delete($id);
+        $this->employeesModel->delete($id);
     
         return redirect()->to('/settings/employees')->with('success', 'Room deleted successfully.');
     }
