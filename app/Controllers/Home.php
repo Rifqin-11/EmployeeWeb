@@ -18,6 +18,10 @@ class Home extends BaseController
     public function index()
     {
         $email = session()->get('email');
+
+        if (!$email) {
+            return redirect()->to('/');
+        }
         
         // Calendar
         $month = $this->request->getGet("month") ?? date("m");
@@ -34,6 +38,11 @@ class Home extends BaseController
         // Home View
         $user = $this->employeesModel->getUserByEmail($email);
         $data['user'] = $user;
+
+        if (!$user) {
+            session()->destroy();
+            return redirect()->to('/');
+        }
 
         $keyword = $this->request->getGet('search');
 
