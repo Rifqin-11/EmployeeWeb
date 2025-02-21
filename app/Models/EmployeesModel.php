@@ -8,7 +8,7 @@ class EmployeesModel extends Model
 {
     protected $table            = 'employees';
     protected $primaryKey       = 'id';
-    protected $allowedFields = ['name', 'password', 'email', 'position', 'is_admin', 'photo'];
+    protected $allowedFields    = ['name', 'password', 'email', 'position', 'is_admin', 'photo'];
 
     public function getMeetingWith() {
         return $this->select('employees.id, name, position')
@@ -18,8 +18,8 @@ class EmployeesModel extends Model
 
     public function getUser($username) {
         return $this->where('name', $username)
-                    ->select('email, password, is_admin')
                     ->orWhere('email', $username)
+                    ->select('email, password, is_admin')
                     ->first();
                 }
                 

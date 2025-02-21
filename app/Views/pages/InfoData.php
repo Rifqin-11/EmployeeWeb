@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <style type="text/tailwindcss">
-        @theme {
+        /* @theme {
         --color-primary: #084E8F;
         --color-secondary: #f9f9f9;
         --color-button: #2563eb;
@@ -19,7 +19,7 @@
         --color-text-600: #364153;
         --color-yellow-700: #F9A329;
         --color-yellow-200: #fff0dc;
-      }
+      } */
     </style>
 
 </head>
@@ -67,24 +67,22 @@
                                 <h2 class="text-lg font-medium text-gray-700">Agenda:</h2>
                                 <p class="text-gray-600"><?= $guest["agenda"] ?></p>
                             </div>
-
+                            
                             <!-- Room and appointment -->
                             <div class="flex grid grid-cols-2 gap-4">
                                 <div class="mb-4">
                                     <h2 class="text-lg font-medium text-gray-700">Room:</h2>
                                     <div>
                                     <select name="room" id="room" class="w-full white border border-gray-300 p-2 rounded-lg">
-                                        <?php if ($selectedRoom): ?>
-                                            <option value="<?= $selectedRoom['id'] ?>" selected><?= $selectedRoom['name'] ?></option>
+                                        <?php if(!$selectedRoom) : ?>
+                                            <option value="" disabled selected>Please insert appointments first</option>
                                         <?php else: ?>
-                                            <option value="" disabled selected>Select Room</option>
-                                        <?php endif; ?>
-
-                                        <?php foreach ($rooms as $room): ?>
-                                            <option value="<?= $room["id"] ?>" <?= ($selectedRoom && $room["id"] == $selectedRoom['id']) ? 'selected' : '' ?>>
-                                                <?= $room['name'] ?>
-                                            </option>
-                                        <?php endforeach; ?>
+                                            <?php foreach ($rooms as $room): ?>
+                                                <option value="<?= $room["id"] ?>" <?= ($room["id"] == $guest['room_id']) ? 'selected' : '' ?>>
+                                                    <?= $room['name'] ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php endif ?>
                                     </select>
                                     </div>
                                 </div>
@@ -97,6 +95,7 @@
                                                     <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                                                 </svg>
                                             </div>
+                                            <input type="hidden" name="guest-id" id="guest-id" value="<?= $guest['id'] ?>">
                                             <input name="date" id="date" value="<?= $guest['date'] ?>" type="date" class="bg-white border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Select date">
                                         </div>
 
@@ -263,10 +262,12 @@
         const roomSelect = document.getElementById("room");
 
         function fetchRooms() {
-            let date = document.getElementById("date").value;
-            let startAt = document.getElementById("start-at").value;
-            let endAt = document.getElementById("end-at").value;
-            let selectedRoomId = roomSelect.dataset.selected;
+            const date = document.getElementById("date").value;
+            const startAt = document.getElementById("start-at").value;
+            const endAt = document.getElementById("end-at").value;
+            const guest_id = document.getElementById("guest-id").value;
+
+            const selectedRoomId = roomSelect.dataset.selected;
 
             if (!date || !startAt || !endAt) {
                 roomSelect.innerHTML = '<option value="" disabled selected>Please insert appointments first</option>';
@@ -282,12 +283,14 @@
                 body: JSON.stringify({
                     date: date,
                     start_at: startAt,
-                    end_at: endAt
+                    end_at: endAt,
+                    guest_id: guest_id
                 })
             })
             .then(response => response.json())
             .then(rooms => {
-                let options = '<option value="" disabled>Select rooms...</option>';
+                console.log(rooms);
+                let options = '<option value="" disabled selected>Select rooms...</option>';
                 rooms.forEach(room => {
                     let isSelected = (room.id == selectedRoomId) ? "selected" : "";
                     options += `<option value="${room.id}" ${isSelected}>${room.name}</option>`;
@@ -303,21 +306,33 @@
             input.addEventListener("change", fetchRooms);
         });
 
-        fetchRooms();
     });
+
+    document.addEventListener("DOMContentLoaded", function () {
+          const toast = document.getElementById("toast-simple");
+          if (toast) {
+            setTimeout(() => {
+              toast.style.opacity = "0";
+              setTimeout(() => {
+                toast.remove();
+              }, 1000);
+            }, 1500);
+          }
+        });
+
 
     lucide.createIcons();
     </script>
 
 </body>
 
-<div id="alertToast" class="fixed bottom-8 right-5 hidden">
-    <div class="flex items-center gap-3 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg">
-        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-        </svg>
-        <span class="font-semibold">Data saved successfully!</span>
+    <?php if (session()->getFlashdata('success')) : ?>
+    <div id="toast-simple" class="fixed bottom-5 right-5 z-50 flex items-center w-full max-w-xs p-4 mb-4 text-green-400 bg-white rounded-lg shadow-md border border-gray-200" role="alert">
+          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+          </svg>
+        <div class="ps-4 text-sm font-normal"><?= session()->getFlashdata('success'); ?></div>
     </div>
-</div>
+  <?php endif; ?>
 
 </html>

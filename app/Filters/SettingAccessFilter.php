@@ -5,8 +5,9 @@ namespace App\Filters;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
-class HasLoginFilter implements FilterInterface
+class SettingAccessFilter implements FilterInterface
 {
     /**
      * Do whatever processing this filter needs to do.
@@ -25,8 +26,8 @@ class HasLoginFilter implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        if (session()->has('email')) {
-            return redirect()->back();
+        if (session()->get('is_admin') == 0){
+            throw PageNotFoundException::forPageNotFound();
         }
     }
 

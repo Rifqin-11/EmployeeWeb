@@ -15,6 +15,7 @@ use CodeIgniter\Filters\SecureHeaders;
 use App\Filters\AuthFilter;
 use App\Filters\HasLoginFilter;
 use App\Filters\GuestAccessFilter;
+use App\Filters\SettingAccessFilter;
 
 class Filters extends BaseFilters
 {
@@ -39,7 +40,8 @@ class Filters extends BaseFilters
         'performance'   => PerformanceMetrics::class,
         'auth'          => AuthFilter::class,
         'haslogin'      => HasLoginFilter::class,
-        'guestaccess'   => GuestAccessFilter::class
+        'guestaccess'   => GuestAccessFilter::class,
+        'settingaccess'   => SettingAccessFilter::class
     ];
 
     /**

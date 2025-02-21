@@ -32,8 +32,10 @@ class LoginController extends BaseController
 
         $employeeModel = new EmployeesModel;
         $user = $employeeModel->getUser($username);
-
+        
         if ($user){
+            // Hashing password
+            $password = sha1(sha1(md5($password)));
             if ($password == $user['password']){
                 $sessionData = [
                     'email' => $user['email'],

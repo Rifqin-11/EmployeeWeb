@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <style type="text/tailwindcss">
-      @theme {
+      /* @theme {
         --color-primary: #084E8F;
         --color-secondary: #f9f9f9;
         --color-button: #2563eb;
@@ -19,7 +19,7 @@
         --color-text-600: #364153;
         --color-yellow-700: #F9A329;
         --color-yellow-200: #fff0dc;
-      }
+      } */
     </style>
   </head>
   <body>
@@ -171,7 +171,7 @@
                                 <path fill-rule="evenodd" d="M8 10V7a4 4 0 1 1 8 0v3h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h1Zm2-3a2 2 0 1 1 4 0v3h-4V7Zm2 6a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1Z" clip-rule="evenodd"/>
                               </svg>
                             </div>
-                            <input type="text" name="employee_password" id="employee_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Enter password" required>
+                            <input type="password" name="employee_password" id="employee_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Enter password" required>
                           </div>
                       </div>
                       <div>
@@ -284,8 +284,28 @@
         </div>
       </div>
     </div>
+    
+    <?php if (session()->getFlashdata('success')) : ?>
+    <div id="toast-simple" class="fixed bottom-5 right-5 z-50 flex items-center w-full max-w-xs p-4 mb-4 text-green-400 bg-white rounded-lg shadow-md border border-gray-200" role="alert">
+          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+          </svg>
+        <div class="ps-4 text-sm font-normal"><?= session()->getFlashdata('success'); ?></div>
+    </div>
+  <?php endif; ?>
 
     <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          const toast = document.getElementById("toast-simple");
+          if (toast) {
+            setTimeout(() => {
+              toast.style.opacity = "0";
+              setTimeout(() => {
+                toast.remove();
+              }, 1000);
+            }, 3000);
+          }
+        });
       // Close Modal
       function closeModalOnClickOutside(modalId) {
         const modal = document.getElementById(modalId);

@@ -17,37 +17,45 @@ class InfoData extends BaseController
     
     public function index($id=null)
     {
-
         $employeesModel = new EmployeesModel();
+        $roomModel = new RoomModel();
         
         $email = session()->get('email');
         $user = $employeesModel->getUserByEmail($email);
         $data['user'] = $user;
 
-        if ($id) {
-            $roomModel = new RoomModel();
-            $allRooms = $roomModel->findAll();
+        $allRooms = $roomModel->findAll();
 
-            $guest = $this->guestBookModel->find($id);
+        $guest = $this->guestBookModel->find($id);
 
-            $unavaibleRooms = $this->guestBookModel->getAvaibleRooms($guest['date'], $guest['start_at'], $guest['end_at']);
-            $unavaibleRoomIds = array_column($unavaibleRooms, 'id');
-            $availableRooms = array_filter($allRooms, function($room) use ($unavaibleRoomIds) {
-                return !in_array($room['id'], $unavaibleRoomIds);
-            });
+        $this->guestBookModel->update($guest['id'], [
+            'date' => null,
+            'start_at' => null,
+            'end_at' => null
+        ]);
 
-            if ($guest['room_id']){
-                $data['selectedRoom'] = $roomModel->find($guest['room_id']);
-            } else {
-                $data['selectedRoom'] = null;
-            }
+        $unavaibleRoomIds = $this->guestBookModel->getAvaibleRooms($guest['date'], $guest['start_at'], $guest['end_at']);
+        $availableRooms = array_filter($allRooms, function($room) use ($unavaibleRoomIds) {
+            return !in_array($room['id'], $unavaibleRoomIds);
+        });
 
-            $data['rooms'] = $availableRooms;
-            $data['guest'] = $guest;
+        $this->guestBookModel->update($guest['id'], [
+            'date' => $guest['date'],
+            'start_at' => $guest['start_at'],
+            'end_at' => $guest['end_at']
+        ]);
 
-            $documentationsModel = new DocumentationsModel();
-            $data['documentations'] = $documentationsModel->where('guestbook_id', $id)->findAll();
+        if ($guest['room_id']){
+            $data['selectedRoom'] = $roomModel->find($guest['room_id']);
+        } else {
+            $data['selectedRoom'] = null;
         }
+
+        $data['rooms'] = $availableRooms;
+        $data['guest'] = $guest;
+
+        $documentationsModel = new DocumentationsModel();
+        $data['documentations'] = $documentationsModel->where('guestbook_id', $id)->findAll();
 
         return view("pages/InfoData", $data);
     }
@@ -56,83 +64,98 @@ class InfoData extends BaseController
     {
         $status = $this->request->getVar('status');
         $guestbook_id = $this->request->getVar('guestbook-id');
-        
-        if ($status == 0){
+    
+        if ($status == 0) {
             $data = [
-                'id' => $guestbook_id,
-                'room_id' => $this->request->getVar('room'),
-                'date' => $this->request->getVar('date'),
+                'id'       => $guestbook_id,
+                'room_id'  => $this->request->getVar('room'),
+                'date'     => $this->request->getVar('date'),
                 'start_at' => $this->request->getVar('start-at'),
-                'end_at' => $this->request->getVar('end-at'),
-                'status' => 1
+                'end_at'   => $this->request->getVar('end-at'),
+                'status'   => 1
             ];
-            
+    
             $this->guestBookModel->save($data);
-            
-        } else{
+            session()->setFlashdata('success', 'Data berhasil disimpan!');
+        } else {
             $images = $this->request->getFileMultiple('images');
-            
             $documentationsModel = new DocumentationsModel;
             $uploadPath = FCPATH . 'documentations/' . $guestbook_id;
             
-            if(!is_dir($uploadPath)){
+            if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
             }
-
-            foreach ($images as $image){
-                if ($image->isValid()){
+    
+            foreach ($images as $image) {
+                if ($image->isValid()) {
                     $image->move($uploadPath);
                 } else {
                     // Menangani status rescheduled
                     $data = [
-                        'id' => $guestbook_id,
-                        'room_id' => $this->request->getVar('room'),
-                        'date' => $this->request->getVar('date'),
+                        'id'       => $guestbook_id,
+                        'room_id'  => $this->request->getVar('room'),
+                        'date'     => $this->request->getVar('date'),
                         'start_at' => $this->request->getVar('start-at'),
-                        'end_at' => $this->request->getVar('end-at'),
-                        'status' => 2
+                        'end_at'   => $this->request->getVar('end-at'),
+                        'status'   => 2
                     ];
                     $this->guestBookModel->save($data);
-                    return redirect()->to('Home');
+                    session()->setFlashdata('success', 'Data berhasil disimpan dengan status rescheduled!');
+                    return redirect()->to(base_url('infodata/' . $guestbook_id));
                 }
-
+    
                 $data = [
-                    'guestbook_id'  => $guestbook_id,
-                    'image_name'    => $image->getClientName()
+                    'guestbook_id' => $guestbook_id,
+                    'image_name'   => $image->getClientName()
                 ];
                 $documentationsModel->insert($data);
-
+    
                 $data = [
-                    'id' => $guestbook_id,
+                    'id'     => $guestbook_id,
                     'status' => 3
                 ];
-                
                 $this->guestBookModel->save($data);
+                session()->setFlashdata('success', 'Data berhasil disimpan dengan status selesai!');
             }
         }
-        return redirect()->to(base_url('infodata/'.$guestbook_id));   
+    
+        return redirect()->to(base_url('infodata/' . $guestbook_id));
     }
+    
 
     public function getRooms()
     {
         $date = $this->request->getJSON(true)['date'] ?? null;
         $start_time = $this->request->getJSON(true)['start_at'] ?? null;
         $end_time = $this->request->getJSON(true)['end_at'] ?? null;
+        $guest_id = $this->request->getJSON(true)['guest_id'] ?? null;
     
         if (empty($date) || empty($start_time) || empty($end_time)) {
             return $this->response->setJSON(['error' => 'Please provide date, start time, and end time']);
         }
-    
+        
+        $lastData = $this->guestBookModel->find($guest_id);
+        $this->guestBookModel->update($guest_id, [
+            'date' => null,
+            'start_at' => null,
+            'end_at' => null
+        ]);
+
         $roomModel = new RoomModel();
         $allRooms = $roomModel->findAll();
-    
-        $unavailableRooms = $this->guestBookModel->getAvaibleRooms($date, $start_time, $end_time);
-        $unavailableRoomIds = array_column($unavailableRooms, 'room_id');
+        
+        $unavailableRoomIds = $this->guestBookModel->getAvaibleRooms($date, $start_time, $end_time);
     
         $availableRooms = array_values(array_filter($allRooms, function ($room) use ($unavailableRoomIds) {
             return !in_array($room['id'], $unavailableRoomIds);
         }));
-    
+        
+        $this->guestBookModel->update($guest_id, [
+            'date' => $lastData['date'],
+            'start_at' => $lastData['start_at'],
+            'end_at' => $lastData['end_at']
+        ]);
+
         return $this->response->setJSON($availableRooms);
     }
 
