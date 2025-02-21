@@ -96,7 +96,7 @@
                                                 </svg>
                                             </div>
                                             <input type="hidden" name="guest-id" id="guest-id" value="<?= $guest['id'] ?>">
-                                            <input name="date" id="date" value="<?= $guest['date'] ?>" type="date" class="bg-white border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Select date">
+                                            <input name="date" id="date" value="<?= $guest['date'] ?>" type="date" class=" border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Select date">
                                         </div>
 
                                         <input type="time" name="start-at" id="start-at" value="<?= $guest['start_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
@@ -309,16 +309,32 @@
     });
 
     document.addEventListener("DOMContentLoaded", function () {
-          const toast = document.getElementById("toast-simple");
-          if (toast) {
+        const toast = document.getElementById("toast-simple");
+        if (toast) {
+        setTimeout(() => {
+            toast.style.opacity = "0";
             setTimeout(() => {
-              toast.style.opacity = "0";
-              setTimeout(() => {
-                toast.remove();
-              }, 1000);
-            }, 1500);
-          }
-        });
+            toast.remove();
+            }, 1000);
+        }, 1500);
+        }
+
+        const status = document.getElementById("status").value;
+        const roomSelect = document.getElementById("room");
+        const dateInput = document.getElementById("date");
+        const appointmentInputs = document.querySelectorAll(".appointments-input input");
+
+        if (status == 3) {
+            roomSelect.disabled = true;
+            roomSelect.classList.add("bg-gray-200");
+
+            appointmentInputs.forEach(input => {
+                input.disabled = true;
+                input.classList.add("bg-gray-200");
+            });
+        }
+    });
+        
 
 
     lucide.createIcons();

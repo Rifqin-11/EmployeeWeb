@@ -9,10 +9,12 @@ use App\Models\DocumentationsModel;
 class InfoData extends BaseController
 {
     protected $guestBookModel;
+    protected $employeesModel;
 
     public function __construct()
     {
         $this->guestBookModel = new GuestBooksModel();
+        $this->employeesModel = new EmployeesModel();
     }
     
     public function index($id=null)
@@ -76,7 +78,8 @@ class InfoData extends BaseController
             ];
     
             $this->guestBookModel->save($data);
-            session()->setFlashdata('success', 'Data berhasil disimpan!');
+            session()->setFlashdata('success', 'Data has been saved successfully!');
+            
         } else {
             $images = $this->request->getFileMultiple('images');
             $documentationsModel = new DocumentationsModel;
@@ -100,7 +103,7 @@ class InfoData extends BaseController
                         'status'   => 2
                     ];
                     $this->guestBookModel->save($data);
-                    session()->setFlashdata('success', 'Data berhasil disimpan dengan status rescheduled!');
+                    session()->setFlashdata('success', 'Data has been saved successfully with a rescheduled status!');
                     return redirect()->to(base_url('infodata/' . $guestbook_id));
                 }
     
@@ -115,7 +118,7 @@ class InfoData extends BaseController
                     'status' => 3
                 ];
                 $this->guestBookModel->save($data);
-                session()->setFlashdata('success', 'Data berhasil disimpan dengan status selesai!');
+                session()->setFlashdata('success', 'Data has been saved successfully with a done status!');
             }
         }
     
@@ -185,11 +188,16 @@ class InfoData extends BaseController
 
             $documentationsModel->delete($id);
 
+            session()->setFlashdata('success', 'Image successfully deleted.');
+
             return $this->response->setJSON(['success' => true]);
         }
 
+        session()->setFlashdata('error', 'Image not found.');
+
         return $this->response->setJSON(['success' => false, 'message' => 'Image not found']);
     }
+
 
 
 }
