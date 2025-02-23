@@ -7,7 +7,7 @@
 ✅ Upload meeting documentation  
 ✅ View visitor statistics on a dashboard  
 
-This project is built using **CodeIgniter 4** (backend) and **Tailwind CSS** (frontend), ensuring a clean and responsive UI.  
+This project is built using **CodeIgniter 4** (backend) and **Tailwind CSS** (styling), ensuring a clean and responsive UI.  
 
 ## ✨ Features  
 
