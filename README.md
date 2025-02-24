@@ -24,7 +24,6 @@ This project is built using **CodeIgniter 4** and **Tailwind CSS**, ensuring a c
 | 🖥️ **Backend**  | CodeIgniter 4 (PHP Framework)  |
 | 🎨 **Frontend** | Tailwind CSS (Modern UI)       |
 | 📂 **Database** | MySQL                           |
-| 🚀 **Hosting**  | Apache / Nginx (Recommended)  |
 
 ## 🚀 Installation  
 
