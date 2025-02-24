@@ -41,15 +41,11 @@
                     <a data-tooltip-target="tooltip-bottom" data-tooltip-placement="bottom" href="/Settings" class="text-gray-900 p-2 rounded-full flex gap-3 justify-center items-center">
                         <div class="avatar">
                             <div class="ring-primary ring-offset-base-100 w-9 h-9 rounded-full ring ring-offset-2 overflow-hidden">
-                            <?php if (!empty($user['photo'])) : ?>
-                                <img src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
-                            <?php else : ?>
-                                <div class="flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full">
-                                    <svg class="absolute w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                                    </svg>
-                                </div>
-                            <?php endif; ?>
+                                <?php if (!empty($user['photo'])) : ?>
+                                    <img id="profileImage" src="<?= base_url($user['photo']) ?>" class="w-full h-full object-cover" />
+                                <?php else : ?>
+                                    <img id="profileImage" src="<?= base_url('uploads/default/default.png')?>" class="w-full h-full object-cover" />
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="justify-center items-center">

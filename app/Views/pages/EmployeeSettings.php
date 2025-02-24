@@ -165,18 +165,18 @@
                       </div>
                       <div>
                         <label for="employee_password" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
-                          <div class="relative mb-6">
+                          <div class="relative mb-2">
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                               <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M8 10V7a4 4 0 1 1 8 0v3h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h1Zm2-3a2 2 0 1 1 4 0v3h-4V7Zm2 6a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1Z" clip-rule="evenodd"/>
                               </svg>
                             </div>
-                            <input type="password" name="employee_password" id="employee_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Enter password" required>
+                            <input data-popover-target="popover-password" data-popover-placement="bottom" type="password" name="employee_password" id="employee_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Enter password" required>
                           </div>
                       </div>
                       <div>
                           <label for="employee_position" class="block mb-2 text-sm font-medium text-gray-900">Position</label>
-                          <div class="relative mb-6">
+                          <div class="relative mb-2">
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                               <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M10 2a3 3 0 0 0-3 3v1H5a3 3 0 0 0-3 3v2.382l1.447.723.005.003.027.013.12.056c.108.05.272.123.486.212.429.177 1.056.416 1.834.655C7.481 13.524 9.63 14 12 14c2.372 0 4.52-.475 6.08-.956.78-.24 1.406-.478 1.835-.655a14.028 14.028 0 0 0 .606-.268l.027-.013.005-.002L22 11.381V9a3 3 0 0 0-3-3h-2V5a3 3 0 0 0-3-3h-4Zm5 4V5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v1h6Zm6.447 7.894.553-.276V19a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-5.382l.553.276.002.002.004.002.013.006.041.02.151.07c.13.06.318.144.557.242.478.198 1.163.46 2.01.72C7.019 15.476 9.37 16 12 16c2.628 0 4.98-.525 6.67-1.044a22.95 22.95 0 0 0 2.01-.72 15.994 15.994 0 0 0 .707-.312l.041-.02.013-.006.004-.002.001-.001-.431-.866.432.865ZM12 10a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H12Z" clip-rule="evenodd"/>
@@ -184,6 +184,12 @@
                             </div>
                             <input type="text" name="employee_position" id="employee_position" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Example: Managers" required>
                           </div>
+                      </div>
+                      <div class="mb-6">
+                        <div class="flex items-center mb-2">
+                            <input id="admin-checkbox" name="is_admin" type="checkbox" value="1" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2">
+                            <label for="admin-checkbox" class="ms-2 text-sm font-medium text-gray-900">Make Admin?</label>
+                        </div>
                       </div>
                     </div>
                     <button
@@ -267,7 +273,16 @@
                           placeholder="Enter employee position"
                         />
                       </div>
+                      <div class="col-span-2">
+                        <label for="new_password" class="block mb-2 text-sm font-medium text-gray-900">New Password</label>
+                        <div class="flex items-center mb-2">
+                            <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2">
+                            <label for="default-checkbox" class="ms-2 text-sm font-medium text-gray-900">Change Password?</label>
+                        </div>
+                        <input type="password" name="new_password" id="new_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" placeholder="Enter new password" required>
+                      </div>
                     </div>
+
                     <button
                       type="submit"
                       class="text-primary inline-flex items-center bg-white border border-primary hover:bg-primary hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
@@ -284,8 +299,37 @@
         </div>
       </div>
     </div>
+    
+    <?php if (session()->getFlashdata('success')) : ?>
+    <div id="toast-simple" class="fixed bottom-5 right-5 z-50 flex items-center w-full max-w-xs p-4 mb-4 text-green-400 bg-white rounded-lg shadow-sm border border-gray-200" role="alert">
+          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+          </svg>
+        <div class="ps-4 text-sm font-normal"><?= session()->getFlashdata('success'); ?></div>
+    </div>
+  <?php endif; ?>
 
     <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          const toast = document.getElementById("toast-simple");
+          if (toast) {
+            setTimeout(() => {
+              toast.style.opacity = "0";
+              setTimeout(() => {
+                toast.remove();
+              }, 1000);
+            }, 3000);
+          }
+
+          const checkbox = document.getElementById('default-checkbox');
+          const newPasswordInput = document.getElementById('new_password');
+          
+          newPasswordInput.disabled = !checkbox.checked;
+          
+          checkbox.addEventListener('change', function() {
+            newPasswordInput.disabled = !this.checked;
+          });
+        });
       // Close Modal
       function closeModalOnClickOutside(modalId) {
         const modal = document.getElementById(modalId);

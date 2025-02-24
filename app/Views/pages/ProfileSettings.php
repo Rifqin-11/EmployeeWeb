@@ -40,13 +40,9 @@
                       <div class="avatar">
                         <div class="ring-primary ring-offset-base-100 w-20 h-20 rounded-full ring ring-offset-2 overflow-hidden">
                           <?php if (!empty($user['photo'])) : ?>
-                            <img src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
+                            <img id="profileImage" src="<?= base_url($user['photo']) ?>" class="w-full h-full object-cover" />
                           <?php else : ?>
-                            <div class="flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full">
-                              <svg class="absolute w-15 h-15 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                              </svg>
-                            </div>
+                            <img id="profileImage" src="<?= base_url('uploads/default/default.png')?>" class="w-full h-full object-cover" />
                           <?php endif; ?>
                         </div>
                       </div>
@@ -128,14 +124,15 @@
                     <h1 class="font-medium text-sm text-gray-400 mb-2">Profile Pictures</h1>
                     <div class="flex flex-row gap-7 mb-8">
                       <div class="avatar">
+                        <!-- Gunakan ID unik untuk modal, misalnya "modalProfileImage" -->
                         <div class="ring-primary ring-offset-base-100 w-15 h-15 rounded-full ring ring-offset-2 overflow-hidden">
-                          <img id="profileImage" src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
+                          <img id="modalProfileImage" src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
                         </div>
                       </div>
                       <input type="file" id="imageUpload" name="profile_photo" class="hidden" accept="image/*">
                       <div class="flex items-center gap-3">
-                          <button type="button" onclick="document.getElementById('imageUpload').click();" class="h-9 px-4 py-1 text-white bg-blue-400 text-sm rounded-lg hover:bg-blue-600">Change picture</button>
-                          <button type="button" onclick="removePhoto();" class=" h-9 px-4 py-1 text-red-700 bg-gray-100 border border-gray-200 text-sm rounded-lg hover:bg-red-600 hover:text-white">Delete picture</button>
+                        <button type="button" onclick="document.getElementById('imageUpload').click();" class="h-9 px-4 py-1 text-white bg-blue-400 text-sm rounded-lg hover:bg-blue-600">Change picture</button>
+                        <button type="button" onclick="removePhoto();" class="h-9 px-4 py-1 text-red-700 bg-gray-100 border border-gray-200 text-sm rounded-lg hover:bg-red-600 hover:text-white">Delete picture</button>
                       </div>
                     </div>
 
@@ -178,7 +175,7 @@
                           </div>
                         </div>
                     </div>
-
+                    
                     <h1 class="font-medium text-sm text-gray-400 mb-2">Password Settings</h1>
                     <div class="grid gap-4 mb-4 grid-cols-2">
                         <div>
@@ -202,29 +199,87 @@
         </div>
       </div>
     </div>
-    <script>
-      function removePhoto() {
-        const container = document.querySelector('#profileImage').parentElement;
-        container.innerHTML = '<img id="profileImage" src="<?= base_url('uploads/profile_photos/') ?>default.png" class="w-full h-full object-cover" />';
-      }
 
-      let removeInput = document.createElement('input');
+    <?php if (session()->getFlashdata('error')) : ?>
+      <div id="toast-danger" class="fixed bottom-4 right-4 z-50 flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm border border-gray-200" role="alert">
+          <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg">
+              <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+              </svg>
+              <span class="sr-only">Error icon</span>
+          </div>
+          <div class="ms-3 text-sm font-normal"><?= session()->getFlashdata('error'); ?></div>
+          <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#toast-danger" aria-label="Close">
+              <span class="sr-only">Close</span>
+              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+              </svg>
+          </button>
+      </div>
+    <?php endif; ?>
+
+    <?php if (session()->getFlashdata('success')) : ?>
+      <div id="toast-danger" class="fixed bottom-4 right-4 z-50 flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm border border-gray-200" role="alert">
+          <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg">
+              <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+              </svg>
+              <span class="sr-only">Check icon</span>
+          </div>
+          <div class="ms-3 text-sm font-normal"><?= session()->getFlashdata('success'); ?></div>
+          <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#toast-danger" aria-label="Close">
+              <span class="sr-only">Close</span>
+              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+              </svg>
+          </button>
+      </div>
+    <?php endif; ?>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toast = document.getElementById("toast-danger");
+        if (toast) {
+          setTimeout(() => {
+            toast.style.opacity = "0";
+            setTimeout(() => {
+              toast.remove();
+            }, 1000);
+          }, 3000);
+        }
+      });
+
+    function removePhoto() {
+
+      const container = document.querySelector('#modalProfileImage').parentElement;
+      container.innerHTML = '<img id="modalProfileImage" src="<?= base_url('uploads/default/') ?>default.png" class="w-full h-full object-cover" />';
+      
+      let form = document.querySelector('#crud-modal form');
+      if (!document.querySelector('input[name="remove_photo"]')) {
+        let removeInput = document.createElement('input');
         removeInput.type = 'hidden';
         removeInput.name = 'remove_photo';
         removeInput.value = '1';
-        document.querySelector('form').appendChild(removeInput);
+        form.appendChild(removeInput);
+      }
+    }
 
-        document.getElementById('imageUpload').addEventListener('change', function(e) {
-          if (e.target.files && e.target.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-              document.getElementById('profileImage').src = e.target.result;
-            };
-            reader.readAsDataURL(e.target.files[0]);
-          }
-        });
+    document.getElementById('imageUpload').addEventListener('change', function(e) {
+      if (e.target.files && e.target.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('modalProfileImage').src = e.target.result;
+        };
+        reader.readAsDataURL(e.target.files[0]);
         
-      lucide.createIcons();
-    </script>
+        let removeInput = document.querySelector('input[name="remove_photo"]');
+        if (removeInput) {
+          removeInput.remove();
+        }
+      }
+    });
+    
+    lucide.createIcons();
+  </script>
   </body>
 </html>

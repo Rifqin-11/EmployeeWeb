@@ -9,10 +9,12 @@ use App\Models\DocumentationsModel;
 class InfoData extends BaseController
 {
     protected $guestBookModel;
+    protected $employeesModel;
 
     public function __construct()
     {
         $this->guestBookModel = new GuestBooksModel();
+        $this->employeesModel = new EmployeesModel();
     }
     
     public function index($id=null)
@@ -64,62 +66,65 @@ class InfoData extends BaseController
     {
         $status = $this->request->getVar('status');
         $guestbook_id = $this->request->getVar('guestbook-id');
-        
-        if ($status == 0){
+    
+        if ($status == 0) {
             $data = [
-                'id' => $guestbook_id,
-                'room_id' => $this->request->getVar('room'),
-                'date' => $this->request->getVar('date'),
+                'id'       => $guestbook_id,
+                'room_id'  => $this->request->getVar('room'),
+                'date'     => $this->request->getVar('date'),
                 'start_at' => $this->request->getVar('start-at'),
-                'end_at' => $this->request->getVar('end-at'),
-                'status' => 1
+                'end_at'   => $this->request->getVar('end-at'),
+                'status'   => 1
             ];
-            
+    
             $this->guestBookModel->save($data);
+            session()->setFlashdata('success', 'Data has been saved successfully!');
             
-        } else{
+        } else {
             $images = $this->request->getFileMultiple('images');
-            
             $documentationsModel = new DocumentationsModel;
             $uploadPath = FCPATH . 'documentations/' . $guestbook_id;
             
-            if(!is_dir($uploadPath)){
+            if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
             }
-
-            foreach ($images as $image){
-                if ($image->isValid()){
+    
+            foreach ($images as $image) {
+                if ($image->isValid()) {
                     $image->move($uploadPath);
                 } else {
                     // Menangani status rescheduled
                     $data = [
-                        'id' => $guestbook_id,
-                        'room_id' => $this->request->getVar('room'),
-                        'date' => $this->request->getVar('date'),
+                        'id'       => $guestbook_id,
+                        'room_id'  => $this->request->getVar('room'),
+                        'date'     => $this->request->getVar('date'),
                         'start_at' => $this->request->getVar('start-at'),
-                        'end_at' => $this->request->getVar('end-at'),
-                        'status' => 2
+                        'end_at'   => $this->request->getVar('end-at'),
+                        'status'   => 2
                     ];
                     $this->guestBookModel->save($data);
-                    return redirect()->to('Home');
+                    session()->setFlashdata('success', 'Data has been saved successfully with a rescheduled status!');
+                    return redirect()->to(base_url('infodata/' . $guestbook_id));
                 }
-
+    
                 $data = [
-                    'guestbook_id'  => $guestbook_id,
-                    'image_name'    => $image->getClientName()
+                    'guestbook_id' => $guestbook_id,
+                    'image_name'   => $image->getClientName()
                 ];
                 $documentationsModel->insert($data);
-
+    
                 $data = [
-                    'id' => $guestbook_id,
+                    'id'     => $guestbook_id,
                     'status' => 3
                 ];
-                
                 $this->guestBookModel->save($data);
+                session()->setFlashdata('success', 'Data has been saved successfully with a done status!');
             }
         }
-        return redirect()->to(base_url('infodata/'.$guestbook_id));   
+    
+        return redirect()->to(base_url('infodata/' . $guestbook_id));
     }
+    
 
     public function getRooms()
     {
@@ -183,11 +188,16 @@ class InfoData extends BaseController
 
             $documentationsModel->delete($id);
 
+            session()->setFlashdata('success', 'Image successfully deleted.');
+
             return $this->response->setJSON(['success' => true]);
         }
 
+        session()->setFlashdata('error', 'Image not found.');
+
         return $this->response->setJSON(['success' => false, 'message' => 'Image not found']);
     }
+
 
 
 }

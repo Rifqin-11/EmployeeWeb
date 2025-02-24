@@ -9,7 +9,7 @@ use CodeIgniter\Controller;
 
 class Settings extends BaseController
 {
-    //  Memeriksa sesi pengguna dan menyiapkan data
+    // Check user session and prepare data
     protected $guestBookModel;
     protected $employeesModel;
     protected $roomModel;
@@ -26,8 +26,17 @@ class Settings extends BaseController
         $email = session()->get('email');
         $user  = $this->employeesModel->getUserByEmail($email);
 
+        if (!$email) {
+            return redirect()->to('/');
+        }
+
         $data['user'] = $user;
         $keyword = $this->request->getGet('search');
+
+        if (!$user) {
+            session()->destroy();
+            return redirect()->to('/');
+        }
 
         if ($user['is_admin'] == 1) {
             $data['guests'] = $this->guestBookModel->getGuests(search: $keyword);
@@ -39,7 +48,7 @@ class Settings extends BaseController
     }
 
     /**
-     * Render halaman dengan data
+     * Render page with data
      */
     private function renderView(string $viewName)
     {
@@ -61,67 +70,72 @@ class Settings extends BaseController
     {
         $id = $this->request->getPost('id');
         $email = $this->request->getPost('email');
-
+    
         $user = $this->employeesModel->find($id);
-
+    
         $updateData = [
-            'name'      => $this->request->getPost('name'),
-            'position'  => $this->request->getPost('position'),
-            'email'     => $email,
-            'phone'     => $this->request->getPost('phone'),
-            'photo'     => $this->request->getPost('photo')
+            'name'     => $this->request->getPost('name'),
+            'position' => $this->request->getPost('position'),
+            'email'    => $email,
+            'phone'    => $this->request->getPost('phone'),
         ];
-
+    
+        // Handle photo removal
         if ($this->request->getPost('remove_photo')) {
-            if ($user['photo'] !== 'default.png') {
+            if ($user['photo'] && $user['photo'] != 'uploads/default/default.png') {
                 $photoPath = FCPATH . $user['photo'];
                 if (file_exists($photoPath)) {
                     unlink($photoPath);
                 }
             }
-            $updateData['photo'] = 'default.png';
+            $updateData['photo'] = 'uploads/default/default.png';
         }
-
+    
+        // Handle photo upload
         $photo = $this->request->getFile('profile_photo');
         if ($photo && $photo->isValid() && !$photo->hasMoved()) {
             $uploadPath = FCPATH . 'uploads/profile_photos/';
-            
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
             $newName = $photo->getRandomName();
             $photo->move($uploadPath, $newName);
-            $updateData['photo'] = $newName;
-
-            if ($user['photo'] !== 'default.png') {
-                $oldPhotoPath = FCPATH . $user['photo'];
-                if (file_exists($oldPhotoPath)) {
-                    unlink($oldPhotoPath);
-                }
-            }
+            $updateData['photo'] = 'uploads/profile_photos/' . $newName;
         }
-
-        // Changing Password
+    
+        // Handle password change
         $currentPassword = $this->request->getPost('current_password');
-        $newPassword = $this->request->getPost('new_password');
-        $currentPassword = sha1(sha1(md5($currentPassword))); // Hashing
-
-        if (!empty($currentPassword && !empty($newPassword))) {
-            if ($currentPassword == $user['password']) {
-                $newPassword = sha1(sha1(md5($newPassword))); // Hashing
-                $updateData['password'] = $newPassword;
+        $newPassword     = $this->request->getPost('new_password');
+    
+        if (!empty($currentPassword) && !empty($newPassword)) {
+            $currentPasswordHashed = sha1(sha1(md5($currentPassword)));
+            if ($currentPasswordHashed == $user['password']) {
+                $newPasswordHashed = sha1(sha1(md5($newPassword)));
+                $updateData['password'] = $newPasswordHashed;
             } else {
-                return redirect()->back()->with('error', 'Current password is incorrect.');
+                session()->setFlashdata('error', 'Current password is incorrect.');
+                return redirect()->to('/Settings');
             }
         }
-
-        if (!$this->employeesModel->update($id, $updateData)) {
-            return redirect()->back()->with('error', 'Failed to update profile.');
+    
+        // Update user data
+        if ($this->employeesModel->update($id, $updateData)) {
+    
+            $updatedUser = $this->employeesModel->find($id);
+            session()->set('user', $updatedUser);
+    
+            if (session()->get('email') === $user['email']) {
+                session()->set('email', $email);
+            }
+    
+            session()->setFlashdata('success', 'Profile updated successfully.');
+        } else {
+            session()->setFlashdata('error', 'Failed to update profile.');
         }
-
-        if (session()->get('email') !== $email) {
-            session()->set('email', $email);
-        }
-
-        return redirect()->to('/Settings')->with('success', 'Profile updated successfully.');
+    
+        return redirect()->to('/Settings');
     }
+    
 
     public function RoomSettings()
     {
@@ -134,7 +148,6 @@ class Settings extends BaseController
         return view("pages/RoomSettings", $data);
     }
 
-    // Menambah ruangan baru
     public function addRoom()
     {
         $roomName = $this->request->getPost('room_name');
@@ -154,7 +167,7 @@ class Settings extends BaseController
     
     public function editRoom()
     {
-        $roomId = $this->request->getPost('room_id'); // Ambil ID dari POST
+        $roomId = $this->request->getPost('room_id'); // Get ID from POST
         $roomName = $this->request->getPost('room_name');
         $roomDescription = $this->request->getPost('room_description');
     
@@ -200,66 +213,77 @@ class Settings extends BaseController
         $employeePassword = $this->request->getPost('employee_password');
         $employeePassword = sha1(sha1(md5($employeePassword)));
     
+        $isAdmin = $this->request->getPost('is_admin') ? 1 : 0;
+    
         $this->employeesModel->insert([
             'name'     => $this->request->getPost('employee_name'),
             'email'    => $this->request->getPost('employee_email'),
             'position' => $this->request->getPost('employee_position'),
             'password' => $employeePassword,
-            'photo'    => 'default.png'
+            'photo'    => 'uploads/default/default.png',
+            'is_admin' => $isAdmin,
         ]);
     
         return redirect()->to('/settings/employees')->with('success', 'Employee added successfully.');
-    }
+    }    
+    
     
     public function editEmployee()
     {
-        $employeeId = $this->request->getPost('employee_id');
-        $employeeName = $this->request->getPost('employee_name');
-        $employeeEmail = $this->request->getPost('employee_email');
+        $employeeId       = $this->request->getPost('employee_id');
+        $employeeName     = $this->request->getPost('employee_name');
+        $employeeEmail    = $this->request->getPost('employee_email');
         $employeePosition = $this->request->getPost('employee_position');
+        $newPassword      = $this->request->getPost('new_password');
     
         if (empty($employeeId) || empty($employeeName) || empty($employeeEmail)) {
-            return redirect()->back()->with('error', 'ID, nama, dan email tidak boleh kosong.');
+            return redirect()->back()->with('error', 'ID, name, and email cannot be empty.');
         }
     
         $employee = $this->employeesModel->find($employeeId);
         if (!$employee) {
-            return redirect()->back()->with('error', 'Karyawan tidak ditemukan.');
+            return redirect()->back()->with('error', 'Employee not found.');
+        }
+    
+        $updateData = [
+            'name'     => $employeeName,
+            'email'    => $employeeEmail,
+            'position' => $employeePosition
+        ];
+    
+        if (!empty($newPassword)) {
+            $updateData['password'] = sha1(sha1(md5($newPassword)));
         }
     
         $db = \Config\Database::connect();
         $db->transStart();
     
-        $this->employeesModel->update($employeeId, [
-            'name' => $employeeName,
-            'email' => $employeeEmail,
-            'position' => $employeePosition
-        ]);
+        $this->employeesModel->update($employeeId, $updateData);
     
         $db->transComplete();
     
         if ($db->transStatus() === false) {
-            return redirect()->back()->with('error', 'Gagal memperbarui data.');
+            return redirect()->back()->with('error', 'Failed to update data.');
         }
     
         if (session()->get('email') === $employee['email']) {
             session()->set('email', $employeeEmail);
         }
     
-        return redirect()->to('/settings/employees')->with('success', 'Karyawan berhasil diperbarui.');
+        return redirect()->to('/settings/employees')->with('success', 'Employee updated successfully.');
     }
+    
     
     public function deleteEmployee($id)
     {    
         $employee = $this->employeesModel->find($id);
     
         if (!$employee) {
-            return redirect()->back()->with('error', 'Room not found.');
+            return redirect()->back()->with('error', 'Employee not found.');
         }
     
         $this->employeesModel->delete($id);
     
-        return redirect()->to('/settings/employees')->with('success', 'Room deleted successfully.');
+        return redirect()->to('/settings/employees')->with('success', 'Employee deleted successfully.');
     }
-    
 }

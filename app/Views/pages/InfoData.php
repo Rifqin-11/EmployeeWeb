@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="<?= base_url() ?>/desnetLogo.png" />
-    <title>Desnet GuestBook</title>
+    <title>Guest From <?= $guest["pic_name"] ?></title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
@@ -96,7 +96,7 @@
                                                 </svg>
                                             </div>
                                             <input type="hidden" name="guest-id" id="guest-id" value="<?= $guest['id'] ?>">
-                                            <input name="date" id="date" value="<?= $guest['date'] ?>" type="date" class="bg-white border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Select date">
+                                            <input name="date" id="date" value="<?= $guest['date'] ?>" type="date" class=" border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Select date">
                                         </div>
 
                                         <input type="time" name="start-at" id="start-at" value="<?= $guest['start_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
@@ -308,18 +308,47 @@
 
     });
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const toast = document.getElementById("toast-simple");
+        if (toast) {
+        setTimeout(() => {
+            toast.style.opacity = "0";
+            setTimeout(() => {
+            toast.remove();
+            }, 1000);
+        }, 1500);
+        }
+
+        const status = document.getElementById("status").value;
+        const roomSelect = document.getElementById("room");
+        const dateInput = document.getElementById("date");
+        const appointmentInputs = document.querySelectorAll(".appointments-input input");
+
+        if (status == 3) {
+            roomSelect.disabled = true;
+            roomSelect.classList.add("bg-gray-200");
+
+            appointmentInputs.forEach(input => {
+                input.disabled = true;
+                input.classList.add("bg-gray-200");
+            });
+        }
+    });
+        
+
+
     lucide.createIcons();
     </script>
 
 </body>
 
-<div id="alertToast" class="fixed bottom-8 right-5 hidden">
-    <div class="flex items-center gap-3 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg">
-        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-        </svg>
-        <span class="font-semibold">Data saved successfully!</span>
+    <?php if (session()->getFlashdata('success')) : ?>
+    <div id="toast-simple" class="fixed bottom-5 right-5 z-50 flex items-center w-full max-w-xs p-4 mb-4 text-green-400 bg-white rounded-lg shadow-md border border-gray-200" role="alert">
+          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+          </svg>
+        <div class="ps-4 text-sm font-normal"><?= session()->getFlashdata('success'); ?></div>
     </div>
-</div>
+  <?php endif; ?>
 
 </html>
