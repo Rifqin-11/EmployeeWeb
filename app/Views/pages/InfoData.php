@@ -96,12 +96,12 @@
                                                 </svg>
                                             </div>
                                             <input type="hidden" name="guest-id" id="guest-id" value="<?= $guest['id'] ?>">
-                                            <input name="date" id="date" value="<?= $guest['date'] ?>" type="date" class=" border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Select date">
+                                            <input name="date" id="date" value="<?= $guest['date'] ?>" type="date" min="<?= date('Y-m-d') ?>" class=" border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Select date">
                                         </div>
 
-                                        <input type="time" name="start-at" id="start-at" value="<?= $guest['start_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
+                                        <input type="time" name="start-at" id="start-at" value="<?= $guest['start_at'] ?>" min="<?= $guest['date'] == date('Y-m-d') ? date('H:i') : '' ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
                                         <p>to</p>
-                                        <input type="time" name="end-at" id="end-at" value="<?= $guest['end_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
+                                        <input type="time" name="end-at" id="end-at" value="<?= $guest['end_at'] ?>" min="<?= $guest['start_at'] ?>" class="w-1/3 white border border-gray-300 p-2 rounded rounded-lg">
                                     </div>
                                 </div>
                             </div>
@@ -158,6 +158,21 @@
         </div>
     <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Waktu akhir harus melebihi waktu mulai
+        const startAt = document.getElementById("start-at");
+        
+        startAt.addEventListener('change', function(){
+            const endAt = document.getElementById("end-at");
+            endAt.min = this.value;
+        });
+
+        // Jika tanggal hari ini, waktu awal harus melebihi waktu saat ini
+        const date = document.getElementById('date');
+        date.addEventListener('change', function(){
+            if (date.value == '<?= date('Y-m-d') ?>')
+            startAt.min = "<?= date('H:i') ?>";
+        });
+        
         const deleteButtons = document.querySelectorAll('[data-modal-target="deleteModal"][data-delete-url]');
         
         deleteButtons.forEach(function(button) {
@@ -289,7 +304,6 @@
             })
             .then(response => response.json())
             .then(rooms => {
-                console.log(rooms);
                 let options = '<option value="" disabled selected>Select rooms...</option>';
                 rooms.forEach(room => {
                     let isSelected = (room.id == selectedRoomId) ? "selected" : "";
