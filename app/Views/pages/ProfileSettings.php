@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <style type="text/tailwindcss">
-      @theme {
+      /* @theme {
         --color-primary: #084E8F;
         --color-secondary: #f9f9f9;
         --color-button: #2563eb;
@@ -19,7 +19,7 @@
         --color-text-600: #364153;
         --color-yellow-700: #F9A329;
         --color-yellow-200: #fff0dc;
-      }
+      } */
     </style>
   </head>
   <body>
@@ -126,7 +126,7 @@
                       <div class="avatar">
                         <!-- Gunakan ID unik untuk modal, misalnya "modalProfileImage" -->
                         <div class="ring-primary ring-offset-base-100 w-15 h-15 rounded-full ring ring-offset-2 overflow-hidden">
-                          <img id="modalProfileImage" src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
+                          <img id="modalProfileImage" src="<?= $user['photo'] ?>" class="w-full h-full object-cover" />
                         </div>
                       </div>
                       <input type="file" id="imageUpload" name="profile_photo" class="hidden" accept="image/*">
