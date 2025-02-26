@@ -182,6 +182,7 @@
         
         deleteButtons.forEach(function(button) {
             button.addEventListener('click', function(e) {
+                
                 e.preventDefault();
                 e.stopPropagation();
                 
@@ -228,6 +229,11 @@
             currentFiles = currentFiles.concat(files);
             updatePreviews();
             updateFileInput();
+            if (currentFiles.length > 0) {
+                disableInputs(true);
+            } else {
+                disableInputs(false);
+            }
         });
 
         function updatePreviews() {
@@ -254,6 +260,9 @@
                         currentFiles.splice(index, 1);
                         updatePreviews();
                         updateFileInput();
+                        if (currentFiles.length === 0) {
+                            disableInputs(false);
+                        }
                     };
 
                     const deleteIcon = document.createElement('i');
@@ -329,24 +338,37 @@
         const status = document.getElementById("status").value;
         
         if (status == 3) {
-            disabledInput();
+            disableInputs();
         }
 
         fileInput.addEventListener('change', function(){
             if(this.files.length > 0){
-                disabledInput();
+                disableInputs(true);
+            } else {
+                disableInputs(false);
             }
         });
 
-        function disabledInput(){
-            roomSelect.disabled = true;
-            roomSelect.classList.add("bg-gray-200");
-
-            appointments.forEach(input => {
-                input.disabled = true;
-                input.classList.add("bg-gray-200");
-            });
+        function disableInputs(disabled = true){
+            roomSelect.disabled = disabled;
+            if (disabled){
+                roomSelect.classList.add("bg-gray-200");
+    
+                appointments.forEach(input => {
+                    input.disabled = true;
+                    input.classList.add("bg-gray-200");
+                });
+            } else {
+                roomSelect.classList.remove("bg-gray-200");
+    
+                appointments.forEach(input => {
+                    input.disabled = false;
+                    input.classList.remove("bg-gray-200");
+                });
+            }
         }
+
+        
 
     });
 
