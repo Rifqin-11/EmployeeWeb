@@ -93,6 +93,11 @@ class InfoData extends BaseController
                 if ($image->isValid()) {
                     $image->move($uploadPath);
                 } else {
+                    // Mengatasi status done tanpa upload image
+                    if ($status == 3){
+                        return redirect()->back()->with('success', 'No files have been uploaded');
+                    }
+                    
                     // Menangani status rescheduled
                     $data = [
                         'id'       => $guestbook_id,

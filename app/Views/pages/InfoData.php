@@ -73,7 +73,7 @@
                                 <div class="mb-4">
                                     <h2 class="text-lg font-medium text-gray-700">Room:</h2>
                                     <div>
-                                    <select name="room" id="room" class="w-full white border border-gray-300 p-2 rounded-lg">
+                                    <select name="room" id="room" required class="w-full white border border-gray-300 p-2 rounded-lg">
                                         <?php if(!$selectedRoom) : ?>
                                             <option value="" disabled selected>Please insert appointments first</option>
                                         <?php else: ?>
@@ -158,21 +158,26 @@
         </div>
     <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Waktu akhir harus melebihi waktu mulai
+        const fileInput = document.getElementById('fileInput');
         const startAt = document.getElementById("start-at");
-        
+        const date = document.getElementById('date');
+        const endAt = document.getElementById("end-at");
+
+        // Waktu akhir harus melebihi waktu mulai
         startAt.addEventListener('change', function(){
             const endAt = document.getElementById("end-at");
             endAt.min = this.value;
         });
 
         // Jika tanggal hari ini, waktu awal harus melebihi waktu saat ini
-        const date = document.getElementById('date');
         date.addEventListener('change', function(){
-            if (date.value == '<?= date('Y-m-d') ?>')
-            startAt.min = "<?= date('H:i') ?>";
+            if (date.value == '<?= date('Y-m-d') ?>') {
+                startAt.min = "<?= date('H:i') ?>";
+            } else {
+                startAt.removeAttribute('min');
+            }
         });
-        
+
         const deleteButtons = document.querySelectorAll('[data-modal-target="deleteModal"][data-delete-url]');
         
         deleteButtons.forEach(function(button) {
@@ -214,7 +219,7 @@
             });
         });
 
-        const fileInput = document.getElementById('fileInput');
+        
         const previewContainer = document.getElementById('preview');
         let currentFiles = [];
 
@@ -320,6 +325,29 @@
             input.addEventListener("change", fetchRooms);
         });
 
+        // Disable Input while status = done
+        const status = document.getElementById("status").value;
+        
+        if (status == 3) {
+            disabledInput();
+        }
+
+        fileInput.addEventListener('change', function(){
+            if(this.files.length > 0){
+                disabledInput();
+            }
+        });
+
+        function disabledInput(){
+            roomSelect.disabled = true;
+            roomSelect.classList.add("bg-gray-200");
+
+            appointments.forEach(input => {
+                input.disabled = true;
+                input.classList.add("bg-gray-200");
+            });
+        }
+
     });
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -331,21 +359,6 @@
             toast.remove();
             }, 1000);
         }, 1500);
-        }
-
-        const status = document.getElementById("status").value;
-        const roomSelect = document.getElementById("room");
-        const dateInput = document.getElementById("date");
-        const appointmentInputs = document.querySelectorAll(".appointments-input input");
-
-        if (status == 3) {
-            roomSelect.disabled = true;
-            roomSelect.classList.add("bg-gray-200");
-
-            appointmentInputs.forEach(input => {
-                input.disabled = true;
-                input.classList.add("bg-gray-200");
-            });
         }
     });
         
