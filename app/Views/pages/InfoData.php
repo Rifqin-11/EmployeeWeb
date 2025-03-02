@@ -77,11 +77,17 @@
                                         <?php if(!$selectedRoom) : ?>
                                             <option value="" disabled selected>Please insert appointments first</option>
                                         <?php else: ?>
-                                            <?php foreach ($rooms as $room): ?>
+                                            <?php foreach ($availableRooms as $room): ?>
                                                 <option value="<?= $room["id"] ?>" <?= ($room["id"] == $guest['room_id']) ? 'selected' : '' ?>>
                                                     <?= $room['name'] ?>
                                                 </option>
                                             <?php endforeach; ?>
+                                            <?php foreach ($unavailableRooms as $room): ?>
+                                                <option disabled>
+                                                    <?= $room['name'] ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                            
                                         <?php endif ?>
                                     </select>
                                     </div>
@@ -157,7 +163,8 @@
             </div>
         </div>
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {        
+        
         const fileInput = document.getElementById('fileInput');
         const startAt = document.getElementById("start-at");
         const date = document.getElementById('date');
@@ -319,10 +326,15 @@
             .then(response => response.json())
             .then(rooms => {
                 let options = '<option value="" disabled selected>Select rooms...</option>';
-                rooms.forEach(room => {
+                
+                rooms.availableRooms.forEach(room => {
                     let isSelected = (room.id == selectedRoomId) ? "selected" : "";
                     options += `<option value="${room.id}" ${isSelected}>${room.name}</option>`;
                 });
+                rooms.unavailableRooms.forEach(room => {
+                    options += `<option disabled>${room.name}</option>`;
+                });
+
                 roomSelect.innerHTML = options;
             })
             .catch(error => console.error("Error fetching rooms:", error));

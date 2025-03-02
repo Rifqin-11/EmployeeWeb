@@ -74,7 +74,7 @@ class GuestBooksModel extends Model
         return $this->countAllResults();
     }
 
-    public function getAvaibleRooms($date = null, $start_time = null, $end_time = null)
+    public function getUnavaibleRooms($date = null, $start_time = null, $end_time = null)
     {
         if (empty($date) || empty($start_time) || empty($end_time)) {
             return [];

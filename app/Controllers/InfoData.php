@@ -36,10 +36,14 @@ class InfoData extends BaseController
             'end_at' => null
         ]);
 
-        $unavaibleRoomIds = $this->guestBookModel->getAvaibleRooms($guest['date'], $guest['start_at'], $guest['end_at']);
-        $availableRooms = array_filter($allRooms, function($room) use ($unavaibleRoomIds) {
-            return !in_array($room['id'], $unavaibleRoomIds);
-        });
+        $unavailableRoomIds = $this->guestBookModel->getUnavaibleRooms($guest['date'], $guest['start_at'], $guest['end_at']);
+        $availableRooms = array_values(array_filter($allRooms, function ($room) use ($unavailableRoomIds) {
+            return !in_array($room['id'], $unavailableRoomIds);
+        }));
+        
+        $unavailableRooms = array_values(array_filter($allRooms, function ($room) use ($unavailableRoomIds) {
+            return in_array($room['id'], $unavailableRoomIds);
+        }));
 
         $this->guestBookModel->update($guest['id'], [
             'date' => $guest['date'],
@@ -53,7 +57,8 @@ class InfoData extends BaseController
             $data['selectedRoom'] = null;
         }
 
-        $data['rooms'] = $availableRooms;
+        $data['availableRooms'] = $availableRooms;
+        $data['unavailableRooms'] = $unavailableRooms;
         $data['guest'] = $guest;
 
         $documentationsModel = new DocumentationsModel();
@@ -152,10 +157,14 @@ class InfoData extends BaseController
         $roomModel = new RoomModel();
         $allRooms = $roomModel->findAll();
         
-        $unavailableRoomIds = $this->guestBookModel->getAvaibleRooms($date, $start_time, $end_time);
+        $unavailableRoomIds = $this->guestBookModel->getUnavaibleRooms($date, $start_time, $end_time);
     
         $availableRooms = array_values(array_filter($allRooms, function ($room) use ($unavailableRoomIds) {
             return !in_array($room['id'], $unavailableRoomIds);
+        }));
+        
+        $unavailableRooms = array_values(array_filter($allRooms, function ($room) use ($unavailableRoomIds) {
+            return in_array($room['id'], $unavailableRoomIds);
         }));
         
         $this->guestBookModel->update($guest_id, [
@@ -164,7 +173,12 @@ class InfoData extends BaseController
             'end_at' => $lastData['end_at']
         ]);
 
-        return $this->response->setJSON($availableRooms);
+        $data = [
+            'availableRooms' => $availableRooms,
+            'unavailableRooms'   => $unavailableRooms
+        ];
+
+        return $this->response->setJSON($data);
     }
 
     public function viewImage($guestbook_id, $image_name)
@@ -202,7 +216,5 @@ class InfoData extends BaseController
 
         return $this->response->setJSON(['success' => false, 'message' => 'Image not found']);
     }
-
-
 
 }

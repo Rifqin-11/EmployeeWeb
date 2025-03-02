@@ -17,7 +17,7 @@
     </style>
 </head>
 <body>
-    <div class="fixed top-0 left-0 h-screen w-3xs bg-white p-4 rounded-lg flex flex-col border-r border-gray-200 hidden md:flex">
+    <div class="fixed top-0 left-0 h-screen w-3xs bg-white p-4 rounded-lg flex flex-col border-r border-gray-200 hidden md:flex z-20">
 
         <!-- Logo -->
         <a href="/Home" class="flex flex-col items-start mt-6 pl-2">

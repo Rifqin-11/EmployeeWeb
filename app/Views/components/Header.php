@@ -17,7 +17,7 @@
     </style>
 </head>
 <body>
-    <div class="flex flex-col lg:flex-row gap-4 w-100% ">
+    <div class="flex flex-col lg:flex-row gap-4 w-100% z-10">
         <div class="flex flex-col gap-4 w-full ">
             <section class="flex justify-between items-center gap-5 mb-2 pl-4 py-4 px-2 bg-white border-b border-gray-200">
                 <!-- Search -->
