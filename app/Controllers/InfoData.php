@@ -17,7 +17,7 @@ class InfoData extends BaseController
         $this->employeesModel = new EmployeesModel();
     }
     
-    public function index($id=null)
+    public function index($id)
     {
         $employeesModel = new EmployeesModel();
         $roomModel = new RoomModel();
@@ -30,13 +30,50 @@ class InfoData extends BaseController
 
         $guest = $this->guestBookModel->find($id);
 
-        $this->guestBookModel->update($guest['id'], [
+        if ($guest['room_id']){
+            $data['selectedRoom'] = $roomModel->find($guest['room_id']);
+        } else {
+            $data['selectedRoom'] = null;
+        }
+        $data += $this->_getRooms($id, $guest['date'], $guest['start_at'], $guest['end_at']);
+        $data['guest'] = $guest;
+
+        $documentationsModel = new DocumentationsModel();
+        $data['documentations'] = $documentationsModel->where('guestbook_id', $id)->findAll();
+
+        return view("pages/InfoData", $data);
+    }
+
+    public function getRooms()
+    {
+        $date = $this->request->getJSON(true)['date'] ?? null;
+        $start_time = $this->request->getJSON(true)['start_at'] ?? null;
+        $end_time = $this->request->getJSON(true)['end_at'] ?? null;
+        $guest_id = $this->request->getJSON(true)['guest_id'] ?? null;
+    
+        if (empty($date) || empty($start_time) || empty($end_time)) {
+            return $this->response->setJSON(['error' => 'Please provide date, start time, and end time']);
+        }
+
+        $data = $this->_getRooms($guest_id, $date, $start_time, $end_time);
+
+        return $this->response->setJSON($data);
+    }
+
+    private function _getRooms($guest_id, $date, $start_time, $end_time)
+    {
+        $lastData = $this->guestBookModel->find($guest_id);
+        $this->guestBookModel->update($guest_id, [
             'date' => null,
             'start_at' => null,
             'end_at' => null
         ]);
 
-        $unavailableRoomIds = $this->guestBookModel->getUnavaibleRooms($guest['date'], $guest['start_at'], $guest['end_at']);
+        $roomModel = new RoomModel();
+        $allRooms = $roomModel->findAll();
+        
+        $unavailableRoomIds = $this->guestBookModel->getUnavaibleRooms($date, $start_time, $end_time);
+    
         $availableRooms = array_values(array_filter($allRooms, function ($room) use ($unavailableRoomIds) {
             return !in_array($room['id'], $unavailableRoomIds);
         }));
@@ -44,27 +81,19 @@ class InfoData extends BaseController
         $unavailableRooms = array_values(array_filter($allRooms, function ($room) use ($unavailableRoomIds) {
             return in_array($room['id'], $unavailableRoomIds);
         }));
-
-        $this->guestBookModel->update($guest['id'], [
-            'date' => $guest['date'],
-            'start_at' => $guest['start_at'],
-            'end_at' => $guest['end_at']
+        
+        $this->guestBookModel->update($guest_id, [
+            'date' => $lastData['date'],
+            'start_at' => $lastData['start_at'],
+            'end_at' => $lastData['end_at']
         ]);
 
-        if ($guest['room_id']){
-            $data['selectedRoom'] = $roomModel->find($guest['room_id']);
-        } else {
-            $data['selectedRoom'] = null;
-        }
+        $data = [
+            'availableRooms' => $availableRooms,
+            'unavailableRooms'   => $unavailableRooms
+        ];
 
-        $data['availableRooms'] = $availableRooms;
-        $data['unavailableRooms'] = $unavailableRooms;
-        $data['guest'] = $guest;
-
-        $documentationsModel = new DocumentationsModel();
-        $data['documentations'] = $documentationsModel->where('guestbook_id', $id)->findAll();
-
-        return view("pages/InfoData", $data);
+        return $data;
     }
 
     public function edit()
@@ -133,52 +162,6 @@ class InfoData extends BaseController
         }
     
         return redirect()->to(base_url('infodata/' . $guestbook_id));
-    }
-    
-
-    public function getRooms()
-    {
-        $date = $this->request->getJSON(true)['date'] ?? null;
-        $start_time = $this->request->getJSON(true)['start_at'] ?? null;
-        $end_time = $this->request->getJSON(true)['end_at'] ?? null;
-        $guest_id = $this->request->getJSON(true)['guest_id'] ?? null;
-    
-        if (empty($date) || empty($start_time) || empty($end_time)) {
-            return $this->response->setJSON(['error' => 'Please provide date, start time, and end time']);
-        }
-        
-        $lastData = $this->guestBookModel->find($guest_id);
-        $this->guestBookModel->update($guest_id, [
-            'date' => null,
-            'start_at' => null,
-            'end_at' => null
-        ]);
-
-        $roomModel = new RoomModel();
-        $allRooms = $roomModel->findAll();
-        
-        $unavailableRoomIds = $this->guestBookModel->getUnavaibleRooms($date, $start_time, $end_time);
-    
-        $availableRooms = array_values(array_filter($allRooms, function ($room) use ($unavailableRoomIds) {
-            return !in_array($room['id'], $unavailableRoomIds);
-        }));
-        
-        $unavailableRooms = array_values(array_filter($allRooms, function ($room) use ($unavailableRoomIds) {
-            return in_array($room['id'], $unavailableRoomIds);
-        }));
-        
-        $this->guestBookModel->update($guest_id, [
-            'date' => $lastData['date'],
-            'start_at' => $lastData['start_at'],
-            'end_at' => $lastData['end_at']
-        ]);
-
-        $data = [
-            'availableRooms' => $availableRooms,
-            'unavailableRooms'   => $unavailableRooms
-        ];
-
-        return $this->response->setJSON($data);
     }
 
     public function viewImage($guestbook_id, $image_name)
