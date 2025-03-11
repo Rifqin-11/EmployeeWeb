@@ -335,7 +335,6 @@ document.addEventListener("DOMContentLoaded", function () {
           const sortKey = this.getAttribute("data-sort");
           let order = this.dataset.order === "asc" ? "desc" : "asc";
           this.dataset.order = order;
-          sortRows(sortKey, order);
           
           currentRows.sort((rowA, rowB) => {
             let cellA, cellB;
