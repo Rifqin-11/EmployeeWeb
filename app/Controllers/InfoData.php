@@ -10,28 +10,25 @@ class InfoData extends BaseController
 {
     protected $guestBookModel;
     protected $employeesModel;
+    protected $roomModel;
 
     public function __construct()
     {
         $this->guestBookModel = new GuestBooksModel();
         $this->employeesModel = new EmployeesModel();
+        $this->roomModel = new RoomModel();
     }
     
     public function index($id)
     {
-        $employeesModel = new EmployeesModel();
-        $roomModel = new RoomModel();
-        
         $email = session()->get('email');
-        $user = $employeesModel->getUserByEmail($email);
+        $user = $this->employeesModel->getUserByEmail($email);
         $data['user'] = $user;
-
-        $allRooms = $roomModel->findAll();
 
         $guest = $this->guestBookModel->find($id);
 
         if ($guest['room_id']){
-            $data['selectedRoom'] = $roomModel->find($guest['room_id']);
+            $data['selectedRoom'] = $this->roomModel->find($guest['room_id']);
         } else {
             $data['selectedRoom'] = null;
         }
@@ -129,7 +126,7 @@ class InfoData extends BaseController
                 } else {
                     // Mengatasi status done tanpa upload image
                     if ($status == 3){
-                        return redirect()->back()->with('success', 'No files have been uploaded');
+                        return redirect()->back()->with('error', 'No files images has been uploaded');
                     }
                     
                     // Menangani status rescheduled

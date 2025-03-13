@@ -18,51 +18,40 @@ class Home extends BaseController
     public function index()
     {
         $email = session()->get('email');
-
-        if (!$email) {
-            return redirect()->to('/');
-        }
         
         // Calendar
-        $month = $this->request->getGet("month") ?? date("m");
-        $year = $this->request->getGet("year") ?? date("Y");
-
-        $month = max(1, min(12, (int)$month));
-        $year = max(1900, (int)$year);
+        $month = (int)date("m");
+        $year = (int)date("Y");
 
         $data["calendar"] = $this->generateCalendar($year, $month);
         $data["currentMonth"] = $month;
         $data["currentYear"] = $year;
 
-        
         // Home View
         $user = $this->employeesModel->getUserByEmail($email);
         $data['user'] = $user;
-
-        if (!$user) {
-            session()->destroy();
-            return redirect()->to('/');
-        }
 
         $keyword = $this->request->getGet('search');
 
         if ($user['is_admin'] == 1) {
             $totalVisitorMonthly = $this->guestBookModel->getTotalVisitorsLastMonth(1);
-            $data["totalVisitors"] = $this->guestBookModel->getTotalVisitors();
+            $totalVisitor2Monthly = $this->guestBookModel->getTotalVisitorsLastMonth(2);
 
+            $data["totalVisitors"] = $this->guestBookModel->getTotalVisitors();
             $data['pendingVisitors'] = 'We have total ' . $this->guestBookModel->getPendingVisitorsCount();
 
             $data['guests'] = $this->guestBookModel->getGuests(search: $keyword, statusFilter: [0, 1, 2])->findAll();
             
         } else {
             $totalVisitorMonthly = $this->guestBookModel->getTotalVisitorsLastMonth(1, $user['id']);
+            $totalVisitor2Monthly = $this->guestBookModel->getTotalVisitorsLastMonth(2, $user['id']);
+
             $data['pendingVisitors'] = 'You have ' . $this->guestBookModel->getPendingVisitorsCount($user['id']);
             $data["totalVisitors"] = $this->guestBookModel->getTotalVisitors($user['id']);
 
             $data['guests'] = $this->guestBookModel->getGuests($email, $keyword, statusFilter: [0, 1, 2])->findAll();   
         }
 
-        $totalVisitor2Monthly = $this->guestBookModel->getTotalVisitorsLastMonth(2, $user['id']);
 
         $totalLast2Month = $totalVisitor2Monthly - $totalVisitorMonthly;
 

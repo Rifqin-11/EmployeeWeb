@@ -147,7 +147,7 @@
                                     <!-- Upload section -->
                                     <label for="fileInput" class="cursor-pointer flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-400 rounded-lg bg-gray-50 hover:bg-gray-100">
                                         <span class="text-gray-500">Click to upload</span>
-                                        <input type="file" id="fileInput" name="images[]" multiple class="hidden">
+                                        <input type="file" id="fileInput" name="images[]" multiple class="hidden" accept="image/jpeg, image/png, image/gif">
                                     </label>
 
                                     <div id="preview" class="mt-4 grid grid-cols-3 gap-2"></div>
@@ -385,7 +385,7 @@
     });
 
     document.addEventListener("DOMContentLoaded", function () {
-        const toast = document.getElementById("toast-simple");
+        const toast = document.querySelector(".toast");
         if (toast) {
         setTimeout(() => {
             toast.style.opacity = "0";
@@ -404,11 +404,20 @@
 </body>
 
     <?php if (session()->getFlashdata('success')) : ?>
-    <div id="toast-simple" class="fixed bottom-5 right-5 z-50 flex items-center w-full max-w-xs p-4 mb-4 text-green-400 bg-white rounded-lg shadow-md border border-gray-200" role="alert">
+    <div id="toast-simple" class="fixed bottom-5 right-5 z-50 flex items-center w-full max-w-xs p-4 mb-4 text-green-400 bg-white rounded-lg shadow-md border border-gray-200 toast" role="alert">
           <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
           </svg>
         <div class="ps-4 text-sm font-normal"><?= session()->getFlashdata('success'); ?></div>
+    </div>
+  <?php endif; ?>
+
+  <?php if (session()->getFlashdata('error')) : ?>
+    <div id="toast-error" class="fixed bottom-5 right-5 z-50 flex items-center w-full max-w-xs p-4 mb-4 text-red-400 bg-white rounded-lg shadow-md border border-gray-200 toast" role="alert">
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+        </svg>
+        <div class="ps-4 text-sm font-normal"><?= session()->getFlashdata('error'); ?></div>
     </div>
   <?php endif; ?>
 

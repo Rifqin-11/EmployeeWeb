@@ -12,7 +12,7 @@ class GuestBooksModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['institutionName', 'pic_name', 'phone_number', 'employee_id', 'agenda', 'identity_photo', 'status', 'room_id', 'date', 'start_at', 'end_at'];
+    protected $allowedFields    = ['institution_name', 'pic_name', 'phone_number', 'employee_id', 'agenda', 'identity_photo', 'status', 'room_id', 'date', 'start_at', 'end_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -21,7 +21,7 @@ class GuestBooksModel extends Model
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
-    protected $updatedField  = '';
+    protected $updatedField  = 'updated_at';
     protected $deletedField  = '';
 
     public function getGuests($email = null, $search = null, $statusFilter = []){
@@ -44,7 +44,7 @@ class GuestBooksModel extends Model
                     ->groupEnd();
         }
 
-        return $result->orderBy('guestbooks.created_at', 'DESC');
+        return $result->orderBy('guestbooks.updated_at', 'DESC');
     }
 
     public function getPendingVisitorsCount($id = null)
