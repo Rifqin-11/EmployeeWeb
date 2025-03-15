@@ -8,20 +8,8 @@
   
   <title>Desnet GuestBook</title>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-  <style type="text/tailwindcss">
-    @theme {
-      --color-primary: #084E8F;
-      --color-secondary: #f9f9f9;
-      --color-button: #2563eb;
-      --color-text-100: #7E7E7E;
-      --color-text-200: #414141;
-      --color-text-600: #364153;
-      --color-yellow-700: #F9A329;
-      --color-yellow-200: #fff0dc;
-    }
-  </style>
+  <link href="<?= base_url('css/output.css') ?>" rel="stylesheet">
+  
 </head>
 <body>
   <div class="min-h-screen bg-[#F9F9F9] flex max-w-full">

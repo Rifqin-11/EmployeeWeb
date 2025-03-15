@@ -380,30 +380,12 @@
                 });
             }
         }
-
-        
-
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const toast = document.querySelector(".toast");
-        if (toast) {
-        setTimeout(() => {
-            toast.style.opacity = "0";
-            setTimeout(() => {
-            toast.remove();
-            }, 1000);
-        }, 1500);
-        }
     });
         
-
-
     lucide.createIcons();
     </script>
 
 </body>
 
 <?= $this->include('components/Toasts') ?>
-
 </html>

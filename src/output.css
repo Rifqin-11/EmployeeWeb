@@ -915,12 +915,9 @@
   .bg-blue-50 {
     background-color: var(--color-blue-50);
   }
-<<<<<<< HEAD
-=======
   .bg-blue-300 {
     background-color: var(--color-blue-300);
   }
->>>>>>> fix-issue
   .bg-blue-400 {
     background-color: var(--color-blue-400);
   }
@@ -1169,12 +1166,9 @@
   .text-green-700 {
     color: var(--color-green-700);
   }
-<<<<<<< HEAD
-=======
   .text-red-400 {
     color: var(--color-red-400);
   }
->>>>>>> fix-issue
   .text-red-500 {
     color: var(--color-red-500);
   }
