@@ -69,7 +69,7 @@ class InfoData extends BaseController
         $roomModel = new RoomModel();
         $allRooms = $roomModel->findAll();
         
-        $unavailableRoomIds = $this->guestBookModel->getUnavaibleRooms($date, $start_time, $end_time);
+        $unavailableRoomIds = $this->guestBookModel->getUnavailableRooms($date, $start_time, $end_time);
     
         $availableRooms = array_values(array_filter($allRooms, function ($room) use ($unavailableRoomIds) {
             return !in_array($room['id'], $unavailableRoomIds);
@@ -122,11 +122,25 @@ class InfoData extends BaseController
     
             foreach ($images as $image) {
                 if ($image->isValid()) {
-                    $image->move($uploadPath);
+                    if(in_array($image->getExtension(), ['jpg', 'jpeg', 'png', 'gif'])){
+                        $image->move($uploadPath);
+
+                        $data = [
+                            'guestbook_id' => $guestbook_id,
+                            'image_name'   => $image->getClientName()
+                        ];
+                        $documentationsModel->insert($data);
+            
+                        $data = [
+                            'id'     => $guestbook_id,
+                            'status' => 3
+                        ];
+                        $this->guestBookModel->save($data);
+                    }
                 } else {
                     // Mengatasi status done tanpa upload image
                     if ($status == 3){
-                        return redirect()->back()->with('error', 'No files images has been uploaded');
+                        return redirect()->back()->with('error', 'Please, upload image files');
                     }
                     
                     // Menangani status rescheduled
@@ -143,17 +157,6 @@ class InfoData extends BaseController
                     return redirect()->to(base_url('infodata/' . $guestbook_id));
                 }
     
-                $data = [
-                    'guestbook_id' => $guestbook_id,
-                    'image_name'   => $image->getClientName()
-                ];
-                $documentationsModel->insert($data);
-    
-                $data = [
-                    'id'     => $guestbook_id,
-                    'status' => 3
-                ];
-                $this->guestBookModel->save($data);
                 session()->setFlashdata('success', 'Data has been saved successfully with a done status!');
             }
         }

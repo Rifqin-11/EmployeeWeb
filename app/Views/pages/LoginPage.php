@@ -6,7 +6,8 @@
     <link rel="icon" type="image/svg+xml" href="<?=base_url()?>/desnetLogo.png" />
     <title>Desnet | Login</title>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+    <link href="<?= base_url('css/output.css') ?>" rel="stylesheet">
     <style type="text/tailwindcss">
       @theme {
         --color-primary: #084E8F;
