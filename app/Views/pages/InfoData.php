@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="<?= base_url() ?>/desnetLogo.png" />
+    <link href="<?= base_url('css/output.css') ?>" rel="stylesheet">
+
     <title>Guest From <?= $guest["pic_name"] ?></title>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <style type="text/tailwindcss">
@@ -403,22 +404,6 @@
 
 </body>
 
-    <?php if (session()->getFlashdata('success')) : ?>
-    <div id="toast-simple" class="fixed bottom-5 right-5 z-50 flex items-center w-full max-w-xs p-4 mb-4 text-green-400 bg-white rounded-lg shadow-md border border-gray-200 toast" role="alert">
-          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
-          </svg>
-        <div class="ps-4 text-sm font-normal"><?= session()->getFlashdata('success'); ?></div>
-    </div>
-  <?php endif; ?>
-
-  <?php if (session()->getFlashdata('error')) : ?>
-    <div id="toast-error" class="fixed bottom-5 right-5 z-50 flex items-center w-full max-w-xs p-4 mb-4 text-red-400 bg-white rounded-lg shadow-md border border-gray-200 toast" role="alert">
-        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
-        </svg>
-        <div class="ps-4 text-sm font-normal"><?= session()->getFlashdata('error'); ?></div>
-    </div>
-  <?php endif; ?>
+<?= $this->include('components/Toasts') ?>
 
 </html>

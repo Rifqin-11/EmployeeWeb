@@ -4,23 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="<?= base_url() ?>/desnetLogo.png" />
-    <title>History</title>
+    <link href="<?= base_url('css/output.css') ?>" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.3/flowbite.min.js"></script>
-    <style type="text/tailwindcss">
-      @theme {
-        --color-primary: #084E8F;
-        --color-secondary: #f9f9f9;
-        --color-button: #2563eb;
-        --color-text-100: #7E7E7E;
-        --color-text-200: #414141;
-        --color-text-600: #364153;
-        --color-yellow-700: #F9A329;
-        --color-yellow-200: #fff0dc;
-      }
-    </style>
+  <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-primary: #084E8F;
+      --color-secondary: #f9f9f9;
+      --color-button: #2563eb;
+      --color-text-100: #7E7E7E;
+      --color-text-200: #414141;
+      --color-text-600: #364153;
+      --color-yellow-700: #F9A329;
+      --color-yellow-200: #fff0dc;
+    }
+  </style>
+    
+    <title>History</title>
+
   </head>
   <body>
     <div class="min-h-screen bg-[#F9F9F9] flex max-w-full">

@@ -1,22 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <style type="text/tailwindcss">
-      @theme {
-        --color-primary: #084E8F;
-        --color-secondary: #f9f9f9;
-        --color-button: #2563eb;
-        --color-text-100: #7E7E7E;
-        --color-text-200: #414141;
-        --color-text-600: #364153;
-      }
-    </style>
-</head>
-<body>
+
     <div class="fixed top-0 left-0 h-screen w-3xs bg-white p-4 rounded-lg flex flex-col border-r border-gray-200 hidden md:flex z-20">
 
         <!-- Logo -->
@@ -64,5 +46,3 @@
             });
         });
     </script>
-</body>
-</html>
