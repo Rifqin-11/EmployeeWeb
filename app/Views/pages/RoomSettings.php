@@ -7,10 +7,9 @@
     <link href="<?= base_url('css/output.css') ?>" rel="stylesheet">
 
     <title>Room Settings</title>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- <script src="https://unpkg.com/@tailwindcss/browser@4"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    
+    <script src="<?= base_url('js/flowbite.min.js') ?>"></script>
+    <script src="<?= base_url('js/lucide.js') ?>"></script>
     <style type="text/tailwindcss">
       @theme {
         --color-primary: #084E8F;

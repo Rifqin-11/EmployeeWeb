@@ -7,7 +7,7 @@
     <link href="<?= base_url('css/output.css') ?>" rel="stylesheet">
 
     <title>Desnet | Login</title>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style type="text/tailwindcss">
       @theme {
         --color-primary: #084E8F;

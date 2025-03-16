@@ -6,13 +6,13 @@
     <link rel="icon" type="image/svg+xml" href="<?=base_url()?>/desnetLogo.png" />
     <link href="<?= base_url('css/output.css') ?>" rel="stylesheet">
     
-    <title>Settings</title>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>Settings</title>  
     
-    <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script src="<?= base_url('js/flowbite.min.js') ?>"></script>
+    <script src="<?= base_url('js/lucide.js') ?>"></script>
+    
     <style type="text/tailwindcss">
-      /* @theme {
+      @theme {
         --color-primary: #084E8F;
         --color-secondary: #f9f9f9;
         --color-button: #2563eb;
@@ -21,7 +21,7 @@
         --color-text-600: #364153;
         --color-yellow-700: #F9A329;
         --color-yellow-200: #fff0dc;
-      } */
+      }
     </style>
   </head>
   <body>
