@@ -6,14 +6,14 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <style type="text/tailwindcss">
-      @theme {
+      /* @theme {
         --color-primary: #084E8F;
         --color-secondary: #f9f9f9;
         --color-button: #2563eb;
         --color-text-100: #7E7E7E;
         --color-text-200: #414141;
         --color-text-600: #364153;
-      }
+      } */
     </style>
 </head>
 <body>
@@ -26,15 +26,15 @@
 
         <!-- Sidebar content -->
         <div class="flex flex-col gap-3 mb-8 mt-16">
-            <a href="/Home" class="nav-link p-2 px-7 flex rounded-2xl hover:bg-primary hover:text-white" data-page="Home">
+            <a href="<?= base_url('Home') ?>" class="nav-link p-2 px-7 flex rounded-2xl hover:bg-primary hover:text-white" data-page="Home">
                 <i data-lucide="home" class="mr-2 w-6"></i>
                 Dashboard
             </a>
-            <a href="/History" class="nav-link p-2 px-7 flex rounded-2xl hover:bg-primary hover:text-white" data-page="History">
+            <a href="<?= base_url('History') ?>" class="nav-link p-2 px-7 flex rounded-2xl hover:bg-primary hover:text-white" data-page="History">
                 <i data-lucide="history" class="mr-2"></i>
                 History
             </a>
-            <a href="/Settings" class="nav-link p-2 px-7 flex rounded-2xl hover:bg-primary hover:text-white" data-page="Settings">
+            <a href="<?= base_url('Settings/Profile') ?>" class="nav-link p-2 px-7 flex rounded-2xl hover:bg-primary hover:text-white" data-page="Settings">
                 <i data-lucide="settings-2" class="mr-2 w-5"></i>
                 Settings
             </a>
@@ -43,7 +43,7 @@
         <!-- Logout button -->
         <footer class="mt-auto pt-4 border-t border-gray-300">
             <div class="flex items-center gap-2 mb-3">
-                <a href="/logout" class="hover:bg-primary hover:text-white flex p-2 px-7 rounded-2xl w-full">
+                <a href="<?= base_url('logout') ?>" class="hover:bg-primary hover:text-white flex p-2 px-7 rounded-2xl w-full">
                     <i data-lucide="log-out" class="mr-2"></i>
                     Log Out
                 </a>

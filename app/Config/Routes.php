@@ -29,21 +29,19 @@ $routes->group('infodata', static function($routes){
 });
 
 // Settings
-$routes->get('/Settings', 'Settings::index');
-$routes->get('/RoomSettings', 'Settings::RoomSettings', ['filter' => 'settingaccess']);
-$routes->get('/EmployeeSettings', 'Settings::EmployeeSettings', ['filter' => 'settingaccess']);
+$routes->get('/Settings/Profile', 'Settings::index');
 $routes->post('/Settings/updateProfile', 'Settings::updateProfile');
 
-$routes->group('settings',['filter' => 'settingaccess'], static function($routes){
-    $routes->get('rooms', 'Settings::RoomSettings');
-    $routes->post('rooms/add', 'Settings::addRoom');
-    $routes->post('rooms/edit', 'Settings::editRoom');
-    $routes->get('rooms/delete/(:num)', 'Settings::deleteRoom/$1');
+$routes->group('Settings',['filter' => 'settingaccess'], static function($routes){
+    $routes->get('Rooms', 'Settings::RoomSettings');
+    $routes->post('Rooms/add', 'Settings::addRoom');
+    $routes->post('Rooms/edit', 'Settings::editRoom');
+    $routes->get('Rooms/delete/(:num)', 'Settings::deleteRoom/$1');
     
-    $routes->get('employees', 'Settings::EmployeeSettings');
-    $routes->post('employees/add', 'Settings::addEmployee');
-    $routes->post('employees/edit', 'Settings::editEmployee');
-    $routes->get('employees/delete/(:num)', 'Settings::deleteEmployee/$1');
+    $routes->get('Employees', 'Settings::EmployeeSettings');
+    $routes->post('Employees/add', 'Settings::addEmployee');
+    $routes->post('Employees/edit', 'Settings::editEmployee');
+    $routes->get('Employees/delete/(:num)', 'Settings::deleteEmployee/$1');
 });
 
 $routes->get('documentations/(:num)/(:any)', 'InfoData::viewImage/$1/$2');

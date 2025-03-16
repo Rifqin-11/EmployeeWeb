@@ -20,50 +20,15 @@ class Settings extends BaseController
         $this->employeesModel = new EmployeesModel();
         $this->roomModel = new RoomModel();
     }
-    
-    private function prepareData()
+
+    public function index()
     {
         $email = session()->get('email');
         $user  = $this->employeesModel->getUserByEmail($email);
 
-        if (!$email) {
-            return redirect()->to('/');
-        }
-
         $data['user'] = $user;
-        $keyword = $this->request->getGet('search');
 
-        if (!$user) {
-            session()->destroy();
-            return redirect()->to('/');
-        }
-
-        if ($user['is_admin'] == 1) {
-            $data['guests'] = $this->guestBookModel->getGuests(search: $keyword);
-        } else {
-            $data['guests'] = $this->guestBookModel->getGuests($email, $keyword);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Render page with data
-     */
-    private function renderView(string $viewName)
-    {
-        $data = $this->prepareData();
-
-        if ($data instanceof \CodeIgniter\HTTP\RedirectResponse) {
-            return $data;
-        }
-
-        return view($viewName, $data);
-    }
-
-    public function index()
-    {
-        return $this->renderView("pages/ProfileSettings");
+        return view("pages/ProfileSettings", $data);
     }
 
     public function updateProfile()
@@ -162,7 +127,7 @@ class Settings extends BaseController
             'description' => $roomDescription
         ]);
     
-        return redirect()->to('/settings/rooms')->with('success', 'Room added successfully.');
+        return redirect()->back()->with('success', 'Room added successfully.');
     }
     
     public function editRoom()
@@ -180,7 +145,7 @@ class Settings extends BaseController
             'description' => $roomDescription]
         );
     
-        return redirect()->to('/RoomSettings')->with('success', 'Room updated successfully.');
+        return redirect()->back()->with('success', 'Room updated successfully.');
     }
     
     
@@ -194,7 +159,7 @@ class Settings extends BaseController
     
         $this->roomModel->delete($id);
     
-        return redirect()->to('/RoomSettings')->with('success', 'Room deleted successfully.');
+        return redirect()->back()->with('success', 'Room deleted successfully.');
     }
 
     public function EmployeeSettings()
@@ -224,7 +189,7 @@ class Settings extends BaseController
             'is_admin' => $isAdmin,
         ]);
     
-        return redirect()->to('/settings/employees')->with('success', 'Employee added successfully.');
+        return redirect()->back()->with('success', 'Employee added successfully.');
     }    
     
     
@@ -270,7 +235,7 @@ class Settings extends BaseController
             session()->set('email', $employeeEmail);
         }
     
-        return redirect()->to('/settings/employees')->with('success', 'Employee updated successfully.');
+        return redirect()->back()->with('success', 'Employee updated successfully.');
     }
     
     
@@ -284,6 +249,6 @@ class Settings extends BaseController
     
         $this->employeesModel->delete($id);
     
-        return redirect()->to('/settings/employees')->with('success', 'Employee deleted successfully.');
+        return redirect()->back()->with('success', 'Employee deleted successfully.');
     }
 }

@@ -69,7 +69,7 @@
                               <!-- Button delete -->
                               <button class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
                                     data-modal-target="deleteModal" data-modal-toggle="deleteModal" data-title="room"
-                                    data-delete-url="<?= base_url('settings/rooms/delete/') . $room['id']; ?>">
+                                    data-delete-url="<?= base_url('Settings/Rooms/delete/') . $room['id']; ?>">
                                 <i data-lucide="trash-2" class="w-3"></i>
                               </button>
                             </td>
@@ -107,7 +107,7 @@
                     </button>
                   </div>
                   <!-- Modal body -->
-                  <form action="<?= base_url('settings/rooms/add') ?>" method="post" class="p-4 md:p-5">
+                  <form action="<?= base_url('Settings/Rooms/add') ?>" method="post" class="p-4 md:p-5">
 
                     <div class="gap-4 mb-4">
                       <div class="mt-2">
@@ -143,7 +143,7 @@
                     </button>
                   </div>
                   <!-- Modal body -->
-                  <form action="<?= base_url('settings/rooms/edit') ?>" method="post" class="p-4 md:p-5">
+                  <form action="<?= base_url('Settings/Rooms/edit') ?>" method="post" class="p-4 md:p-5">
                     <input type="hidden" name="room_id" id="edit_room_id" value="">
                     <div class="gap-4 mb-4">
                       <div class="mt-2">

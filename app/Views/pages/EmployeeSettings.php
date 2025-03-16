@@ -82,7 +82,7 @@
                               <!-- Delete Button -->
                               <button class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
                                     data-modal-target="deleteModal" data-modal-toggle="deleteModal" data-title="employee"
-                                    data-delete-url="<?= base_url('settings/employees/delete/') . $employee['id']; ?>">
+                                    data-delete-url="<?= base_url('Settings/Employees/delete/') . $employee['id']; ?>">
                                 <i data-lucide="trash-2" class="w-3"></i>
                               </button>
                             </td>
@@ -138,7 +138,7 @@
                     </button>
                   </div>
                   <!-- Modal Body -->
-                  <form action="<?= base_url('settings/employees/add') ?>" method="post" class="p-4 md:p-5">
+                  <form action="<?= base_url('Settings/Employees/add') ?>" method="post" class="p-4 md:p-5">
                     <div class="grid gap-4 mb-4 grid-cols-2">
                       <div>
                           <label for="employee_name" class="block mb-2 text-sm font-medium text-gray-900">Employee Name</label>
@@ -239,7 +239,7 @@
                     </button>
                   </div>
                   <!-- Modal Body -->
-                  <form action="<?= base_url('settings/employees/edit') ?>" method="post" class="p-4 md:p-5">
+                  <form action="<?= base_url('Settings/Employees/edit') ?>" method="post" class="p-4 md:p-5">
                     <input type="hidden" name="employee_id" id="edit_employee_id" value="" />
                     <div class="grid gap-4 mb-4 grid-cols-2">
                       <div>
