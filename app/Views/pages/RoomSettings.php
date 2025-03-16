@@ -225,5 +225,7 @@
 
       lucide.createIcons();
     </script>
-  </body>
+
+    </body>
+    <?= $this->include('components/Toasts') ?>
 </html>
