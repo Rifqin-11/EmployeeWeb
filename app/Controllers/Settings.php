@@ -72,8 +72,7 @@ class Settings extends BaseController
         if (!empty($currentPassword) && !empty($newPassword)) {
             $currentPasswordHashed = sha1(sha1(md5($currentPassword)));
             if ($currentPasswordHashed == $user['password']) {
-                $newPasswordHashed = sha1(sha1(md5($newPassword)));
-                $updateData['password'] = $newPasswordHashed;
+                $updateData['password'] = sha1(sha1(md5($newPassword)));
             } else {
                 session()->setFlashdata('error', 'Current password is incorrect.');
                 return redirect()->back();
@@ -82,13 +81,12 @@ class Settings extends BaseController
     
         // Update user data
         if ($this->employeesModel->update($id, $updateData)) {
-    
-            $updatedUser = $this->employeesModel->find($id);
-            session()->set('user', $updatedUser);
-    
-            if (session()->get('email') === $user['email']) {
-                session()->set('email', $email);
-            }
+
+            $sessionData = [
+                'email' => $email,
+                'is_admin' => session()->get('is_admin')
+            ];
+            session()->set($sessionData);
     
             session()->setFlashdata('success', 'Profile updated successfully.');
         } else {
@@ -144,7 +142,6 @@ class Settings extends BaseController
         return redirect()->back()->with('success', 'Room updated successfully.');
     }
     
-    
     public function deleteRoom($id)
     {
         $room = $this->roomModel->find($id);
@@ -181,13 +178,12 @@ class Settings extends BaseController
             'email'    => $this->request->getPost('employee_email'),
             'position' => $this->request->getPost('employee_position'),
             'password' => $employeePassword,
-            'photo'    => 'uploads/default/default.png',
+            'photo'    => 'default.png',
             'is_admin' => $isAdmin,
         ]);
     
         return redirect()->back()->with('success', 'Employee added successfully.');
     }    
-    
     
     public function editEmployee()
     {
