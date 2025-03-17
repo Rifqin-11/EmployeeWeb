@@ -41,15 +41,7 @@
                   <div class="flex flex-row gap-5 justify-start mt-2 w-full">
                     <div class="avatar">
                       <div class="ring-primary ring-offset-base-100 w-20 h-20 rounded-full ring ring-offset-2 overflow-hidden">
-                        <?php if (!empty($user['photo'])) : ?>
-                          <img src="<?= base_url($user['photo']) ?>" class="w-full h-full object-cover" />
-                        <?php else : ?>
-                          <div class="flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full">
-                            <svg class="absolute w-15 h-15 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                            </svg>
-                          </div>
-                        <?php endif; ?>
+                          <img src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
                       </div>
                     </div>
                     <div class="flex flex-col gap-1">
@@ -131,15 +123,7 @@
                   <div class="flex flex-row gap-7 mb-8">
                     <div class="avatar">
                       <div class="ring-primary ring-offset-base-100 w-15 h-15 rounded-full ring ring-offset-2 overflow-hidden">
-                        <?php if (!empty($user['photo'])) : ?>
-                          <img id="profileImage" src="<?= base_url($user['photo']) ?>" class="w-full h-full object-cover" />
-                        <?php else : ?>
-                          <div class="flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full">
-                            <svg class="absolute w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                            </svg>
-                          </div>
-                        <?php endif; ?>
+                          <img id="profileImage" src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
                       </div>
                     </div>
                     <input type="file" id="imageUpload" name="profile_photo" class="hidden" accept="image/*">
@@ -216,7 +200,7 @@
     function removePhoto() {
 
       const container = document.querySelector('#profileImage').parentElement;
-      container.innerHTML = '<img id="profileImage" src="<?= base_url('uploads/default/') ?>default.png" class="w-full h-full object-cover" />';
+      container.innerHTML = '<img id="profileImage" src="<?= base_url('uploads/profile_photos/default.png') ?>" class="w-full h-full object-cover" />';
 
       let form = document.querySelector('#crud-modal form');
       if (!document.querySelector('input[name="remove_photo"]')) {

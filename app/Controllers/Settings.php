@@ -9,7 +9,6 @@ use CodeIgniter\Controller;
 
 class Settings extends BaseController
 {
-    // Check user session and prepare data
     protected $guestBookModel;
     protected $employeesModel;
     protected $roomModel;
@@ -47,25 +46,23 @@ class Settings extends BaseController
     
         // Handle photo removal
         if ($this->request->getPost('remove_photo')) {
-            if ($user['photo'] && $user['photo'] != 'uploads/default/default.png') {
+            if ($user['photo'] && $user['photo'] != 'default.png') {
                 $photoPath = FCPATH . $user['photo'];
                 if (file_exists($photoPath)) {
                     unlink($photoPath);
                 }
             }
-            $updateData['photo'] = 'uploads/default/default.png';
+            $updateData['photo'] = 'default.png';
         }
     
         // Handle photo upload
         $photo = $this->request->getFile('profile_photo');
         if ($photo && $photo->isValid() && !$photo->hasMoved()) {
             $uploadPath = FCPATH . 'uploads/profile_photos/';
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
-            }
+            
             $newName = $photo->getRandomName();
             $photo->move($uploadPath, $newName);
-            $updateData['photo'] = 'uploads/profile_photos/' . $newName;
+            $updateData['photo'] = $newName;
         }
     
         // Handle password change
@@ -79,7 +76,7 @@ class Settings extends BaseController
                 $updateData['password'] = $newPasswordHashed;
             } else {
                 session()->setFlashdata('error', 'Current password is incorrect.');
-                return redirect()->to('/Settings');
+                return redirect()->back();
             }
         }
     
@@ -98,10 +95,9 @@ class Settings extends BaseController
             session()->setFlashdata('error', 'Failed to update profile.');
         }
     
-        return redirect()->to('/Settings');
+        return redirect()->back();
     }
     
-
     public function RoomSettings()
     {
         $email = session()->get('email');

@@ -38,14 +38,10 @@
                 <!-- Notif and Profile -->
                 <div class="flex text-white justify-center gap-3 items-center w-1/3">
                     <?= $this->include('components/NotificationModal') ?>
-                    <a data-tooltip-target="tooltip-bottom" data-tooltip-placement="bottom" href="/Settings" class="text-gray-900 p-2 rounded-full flex gap-3 justify-center items-center">
+                    <a data-tooltip-target="tooltip-bottom" data-tooltip-placement="bottom" href="<?= base_url('Settings/Profile') ?>" class="text-gray-900 p-2 rounded-full flex gap-3 justify-center items-center">
                         <div class="avatar">
                             <div class="ring-primary ring-offset-base-100 w-9 h-9 rounded-full ring ring-offset-2 overflow-hidden">
-                                <?php if (!empty($user['photo'])) : ?>
-                                    <img id="profileImage" src="<?= base_url($user['photo']) ?>" class="w-full h-full object-cover" />
-                                <?php else : ?>
-                                    <img id="profileImage" src="<?= base_url('uploads/default/default.png')?>" class="w-full h-full object-cover" />
-                                <?php endif; ?>
+                                <img id="profileImage" src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
                             </div>
                         </div>
                         <div class="justify-center items-center">
