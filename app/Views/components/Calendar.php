@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
+
     <div class="bg-white p-4 ml-2 rounded-lg shadow-sm min-w-2xs hidden md:block">
         <div class="flex justify-between items-center mb-4">
             <span class="pt-4 font-bold justify-center items-center">
@@ -38,5 +32,3 @@
             <?php endforeach; ?>
         </div>
     </div>
-</body>
-</html>
