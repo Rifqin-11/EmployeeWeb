@@ -1,0 +1,103 @@
+/* custom.css */
+
+/* Warna kustom */
+:root {
+    --color-primary: #084E8F;
+    --color-secondary: #f9f9f9;
+    --color-button: #2563eb;
+    --color-text-100: #7E7E7E;
+    --color-text-200: #414141;
+    --color-text-600: #364153;
+    --color-yellow-700: #F9A329;
+    --color-yellow-200: #fff0dc;
+  }
+  
+  /* Utility classes mirip Tailwind */
+  .bg-primary {
+    background-color: var(--color-primary);
+  }
+  
+  .bg-secondary {
+    background-color: var(--color-secondary);
+  }
+  
+  .bg-button {
+    background-color: var(--color-button);
+  }
+  
+  .bg-yellow-700 {
+    background-color: var(--color-yellow-700);
+  }
+  
+  .bg-yellow-200 {
+    background-color: var(--color-yellow-200);
+  }
+  
+  .text-text-100 {
+    color: var(--color-text-100);
+  }
+  
+  .text-text-200 {
+    color: var(--color-text-200);
+  }
+  
+  .text-text-600 {
+    color: var(--color-text-600);
+  }
+  
+  /* Button styling */
+  button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  button.bg-button {
+    background-color: var(--color-button);
+    color: #fff;
+  }
+  
+  button.bg-button:hover {
+    background-color: var(--color-yellow-700);
+  }
+  
+  /* Padding utility classes */
+  .p-2 {
+    padding: 0.5rem;
+  }
+  
+  .p-4 {
+    padding: 1rem;
+  }
+  
+  .p-6 {
+    padding: 1.5rem;
+  }
+  
+  .p-8 {
+    padding: 2rem;
+  }
+  
+  /* Font size utility classes */
+  .text-lg {
+    font-size: 1.125rem;
+  }
+  
+  .text-xl {
+    font-size: 1.25rem;
+  }
+  
+  .text-2xl {
+    font-size: 1.5rem;
+  }
+  
+  .text-3xl {
+    font-size: 1.875rem;
+  }
+  
+  /* Width utility classes */
+  .w-full {
+    width: 100%;
+  }
+  

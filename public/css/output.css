@@ -2330,6 +2330,9 @@
   .bg-yellow-500 {
     background-color: var(--color-yellow-500);
   }
+  .bg-yellow-700 {
+    background-color: var(--color-yellow-700);
+  }
   .dark {
     & .selectedCell {
       background-color: var(--color-gray-700);

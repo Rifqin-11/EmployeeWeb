@@ -4,22 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/svg+xml" href="<?= base_url() ?>/desnetLogo.png" />
-  <link href="<?= base_url('css/output.css') ?>" rel="stylesheet">
+  <!-- <link href="<?= base_url('css/output.css') ?>" rel="stylesheet">
+  <link href="<?= base_url('css/custom.css') ?>" rel="stylesheet"> -->
   
   <script src="<?= base_url('js/flowbite.min.js') ?>"></script>
   <script src="<?= base_url('js/lucide.js') ?>"></script>
-  <style type="text/tailwindcss">
-        @theme {
-        --color-primary: #084E8F;
-        --color-secondary: #f9f9f9;
-        --color-button: #2563eb;
-        --color-text-100: #7E7E7E;
-        --color-text-200: #414141;
-        --color-text-600: #364153;
-        --color-yellow-700: #F9A329;
-        --color-yellow-200: #fff0dc;
-      }
-    </style>
 
   <title>Desnet GuestBook</title>
 
