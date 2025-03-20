@@ -4,19 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="<?=base_url()?>/desnetLogo.png" />
-    <title>Desnet | Login</title>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <style type="text/tailwindcss">
-      @theme {
-        --color-primary: #084E8F;
-        --color-secondary: #f9f9f9;
-        --color-button: #2563eb;
-        --color-text-100: #7E7E7E;
-        --color-text-200: #414141;
-        --color-text-600: #364153;
-      }
-    </style>
+
+    <title>Desnet | Login</title>
 </head>
 <body class="bg-gray-100 flex flex-col min-h-screen">
     <nav class="bg-white p-7 md:p-3 lg:p-2 2xl:p-7 shadow-md">

@@ -1,31 +1,34 @@
 <!doctype html>
 <html>
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="<?= base_url() ?>/desnetLogo.png" />
+    
     <title>Guest From <?= $guest["pic_name"] ?></title>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script src="<?= base_url('js/flowbite.min.js') ?>"></script>
+    <script src="<?= base_url('js/lucide.js') ?>"></script>
     <style type="text/tailwindcss">
-        /* @theme {
-        --color-primary: #084E8F;
-        --color-secondary: #f9f9f9;
-        --color-button: #2563eb;
-        --color-text-100: #7E7E7E;
-        --color-text-200: #414141;
-        --color-text-600: #364153;
-        --color-yellow-700: #F9A329;
-        --color-yellow-200: #fff0dc;
-      } */
-    </style>
+        @theme {
+      --color-primary: #084E8F;
+      --color-secondary: #f9f9f9;
+      --color-button: #2563eb;
+      --color-text-100: #7E7E7E;
+      --color-text-200: #414141;
+      --color-text-600: #364153;
+      --color-yellow-700: #F9A329;
+      --color-yellow-200: #fff0dc;
+    }
+  </style>
 
 </head>
 
 <body>
-<div class="min-h-screen bg-[#F9F9F9] flex max-w-full">
+    <div class="min-h-screen bg-[#F9F9F9] flex max-w-full">
         <?= $this->include('components/Sidebar') ?>
         <div class="pr-2 flex gap-2 w-full md:ml-64">
             <div class="flex flex-col gap-2 w-full">
@@ -67,29 +70,29 @@
                                 <h2 class="text-lg font-medium text-gray-700">Agenda:</h2>
                                 <p class="text-gray-600"><?= $guest["agenda"] ?></p>
                             </div>
-                            
+
                             <!-- Room and appointment -->
                             <div class="flex grid grid-cols-2 gap-4">
                                 <div class="mb-4">
                                     <h2 class="text-lg font-medium text-gray-700">Room:</h2>
                                     <div>
-                                    <select name="room" id="room" required class="w-full white border border-gray-300 p-2 rounded-lg">
-                                        <?php if(!$selectedRoom) : ?>
-                                            <option value="" disabled selected>Please insert appointments first</option>
-                                        <?php else: ?>
-                                            <?php foreach ($availableRooms as $room): ?>
-                                                <option value="<?= $room["id"] ?>" <?= ($room["id"] == $guest['room_id']) ? 'selected' : '' ?>>
-                                                    <?= $room['name'] ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                            <?php foreach ($unavailableRooms as $room): ?>
-                                                <option disabled>
-                                                    <?= $room['name'] ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                            
-                                        <?php endif ?>
-                                    </select>
+                                        <select name="room" id="room" required class="w-full white border border-gray-300 p-2 rounded-lg">
+                                            <?php if (!$selectedRoom) : ?>
+                                                <option value="" disabled selected>Please insert appointments first</option>
+                                            <?php else: ?>
+                                                <?php foreach ($availableRooms as $room): ?>
+                                                    <option value="<?= $room["id"] ?>" <?= ($room["id"] == $guest['room_id']) ? 'selected' : '' ?>>
+                                                        <?= $room['name'] ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                                <?php foreach ($unavailableRooms as $room): ?>
+                                                    <option disabled>
+                                                        <?= $room['name'] ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+
+                                            <?php endif ?>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="mb-4 appointments-input">
@@ -119,18 +122,18 @@
 
                                     <!-- Documentation View -->
                                     <div class="grid grid-cols-5 gap-2 mb-4">
-                                        <?php foreach($documentations as $doc): ?>
+                                        <?php foreach ($documentations as $doc): ?>
                                             <div class="relative group">
-                                            <img src="<?= base_url('documentations/' . $guest['id'] . '/' . $doc['image_name']) ?>" alt="Dokumentasi">
+                                                <img src="<?= base_url('documentations/' . $guest['id'] . '/' . $doc['image_name']) ?>" alt="Dokumentasi">
                                                 <div class="absolute inset-0 bg-black bg-opacity-50 hidden group-hover:flex items-center justify-center rounded-lg">
-                                                    <a href="<?= base_url('documentations/'.$guest['id'].'/'.$doc['image_name']) ?>" 
-                                                    target="_blank"
-                                                    class="text-white p-1 hover:text-blue-300">
+                                                    <a href="<?= base_url('documentations/' . $guest['id'] . '/' . $doc['image_name']) ?>"
+                                                        target="_blank"
+                                                        class="text-white p-1 hover:text-blue-300">
                                                         <i data-lucide="eye"></i>
                                                     </a>
-                                                    <button 
-                                                        data-modal-target="deleteModal" 
-                                                        data-modal-toggle="deleteModal" 
+                                                    <button
+                                                        data-modal-target="deleteModal"
+                                                        data-modal-toggle="deleteModal"
                                                         data-title="documentation image"
                                                         data-delete-url="<?= base_url('infodata/deleteImage/' . $doc['id']) ?>"
                                                         class="text-white p-1 hover:text-red-300">
@@ -162,233 +165,232 @@
                 </div>
             </div>
         </div>
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {        
-        
-        const fileInput = document.getElementById('fileInput');
-        const startAt = document.getElementById("start-at");
-        const date = document.getElementById('date');
-        const endAt = document.getElementById("end-at");
 
-        // Waktu akhir harus melebihi waktu mulai
-        startAt.addEventListener('change', function(){
-            const endAt = document.getElementById("end-at");
-            endAt.min = this.value;
-        });
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
 
-        // Jika tanggal hari ini, waktu awal harus melebihi waktu saat ini
-        date.addEventListener('change', function(){
-            if (date.value == '<?= date('Y-m-d') ?>') {
-                startAt.min = "<?= date('H:i') ?>";
-            } else {
-                startAt.removeAttribute('min');
-            }
-        });
+                const fileInput = document.getElementById('fileInput');
+                const startAt = document.getElementById("start-at");
+                const date = document.getElementById('date');
+                const endAt = document.getElementById("end-at");
 
-        const deleteButtons = document.querySelectorAll('[data-modal-target="deleteModal"][data-delete-url]');
-        
-        deleteButtons.forEach(function(button) {
-            button.addEventListener('click', function(e) {
-                
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const deleteUrl = button.getAttribute('data-delete-url');
-                const dataTitle = button.getAttribute('data-title');
-                
-                const confirmLink = document.getElementById('confirmDeleteLink');
-                confirmLink.setAttribute('href', deleteUrl);
+                // Waktu akhir harus melebihi waktu mulai
+                startAt.addEventListener('change', function() {
+                    const endAt = document.getElementById("end-at");
+                    endAt.min = this.value;
+                });
 
-                const modalTitle = document.getElementById('deleteModalTitle');
-                modalTitle.textContent = 'Are you sure you want to delete this ' + dataTitle + '?';
-            });
-        });
+                // Jika tanggal hari ini, waktu awal harus melebihi waktu saat ini
+                date.addEventListener('change', function() {
+                    if (date.value == '<?= date('Y-m-d') ?>') {
+                        startAt.min = "<?= date('H:i') ?>";
+                    } else {
+                        startAt.removeAttribute('min');
+                    }
+                });
 
-        document.getElementById('confirmDeleteLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            const deleteUrl = this.getAttribute('href');
-            
-            fetch(deleteUrl, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '<?= csrf_hash() ?>',
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Failed to delete');
-                }
-            }).catch(error => {
-                console.error('Error:', error);
-                alert('Error occurred while deleting');
-            });
-        });
+                const deleteButtons = document.querySelectorAll('[data-modal-target="deleteModal"][data-delete-url]');
 
-        
-        const previewContainer = document.getElementById('preview');
-        let currentFiles = [];
+                deleteButtons.forEach(function(button) {
+                    button.addEventListener('click', function(e) {
 
-        fileInput.addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            currentFiles = currentFiles.concat(files);
-            updatePreviews();
-            updateFileInput();
-            if (currentFiles.length > 0) {
-                disableInputs(true);
-            } else {
-                disableInputs(false);
-            }
-        });
+                        e.preventDefault();
+                        e.stopPropagation();
 
-        function updatePreviews() {
-            previewContainer.innerHTML = '';
-            currentFiles.forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const div = document.createElement('div');
-                    div.className = 'relative group';
+                        const deleteUrl = button.getAttribute('data-delete-url');
+                        const dataTitle = button.getAttribute('data-title');
 
-                    const imgWrapper = document.createElement('div');
-                    imgWrapper.className = 'relative';
+                        const confirmLink = document.getElementById('confirmDeleteLink');
+                        confirmLink.setAttribute('href', deleteUrl);
 
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    img.className = 'w-full h-32 object-cover rounded-lg';
+                        const modalTitle = document.getElementById('deleteModalTitle');
+                        modalTitle.textContent = 'Are you sure you want to delete this ' + dataTitle + '?';
+                    });
+                });
 
-                    const overlay = document.createElement('div');
-                    overlay.className = 'absolute inset-0 bg-black bg-opacity-50 hidden group-hover:flex items-center justify-center rounded-lg';
+                document.getElementById('confirmDeleteLink').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const deleteUrl = this.getAttribute('href');
 
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.className = 'text-white p-1 hover:text-red-300';
-                    deleteBtn.onclick = () => {
-                        currentFiles.splice(index, 1);
-                        updatePreviews();
-                        updateFileInput();
-                        if (currentFiles.length === 0) {
-                            disableInputs(false);
+                    fetch(deleteUrl, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '<?= csrf_hash() ?>',
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
                         }
-                    };
+                    }).then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            alert('Failed to delete');
+                        }
+                    }).catch(error => {
+                        console.error('Error:', error);
+                        alert('Error occurred while deleting');
+                    });
+                });
 
-                    const deleteIcon = document.createElement('i');
-                    deleteIcon.setAttribute('data-lucide', 'trash-2');
-                    deleteBtn.appendChild(deleteIcon);
 
-                    overlay.appendChild(deleteBtn);
-                    imgWrapper.appendChild(img);
-                    imgWrapper.appendChild(overlay);
-                    div.appendChild(imgWrapper);
-                    previewContainer.appendChild(div);
+                const previewContainer = document.getElementById('preview');
+                let currentFiles = [];
 
-                    lucide.createIcons();
-                };
-                reader.readAsDataURL(file);
+                fileInput.addEventListener('change', function(e) {
+                    const files = Array.from(e.target.files);
+                    currentFiles = currentFiles.concat(files);
+                    updatePreviews();
+                    updateFileInput();
+                    if (currentFiles.length > 0) {
+                        disableInputs(true);
+                    } else {
+                        disableInputs(false);
+                    }
+                });
+
+                function updatePreviews() {
+                    previewContainer.innerHTML = '';
+                    currentFiles.forEach((file, index) => {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            const div = document.createElement('div');
+                            div.className = 'relative group';
+
+                            const imgWrapper = document.createElement('div');
+                            imgWrapper.className = 'relative';
+
+                            const img = document.createElement('img');
+                            img.src = event.target.result;
+                            img.className = 'w-full h-32 object-cover rounded-lg';
+
+                            const overlay = document.createElement('div');
+                            overlay.className = 'absolute inset-0 bg-black bg-opacity-50 hidden group-hover:flex items-center justify-center rounded-lg';
+
+                            const deleteBtn = document.createElement('button');
+                            deleteBtn.className = 'text-white p-1 hover:text-red-300';
+                            deleteBtn.onclick = () => {
+                                currentFiles.splice(index, 1);
+                                updatePreviews();
+                                updateFileInput();
+                                if (currentFiles.length === 0) {
+                                    disableInputs(false);
+                                }
+                            };
+
+                            const deleteIcon = document.createElement('i');
+                            deleteIcon.setAttribute('data-lucide', 'trash-2');
+                            deleteBtn.appendChild(deleteIcon);
+
+                            overlay.appendChild(deleteBtn);
+                            imgWrapper.appendChild(img);
+                            imgWrapper.appendChild(overlay);
+                            div.appendChild(imgWrapper);
+                            previewContainer.appendChild(div);
+
+                            lucide.createIcons();
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                function updateFileInput() {
+                    const dataTransfer = new DataTransfer();
+                    currentFiles.forEach(file => dataTransfer.items.add(file));
+                    fileInput.files = dataTransfer.files;
+                }
+
+                const appointments = document.querySelectorAll(".appointments-input input");
+                const roomSelect = document.getElementById("room");
+
+                function fetchRooms() {
+                    const date = document.getElementById("date").value;
+                    const startAt = document.getElementById("start-at").value;
+                    const endAt = document.getElementById("end-at").value;
+                    const guest_id = document.getElementById("guest-id").value;
+
+                    const selectedRoomId = roomSelect.dataset.selected;
+
+                    if (!date || !startAt || !endAt) {
+                        roomSelect.innerHTML = '<option value="" disabled selected>Please insert appointments first</option>';
+                        return;
+                    }
+
+                    fetch("<?= base_url('infodata/getrooms') ?>", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-Requested-With": "XMLHttpRequest"
+                            },
+                            body: JSON.stringify({
+                                date: date,
+                                start_at: startAt,
+                                end_at: endAt,
+                                guest_id: guest_id
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(rooms => {
+                            let options = '<option value="" disabled selected>Select rooms...</option>';
+
+                            rooms.availableRooms.forEach(room => {
+                                let isSelected = (room.id == selectedRoomId) ? "selected" : "";
+                                options += `<option value="${room.id}" ${isSelected}>${room.name}</option>`;
+                            });
+                            rooms.unavailableRooms.forEach(room => {
+                                options += `<option disabled>${room.name}</option>`;
+                            });
+
+                            roomSelect.innerHTML = options;
+                        })
+                        .catch(error => console.error("Error fetching rooms:", error));
+                }
+
+                roomSelect.dataset.selected = "<?= $selectedRoom['id'] ?? '' ?>";
+
+                appointments.forEach(input => {
+                    input.addEventListener("change", fetchRooms);
+                });
+
+                // Disable Input while status = done
+                const status = document.getElementById("status").value;
+
+                if (status == 3) {
+                    disableInputs();
+                }
+
+                fileInput.addEventListener('change', function() {
+                    if (this.files.length > 0) {
+                        disableInputs(true);
+                    } else {
+                        disableInputs(false);
+                    }
+                });
+
+                function disableInputs(disabled = true) {
+                    roomSelect.disabled = disabled;
+                    if (disabled) {
+                        roomSelect.classList.add("bg-gray-200");
+
+                        appointments.forEach(input => {
+                            input.disabled = true;
+                            input.classList.add("bg-gray-200");
+                        });
+                    } else {
+                        roomSelect.classList.remove("bg-gray-200");
+
+                        appointments.forEach(input => {
+                            input.disabled = false;
+                            input.classList.remove("bg-gray-200");
+                        });
+                    }
+                }
+
             });
-        }
 
-        function updateFileInput() {
-            const dataTransfer = new DataTransfer();
-            currentFiles.forEach(file => dataTransfer.items.add(file));
-            fileInput.files = dataTransfer.files;
-        }
-
-        const appointments = document.querySelectorAll(".appointments-input input");
-        const roomSelect = document.getElementById("room");
-
-        function fetchRooms() {
-            const date = document.getElementById("date").value;
-            const startAt = document.getElementById("start-at").value;
-            const endAt = document.getElementById("end-at").value;
-            const guest_id = document.getElementById("guest-id").value;
-
-            const selectedRoomId = roomSelect.dataset.selected;
-
-            if (!date || !startAt || !endAt) {
-                roomSelect.innerHTML = '<option value="" disabled selected>Please insert appointments first</option>';
-                return;
-            }
-
-            fetch("<?= base_url('infodata/getrooms') ?>", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Requested-With": "XMLHttpRequest"
-                },
-                body: JSON.stringify({
-                    date: date,
-                    start_at: startAt,
-                    end_at: endAt,
-                    guest_id: guest_id
-                })
-            })
-            .then(response => response.json())
-            .then(rooms => {
-                let options = '<option value="" disabled selected>Select rooms...</option>';
-                
-                rooms.availableRooms.forEach(room => {
-                    let isSelected = (room.id == selectedRoomId) ? "selected" : "";
-                    options += `<option value="${room.id}" ${isSelected}>${room.name}</option>`;
-                });
-                rooms.unavailableRooms.forEach(room => {
-                    options += `<option disabled>${room.name}</option>`;
-                });
-
-                roomSelect.innerHTML = options;
-            })
-            .catch(error => console.error("Error fetching rooms:", error));
-        }
-
-        roomSelect.dataset.selected = "<?= $selectedRoom['id'] ?? '' ?>";
-
-        appointments.forEach(input => {
-            input.addEventListener("change", fetchRooms);
-        });
-
-        // Disable Input while status = done
-        const status = document.getElementById("status").value;
-        
-        if (status == 3) {
-            disableInputs();
-        }
-
-        fileInput.addEventListener('change', function(){
-            if(this.files.length > 0){
-                disableInputs(true);
-            } else {
-                disableInputs(false);
-            }
-        });
-
-        function disableInputs(disabled = true){
-            roomSelect.disabled = disabled;
-            if (disabled){
-                roomSelect.classList.add("bg-gray-200");
-    
-                appointments.forEach(input => {
-                    input.disabled = true;
-                    input.classList.add("bg-gray-200");
-                });
-            } else {
-                roomSelect.classList.remove("bg-gray-200");
-    
-                appointments.forEach(input => {
-                    input.disabled = false;
-                    input.classList.remove("bg-gray-200");
-                });
-            }
-        }
-
-        
-
-    });
-        
-    lucide.createIcons();
-    </script>
+            lucide.createIcons();
+        </script>
 
 </body>
 
-    <?= $this->include('components/Toasts') ?>
+<?= $this->include('components/Toasts') ?>
 
 </html>

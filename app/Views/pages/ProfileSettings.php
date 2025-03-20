@@ -5,23 +5,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/svg+xml" href="<?= base_url() ?>/desnetLogo.png" />
+  
   <title>Settings</title>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+  <script src="<?= base_url('js/flowbite.min.js') ?>"></script>
+  <script src="<?= base_url('js/lucide.js') ?>"></script>
   <style type="text/tailwindcss">
-    /* @theme {
-        --color-primary: #084E8F;
-        --color-secondary: #f9f9f9;
-        --color-button: #2563eb;
-        --color-text-100: #7E7E7E;
-        --color-text-200: #414141;
-        --color-text-600: #364153;
-        --color-yellow-700: #F9A329;
-        --color-yellow-200: #fff0dc;
-      } */
-    </style>
+    @theme {
+      --color-primary: #084E8F;
+      --color-secondary: #f9f9f9;
+      --color-button: #2563eb;
+      --color-text-100: #7E7E7E;
+      --color-text-200: #414141;
+      --color-text-600: #364153;
+      --color-yellow-700: #F9A329;
+      --color-yellow-200: #fff0dc;
+    }
+  </style>
 </head>
 
 <body>
@@ -41,7 +43,7 @@
                   <div class="flex flex-row gap-5 justify-start mt-2 w-full">
                     <div class="avatar">
                       <div class="ring-primary ring-offset-base-100 w-20 h-20 rounded-full ring ring-offset-2 overflow-hidden">
-                          <img src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
+                        <img src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
                       </div>
                     </div>
                     <div class="flex flex-col gap-1">
@@ -123,7 +125,7 @@
                   <div class="flex flex-row gap-7 mb-8">
                     <div class="avatar">
                       <div class="ring-primary ring-offset-base-100 w-15 h-15 rounded-full ring ring-offset-2 overflow-hidden">
-                          <img id="profileImage" src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
+                        <img id="profileImage" src="<?= base_url('uploads/profile_photos/') . $user['photo'] ?>" class="w-full h-full object-cover" />
                       </div>
                     </div>
                     <input type="file" id="imageUpload" name="profile_photo" class="hidden" accept="image/*">
