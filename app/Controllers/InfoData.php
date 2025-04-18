@@ -125,17 +125,14 @@ class InfoData extends BaseController
                     if(in_array($image->getExtension(), ['jpg', 'jpeg', 'png', 'gif'])){
                         $image->move($uploadPath);
 
-                        $data = [
+                        $documentationsModel->insert([
                             'guestbook_id' => $guestbook_id,
                             'image_name'   => $image->getClientName()
-                        ];
-                        $documentationsModel->insert($data);
-            
-                        $data = [
-                            'id'     => $guestbook_id,
-                            'status' => 3
-                        ];
-                        $this->guestBookModel->save($data);
+                        ]);
+
+                        if ($status != 3){
+                            $this->guestBookModel->update($guestbook_id, ['status' => 3]);
+                        }
                     }
                 } else {
                     // Mengatasi status done tanpa upload image
@@ -152,6 +149,7 @@ class InfoData extends BaseController
                         'end_at'   => $this->request->getVar('end-at'),
                         'status'   => 2
                     ];
+                    
                     $this->guestBookModel->save($data);
                     session()->setFlashdata('success', 'Data has been saved successfully with a rescheduled status!');
                     return redirect()->to(base_url('infodata/' . $guestbook_id));
@@ -172,7 +170,8 @@ class InfoData extends BaseController
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
-        return $this->response->setHeader('Content-Type', mime_content_type($path))->setBody(file_get_contents($path));
+        return $this->response->setHeader('Content-Type', mime_content_type($path))
+                              ->setBody(file_get_contents($path));
     }
 
 
@@ -183,18 +182,13 @@ class InfoData extends BaseController
 
         if ($image) {
             $filePath = FCPATH . 'documentations/' . $image['guestbook_id'] . '/' . $image['image_name'];
-
             if (file_exists($filePath)) {
                 unlink($filePath);
             }
-
             $documentationsModel->delete($id);
-
             session()->setFlashdata('success', 'Image successfully deleted.');
-
             return $this->response->setJSON(['success' => true]);
         }
-
         session()->setFlashdata('error', 'Image not found.');
 
         return $this->response->setJSON(['success' => false, 'message' => 'Image not found']);

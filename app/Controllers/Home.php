@@ -52,11 +52,10 @@ class Home extends BaseController
             $data['guests'] = $this->guestBookModel->getGuests($email, $keyword, statusFilter: [0, 1, 2])->findAll();   
         }
 
-
         $totalLast2Month = $totalVisitor2Monthly - $totalVisitorMonthly;
 
         if ($totalLast2Month != 0) {
-            $percentageLastMonth = (($totalLast2Month - $totalVisitorMonthly) / $totalLast2Month) * 100;
+            $percentageLastMonth = (($totalVisitorMonthly - $totalLast2Month) / $totalLast2Month) * 100;
             $percentageLastMonth = sprintf('%+d', $percentageLastMonth) . '% from last month';
         } else {
             $percentageLastMonth = "You don't have any visitors at 2 months ago";

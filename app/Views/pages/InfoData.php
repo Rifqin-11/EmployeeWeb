@@ -8,23 +8,10 @@
     
     <title>Guest From <?= $guest["pic_name"] ?></title>
     
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
+    <link rel="stylesheet" href="<?= base_url('css/output.css') ?>">
     <script src="<?= base_url('js/flowbite.min.js') ?>"></script>
     <script src="<?= base_url('js/lucide.js') ?>"></script>
-    <style type="text/tailwindcss">
-        @theme {
-      --color-primary: #084E8F;
-      --color-secondary: #f9f9f9;
-      --color-button: #2563eb;
-      --color-text-100: #7E7E7E;
-      --color-text-200: #414141;
-      --color-text-600: #364153;
-      --color-yellow-700: #F9A329;
-      --color-yellow-200: #fff0dc;
-    }
   </style>
-
 </head>
 
 <body>

@@ -7,22 +7,9 @@
   
   <title>Desnet GuestBook</title>
 
-  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-  <script src="https://cdn.jsdelivr.net/npm/daisyui@latest"></script>
+  <link rel="stylesheet" href="<?= base_url('css/output.css') ?>">
   <script src="<?= base_url('js/flowbite.min.js') ?>"></script>
   <script src="<?= base_url('js/lucide.js') ?>"></script>
-  <style type="text/tailwindcss">
-    @theme {
-      --color-primary: #084E8F;
-      --color-secondary: #f9f9f9;
-      --color-button: #2563eb;
-      --color-text-100: #7E7E7E;
-      --color-text-200: #414141;
-      --color-text-600: #364153;
-      --color-yellow-700: #F9A329;
-      --color-yellow-200: #fff0dc;
-    }
-  </style>
 </head>
 <body>
   <div class="min-h-screen bg-[#F9F9F9] flex max-w-full">
@@ -54,23 +41,24 @@
             <div class="flex text-white gap-4 items-center mt-4">
               <button class="w-30 flex flex-row gap-2 justify-center rounded-3xl border border-gray-200 px-5 bg-white py-1 cursor-pointer text-text-100 hover:bg-primary hover:text-white"
                       data-sort="created_at" data-order="asc">
-                Date <i data-lucide="arrow-up-down" class="w-4"></i>
+                Date 
+                <i data-lucide="arrow-up-down" class="w-4"></i>
               </button>
               <button class="w-30 flex flex-row gap-2 justify-center rounded-3xl border border-gray-200 px-5 bg-white py-1 cursor-pointer text-text-100 hover:bg-primary hover:text-white"
                       data-sort="pic_name" data-order="asc">
                 Name <i data-lucide="arrow-up-down" class="w-4"></i>
               </button>
               <div class="flex flex-row gap-2 items-center">
-                <div class="rounded-2xl border border-gray-200 px-5 bg-white py-1">
-                  <input type="date" id="startDate" class="w-30 rounded-lg text-text-100" placeholder="Start Date">
+                <div class="rounded-2xl border border-gray-200 px-3 bg-white py-1">
+                  <input type="date" id="startDate" class="w-35 rounded-lg text-text-100 border-none h-5.5 focus:ring-black focus:ring-2">
                 </div>
                 <h1 class="text-gray-400">to</h1>
-                <div class="rounded-2xl border border-gray-200 px-5 bg-white py-1">
-                  <input type="date" id="endDate" class="w-30 rounded-lg text-text-100" placeholder="End Date">
+                <div class="rounded-2xl border border-gray-200 px-3 bg-white py-1">
+                  <input type="date" id="endDate" class="w-35 rounded-lg text-text-100 border-none h-5.5 focus:ring-black focus:ring-2">
                 </div>
               </div>
-              <div class="flex flex-row rounded-3xl border border-gray-200 px-5 bg-white py-1">
-                <select id="statusFilter" class="text-text-100 rounded-lg px-2">
+              <div class="flex flex-row rounded-3xl border border-gray-200 px-5 py-1 bg-white items-center">
+                <select id="statusFilter" class="w-33 text-text-100 rounded-lg px-2 py-0 border-none focus:ring-black focus:ring-2">
                   <option value="">All</option>
                   <option value="0">Pending</option>
                   <option value="1">Scheduled</option>

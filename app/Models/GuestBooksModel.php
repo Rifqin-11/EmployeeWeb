@@ -44,7 +44,7 @@ class GuestBooksModel extends Model
                     ->groupEnd();
         }
 
-        return $result->orderBy('guestbooks.updated_at', 'DESC');
+        return $result->orderBy('guestbooks.created_at', 'DESC');
     }
 
     public function getPendingVisitorsCount($id = null)

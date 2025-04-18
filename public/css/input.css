@@ -1,7 +1,15 @@
 @import "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
+@theme {
+    --color-primary: #084E8F;
+    --color-secondary: #f9f9f9;
+    --color-button: #2563eb;
+    --color-text-100: #7E7E7E;
+    --color-text-200: #414141;
+    --color-text-600: #364153;
+    --color-yellow-700: #F9A329;
+    --color-yellow-200: #fff0dc;
+  }
 
 @import "flowbite/src/themes/default";
 @plugin "flowbite/plugin";

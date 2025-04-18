@@ -20,12 +20,12 @@ class LoginController extends BaseController
             'username' => $username,
             'password' => $password
         ];
-
         $rules = [
             'username' => 'required',
             'password' => 'required'
         ];
 
+        // If username and password is empty
         if (!$this->validateData($data, $rules)) {
             return redirect()->back();
         }
